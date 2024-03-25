@@ -1,4 +1,4 @@
-namespace TransportRegister.Server
+namespace TransportRegister.Server.Models
 {
     public class WeatherForecast
     {

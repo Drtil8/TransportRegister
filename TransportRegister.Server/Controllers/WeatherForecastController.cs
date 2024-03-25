@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using TransportRegister.Server.Models;
 
 namespace TransportRegister.Server.Controllers
 {
