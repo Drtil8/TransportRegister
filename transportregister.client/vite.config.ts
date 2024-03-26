@@ -41,7 +41,8 @@ export default defineConfig({
             '@': fileURLToPath(new URL('./src', import.meta.url))
         }
     },
-    server: {
+  server: {
+        //open: true,
         proxy: {
             '^/weatherforecast': {
                 target,
