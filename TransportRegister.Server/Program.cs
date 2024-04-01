@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using TransportRegister.Server.Data;
+using TransportRegister.Server.Seeds;
 
 namespace TransportRegister.Server
 {
@@ -13,8 +16,18 @@ namespace TransportRegister.Server
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            
+            // Add in-memory database
+            builder.Services.AddDbContext<AppDbContext>(options => 
+            options.UseInMemoryDatabase("TransportRegisterDb"));
 
             var app = builder.Build();
+            
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                DbSeeder.SeedAll(dbContext);
+            }
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
@@ -34,7 +47,8 @@ namespace TransportRegister.Server
             app.MapControllers();
 
             app.MapFallbackToFile("/index.html");
-
+    
+            
             app.Run();
         }
     }
