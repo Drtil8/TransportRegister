@@ -6,6 +6,7 @@ public class DbSeeder
 {
     public static void SeedAll(AppDbContext context)
     {
+        OwnerSeed.Seed(context);
         VehicleSeed.Seed(context);
     }
 }
