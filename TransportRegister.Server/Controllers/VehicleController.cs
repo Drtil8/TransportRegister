@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using TransportRegister.Server.Data;
+using TransportRegister.Server.Models;
 
 namespace TransportRegister.Server.Controllers
 {
@@ -6,11 +9,18 @@ namespace TransportRegister.Server.Controllers
     [ApiController]
     public class VehicleController : ControllerBase
     {
+        private readonly AppDbContext _context;
+
+        public VehicleController(AppDbContext context)
+        {
+            _context = context;
+        }
+        
         // GET: api/<VehicleController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<ActionResult<IEnumerable<Vehicle>>> GetCars()
         {
-            return new string[] { "value1", "value2" };
+            return await _context.Vehicles.ToListAsync();
         }
 
         // GET api/<VehicleController>/5
