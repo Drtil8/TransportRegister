@@ -1,12 +1,22 @@
+using Microsoft.AspNetCore.Identity;
 using TransportRegister.Server.Data;
+using TransportRegister.Server.Models;
 
 namespace TransportRegister.Server.Seeds;
 
-public class DbSeeder
+public static class DbSeeder
 {
-    public static void SeedAll(AppDbContext context)
+    public static async Task SeedAll(IServiceProvider serviceProvider)
     {
+        using var scope = serviceProvider.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        
+        // Synchronous seeding 
         OwnerSeed.Seed(context);
         VehicleSeed.Seed(context);
+            
+        // Asynchronous seeding
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+        await UserSeed.Seed(userManager);
     }
 }
