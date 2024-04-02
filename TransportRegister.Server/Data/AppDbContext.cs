@@ -1,15 +1,14 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TransportRegister.Server.Models;
 
 namespace TransportRegister.Server.Data;
 
-public class AppDbContext : DbContext
+public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<User>(options)
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base (options) {}
-
     public DbSet<Vehicle> Vehicles { get; set; }
     public DbSet<Owner> Owners { get; set; }
-
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -18,5 +17,14 @@ public class AppDbContext : DbContext
             .HasMany(o => o.Vehicles)
             .WithOne(v => v.Owner)
             .HasForeignKey(v => v.OwnerId);
+        
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.ToTable("Users");
+            entity.HasDiscriminator<string>("UserType")
+                .HasValue<User>("User")
+                .HasValue<Official>("Official")
+                .HasValue<Officer>("Officer");
+        });
     }
 }
