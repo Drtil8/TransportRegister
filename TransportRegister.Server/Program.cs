@@ -18,15 +18,30 @@ namespace TransportRegister.Server
             builder.Services.AddSwaggerGen();
             
             // Add in-memory database
-            builder.Services.AddDbContext<AppDbContext>(options => 
-            options.UseInMemoryDatabase("TransportRegisterDb"));
+            //builder.Services.AddDbContext<AppDbContext>(options => 
+            //options.UseInMemoryDatabase("TransportRegisterDb"));
+            
+            // MSSQL database
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             var app = builder.Build();
             
-            using (var scope = app.Services.CreateScope())
+            // For seed data use cmd: dotnet run seed
+            if (args.Length > 0 && args[0] == "seed")
             {
+                using var scope = app.Services.CreateScope();
                 var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                 DbSeeder.SeedAll(dbContext);
+                return;
+            }
+            // For database cleanup use cmd: dotnet run clear-db
+            if (args.Length > 0 && args[0] == "clear-db")
+            {
+                using var scope = app.Services.CreateScope();
+                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                DbCleaner.ClearAllData(dbContext);
+                return;
             }
 
             app.UseDefaultFiles();
