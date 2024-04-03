@@ -1,11 +1,20 @@
-﻿namespace TransportRegister.Server.Models
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace TransportRegister.Server.Models
 {
-    public class User
+    public class User : IdentityUser
     {
-        public Guid UserId { get; set; }        // todo: Map to ClaimIdentity
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
+        public bool IsActive { get; set; }
+    }
+
+    public class Official : User
+    {
+        
+    }
+
+    public class Officer : User
+    {
+        public int PersonalId { get; set; }
+        public string Rank { get; set; }
     }
 }

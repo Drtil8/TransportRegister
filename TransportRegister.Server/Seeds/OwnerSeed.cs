@@ -7,29 +7,31 @@ public class OwnerSeed
 {
     public static void Seed(AppDbContext context)
     {
-        if (!context.Owners.Any())
+        var ownersToSeed = new Owner[]
         {
-            var owner1Id = Guid.Parse("12345678-1234-1234-1234-1234567890ab");
-            var owner2Id = Guid.Parse("87654321-4321-4321-4321-ba0987654321"); 
-
-            var owner1 = new Owner
+            new()
             {
-                OwnerId = owner1Id,
+                OwnerId = Guid.Parse("12345678-1234-1234-1234-1234567890ab"),
                 FirstName = "John",
                 LastName = "Doe",
                 Email = "john.doe@example.com"
-            };
-
-            var owner2 = new Owner
+            },
+            new()
             {
-                OwnerId = owner2Id,
+                OwnerId = Guid.Parse("87654321-4321-4321-4321-ba0987654321"),
                 FirstName = "Jane",
                 LastName = "Doe",
                 Email = "jane.doe@example.com"
-            };
+            }
+        };
 
-            context.Owners.AddRange(owner1, owner2);
-            context.SaveChanges();
+        foreach (var owner in ownersToSeed)
+        {
+            if (!context.Owners.Any(o => o.OwnerId == owner.OwnerId))
+            {
+                context.Owners.Add(owner);
+            }
         }
+        context.SaveChanges();
     }
 }
