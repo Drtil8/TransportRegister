@@ -1,10 +1,12 @@
+using Microsoft.AspNetCore.Identity;
 using TransportRegister.Server.Data;
+using TransportRegister.Server.Models;
 
 namespace TransportRegister.Server.Seeds;
 
-public class DbCleaner
+public static class DbCleaner
 {
-    public static void ClearAllData(AppDbContext context)
+    public static async Task ClearAllData(AppDbContext context, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
     {
         var vehicles = context.Vehicles.ToList();
         context.Vehicles.RemoveRange(vehicles);
@@ -12,6 +14,19 @@ public class DbCleaner
         var owners = context.Owners.ToList();
         context.Owners.RemoveRange(owners);
 
-        context.SaveChanges();
+        await context.SaveChangesAsync();
+
+        var roles = roleManager.Roles.ToList();
+        foreach (var role in roles)
+        {
+            await roleManager.DeleteAsync(role);
+        }
+
+        var users = userManager.Users.ToList();
+        foreach (var user in users)
+        {
+            await userManager.DeleteAsync(user);
+        }
     }
+
 }

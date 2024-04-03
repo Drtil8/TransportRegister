@@ -1,9 +1,12 @@
-import { Component } from 'react';
+import {Component, ContextType} from 'react';
 import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import AuthContext from './../AuthContext';
 
 export class NavMenu extends Component<object, { collapsed: boolean }> {
   static displayName = NavMenu.name;
+  static contextType = AuthContext;
+  declare context: ContextType<typeof AuthContext>;
 
   constructor(props: object) {
     super(props);
@@ -21,11 +24,17 @@ export class NavMenu extends Component<object, { collapsed: boolean }> {
   }
 
   render() {
+    if (!this.context) {
+      return null;
+    }
+    const { isLoggedIn, logout } = this.context;
+
     return (
       <header>
         <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" container light>
           <NavbarBrand tag={Link} to="/">TransportRegister</NavbarBrand>
           <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
+          {isLoggedIn && (
           <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!this.state.collapsed} navbar>
             <ul className="navbar-nav flex-grow">
               <NavItem>
@@ -37,8 +46,12 @@ export class NavMenu extends Component<object, { collapsed: boolean }> {
               <NavItem>
                 <NavLink tag={Link} className="text-dark" to="/link3">Link3</NavLink>
               </NavItem>
+              <NavItem>
+                <NavLink tag={Link} className="text-dark" to="/login" onClick={logout}>Odhlásit se</NavLink>
+              </NavItem>
             </ul>
           </Collapse>
+          )}
         </Navbar>
       </header>
     );

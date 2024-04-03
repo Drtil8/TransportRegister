@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TransportRegister.Server.Data;
 
@@ -11,9 +12,11 @@ using TransportRegister.Server.Data;
 namespace TransportRegister.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240402174113_User")]
+    partial class User
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -230,11 +233,6 @@ namespace TransportRegister.Server.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("UserType")
-                        .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -245,11 +243,7 @@ namespace TransportRegister.Server.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("Users", (string)null);
-
-                    b.HasDiscriminator<string>("UserType").HasValue("User");
-
-                    b.UseTphMappingStrategy();
+                    b.ToTable("AspNetUsers", (string)null);
                 });
 
             modelBuilder.Entity("TransportRegister.Server.Models.Vehicle", b =>
@@ -275,26 +269,6 @@ namespace TransportRegister.Server.Migrations
                     b.HasIndex("OwnerId");
 
                     b.ToTable("Vehicles");
-                });
-
-            modelBuilder.Entity("TransportRegister.Server.Models.Officer", b =>
-                {
-                    b.HasBaseType("TransportRegister.Server.Models.User");
-
-                    b.Property<int>("PersonalId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Rank")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasDiscriminator().HasValue("Officer");
-                });
-
-            modelBuilder.Entity("TransportRegister.Server.Models.Official", b =>
-                {
-                    b.HasBaseType("TransportRegister.Server.Models.User");
-
-                    b.HasDiscriminator().HasValue("Official");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
