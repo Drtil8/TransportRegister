@@ -32,8 +32,15 @@ namespace TransportRegister.Server
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
             
+            // Cookies settings
             builder.Services.ConfigureApplicationCookie(options => {
                 options.LoginPath = "/login";
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.ExpireTimeSpan = TimeSpan.FromDays(2);
+                options.SlidingExpiration = true;
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             });
             
             var app = builder.Build();
@@ -54,7 +61,19 @@ namespace TransportRegister.Server
                 await DbCleaner.ClearAllData(dbContext, userManager, roleManager);
                 return;
             }
-
+            
+            // Set Cors
+            app.UseCors(corsBuilder =>
+            {
+                corsBuilder.WithOrigins(
+                        "https://localhost:5173",
+                        "http://localhost:5173")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials();
+              
+            });
+            
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
@@ -69,6 +88,7 @@ namespace TransportRegister.Server
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseCors("AllowSpecificOrigin");
 
             app.MapControllers();
 

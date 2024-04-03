@@ -16,7 +16,7 @@ public static class UserSeed
         const string officialId = "d6f46418-2c21-43f8-b167-162fb5e3a999";
         if (await userManager.FindByIdAsync(officialId) == null)
         {
-            const string officialEmail = "oficial@example.com";
+            const string officialEmail = "official@example.com";
             var officialUser = new Official()
             {
                 UserName = officialEmail,
