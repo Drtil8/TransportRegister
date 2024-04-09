@@ -1,7 +1,7 @@
-import {Component, ContextType} from 'react';
+﻿import {Component, ContextType} from 'react';
 import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import AuthContext from './../AuthContext';
+import AuthContext from '../auth/AuthContext';
 
 export class NavMenu extends Component<object, { collapsed: boolean }> {
   static displayName = NavMenu.name;

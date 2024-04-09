@@ -1,5 +1,5 @@
-import { Component } from 'react';
-import './Forecast.css';
+﻿import { Component } from 'react';
+import './styles/Forecast.css';
 
 interface IForecast {
   date: string;
@@ -7,6 +7,7 @@ interface IForecast {
   temperatureF: number;
   summary: string;
 }
+
 export class Forecast extends Component<object, { forecasts: IForecast[] | undefined }> {
   constructor(props: object) {
     super(props);
