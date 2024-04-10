@@ -7,25 +7,25 @@ public class VehicleSeed
 {
     public static void Seed(AppDbContext context)
     {
-        var vehiclesToSeed = new Vehicle[]
+        var vehiclesToSeed = new Car[]
         {
             new()
             { 
-                Make = "Toyota", 
+                Manufacturer = "Toyota", 
                 Model = "Corolla", 
                 Year = 2020, 
                 OwnerId = Guid.Parse("12345678-1234-1234-1234-1234567890ab") 
             },
             new()
-            { 
-                Make = "Honda", 
+            {
+                Manufacturer = "Honda", 
                 Model = "Civic", 
                 Year = 2019, 
                 OwnerId = Guid.Parse("87654321-4321-4321-4321-ba0987654321") 
             },
             new()
-            { 
-                Make = "Ford", 
+            {
+                Manufacturer = "Ford", 
                 Model = "Focus", 
                 Year = 2021, 
                 OwnerId = Guid.Parse("12345678-1234-1234-1234-1234567890ab")
