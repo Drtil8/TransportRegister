@@ -18,8 +18,8 @@ public abstract class Vehicle
     public ICollection<Offence> Offences { get; set; }
     public ICollection<Theft> Thefts { get; set; }
 
-    public Guid OwnerId { get; set; }
-    public Owner Owner { get; set; }
+    public Guid? OwnerId { get; set; }
+    public Owner? Owner { get; set; }
 
     public string OfficialId { get; set; }
     public Official AddedByOfficial { get; set; }
