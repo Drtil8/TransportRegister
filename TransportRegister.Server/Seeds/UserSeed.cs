@@ -19,6 +19,9 @@ public static class UserSeed
             const string officialEmail = "official@example.com";
             var officialUser = new Official()
             {
+                Id = officialId,
+                FirstName = "Petr",
+                LastName = "Èech",
                 UserName = officialEmail,
                 Email = officialEmail,
                 EmailConfirmed = true,
@@ -36,11 +39,14 @@ public static class UserSeed
             const string officerEmail = "officer@example.com";
             var officerUser = new Officer()
             {
+                Id= officerId,
+                FirstName = "Petr",
+                LastName = "Pavel",
                 UserName = officerEmail,
                 Email = officerEmail,
                 EmailConfirmed = true,
                 PersonalId = 123456789,
-                Rank = "Captain"
+                Rank = "President"
             };
 
             await userManager.CreateAsync(officerUser, "Officer123");

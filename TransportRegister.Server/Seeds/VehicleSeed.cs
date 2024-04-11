@@ -11,6 +11,7 @@ public class VehicleSeed
         {
             new()
             { 
+                VehicleId = Guid.Parse("87654321-1111-2222-3333-1234567890cd"),
                 Manufacturer = "Toyota", 
                 Model = "Corolla", 
                 Year = 2020, 

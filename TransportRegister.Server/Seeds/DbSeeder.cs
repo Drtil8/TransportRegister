@@ -14,9 +14,14 @@ public static class DbSeeder
         // Synchronous seeding 
         OwnerSeed.Seed(context);
         VehicleSeed.Seed(context);
-            
+
+
         // Asynchronous seeding
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
         await UserSeed.Seed(userManager);
+        
+        OffenceSeed.Seed(context);
+        TheftSeed.Seed(context);
+        //FineSeed.Seed(context);
     }
 }

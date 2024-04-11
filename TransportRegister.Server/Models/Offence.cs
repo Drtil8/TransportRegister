@@ -1,4 +1,5 @@
-﻿namespace TransportRegister.Server.Models
+﻿#nullable enable
+namespace TransportRegister.Server.Models
 
 {
     public class Offence
