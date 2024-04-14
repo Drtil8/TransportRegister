@@ -4,7 +4,8 @@
     {
         public Guid FineId { get; set; } = Guid.NewGuid();
         public int Amount { get; set; }     // float?
-        public DateOnly PaidOn { get; set; } // either this null or is_active
+        public bool IsActive { get; set; }
+        public DateOnly PaidOn { get; set; }
         public Guid OffenceId { get; set; }
         public Offence IssuedFor { get; set; }
     }

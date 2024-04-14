@@ -91,7 +91,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
         modelBuilder.Entity<Official>()
             .HasMany(p => p.ProcessedOffences)
             .WithOne(o => o.ProcessedByOfficial)
-            .HasForeignKey(i => i.OfficialId);
+            .HasForeignKey(i => i.OfficialId)
+            .OnDelete(DeleteBehavior.NoAction); // vraj
 
         // Officer
         modelBuilder.Entity<Officer>()

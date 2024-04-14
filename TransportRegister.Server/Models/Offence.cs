@@ -7,6 +7,7 @@ namespace TransportRegister.Server.Models
         public Guid OffenceId { get; set; } = Guid.NewGuid();
         public DateTime ReportedOn { get; set; }
         public bool IsValid { get; set; }
+        public string? Description { get; set; }
 
         public Guid? FineId { get; set; }
         public Fine? Fine { get; set; }

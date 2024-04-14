@@ -7,6 +7,7 @@ namespace TransportRegister.Server.Models
     {
         // public Guid UserId { get; set; } = Guid.NewGuid();
         public bool IsActive { get; set; }
+        public bool IsAdmin { get; set; }
 
         [Required]
         public string FirstName { get; set; }
