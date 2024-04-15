@@ -8,8 +8,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
 {
     public DbSet<Vehicle> Vehicles { get; set; }
     public DbSet<Person> Persons { get; set; }
-
     public DbSet<Owner> Owners { get; set; }
+    public DbSet<Driver> Drivers { get; set; }
     public DbSet<DriversLicense> DriversLicenses { get; set; }
     public DbSet<Fine> Fines { get; set; }
     public DbSet<LicensePlateHistory> LicensePlates { get; set; }
@@ -30,8 +30,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
         modelBuilder.Entity<Driver>()
             .HasMany(d => d.Licenses)
             .WithOne(v => v.IssuedFor)
-            .HasForeignKey(v => v.DriverId);
-            //.IsRequired(true); is it tho
+            .HasForeignKey(v => v.DriverId)
+            .IsRequired(true);
 
         // User
         modelBuilder.Entity<User>(entity =>
@@ -40,8 +40,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
             entity.HasDiscriminator<string>("UserType")
                 .HasValue<User>("User")
                 .HasValue<Official>("Official")
-                .HasValue<Officer>("Officer")
-                .HasValue<Admin>("Admin");
+                .HasValue<Officer>("Officer");
+                
         });
 
         // Vehicle
@@ -59,12 +59,14 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
         modelBuilder.Entity<Vehicle>()
             .HasMany(o => o.Offences)
             .WithOne(v => v.OffenceOnVehicle)
-            .HasForeignKey(v => v.VehicleId);
+            .HasForeignKey(v => v.VehicleId)
+            .OnDelete(DeleteBehavior.NoAction); // vraj tiež
 
         modelBuilder.Entity<Vehicle>()
             .HasMany(t => t.Thefts)
             .WithOne(v => v.StolenVehicle)
-            .HasForeignKey(i => i.VehicleId);
+            .HasForeignKey(i => i.VehicleId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         modelBuilder.Entity<Vehicle>()
             .HasMany(l => l.LicensePlates)

@@ -1,23 +1,35 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace TransportRegister.Server.Models
 {
+    [Owned] // skusiť
+    public class Address
+    {
+        public string Street { get; set; }              // tabulka adresy -- krajina, kraj, ulica, mesto, čislo domu, psč -- otestovať
+        public string City { get; set; }
+        public string State { get; set; }
+        public string Country { get; set; }
+        public int HouseNumber { get; set; }
+        public int PostalCode { get; set; }
+    }
     public abstract class Person
     {
-        public Guid PersonId { get; set; } = Guid.NewGuid();
+        public int PersonId { get; set; }
 
         [Required]
         public string FirstName { get; set; }
         [Required]
         public string LastName { get; set; }
         public string BirthNumber { get; set; }
-        public string Address { get; set; }
-        public int PostalCode { get; set; }
+
+        public Address Address { get; set; }
+        
         public DateOnly DateOfBirth { get; set; }
         public bool Sex_Male { get; set; }
         public string OfficialId { get; set; }
         public Official AddedByOfficial { get; set; }
-        public ICollection<Offence> CommitedOffences { get; set; } = new List<Offence>();
+        public ICollection<Offence> CommitedOffences { get; set; }  // TODO: zmazane new List
         public ICollection<Theft> ReportedThefts { get; set; }
 
     }
@@ -25,11 +37,11 @@ namespace TransportRegister.Server.Models
     public class Driver : Person
     {
         public string DriversLicenseNumber { get; set; }
+        [Range(0, 12)]
         public int BadPoints {  get; set; }
-        public string Signature { get; set; }        // Not sure what type
         public bool HasSuspendedLicense { get; set; }
-        public DateTime LastCrimeCommited { get; set; }
-        public DateTime DrivingSuspendedUntil { get; set; }
+        public DateTime? LastCrimeCommited { get; set; }        // is really nullable?
+        public DateTime? DrivingSuspendedUntil { get; set; }
 
         public ICollection<DriversLicense> Licenses {  get; set; }
 
@@ -37,6 +49,6 @@ namespace TransportRegister.Server.Models
 
     public class Owner : Person
     {
-        public ICollection<Vehicle> Vehicles { get; set; } = new List<Vehicle>();
+        public ICollection<Vehicle> Vehicles { get; set; } // removed = new List<Vehicle>();
     }
 }

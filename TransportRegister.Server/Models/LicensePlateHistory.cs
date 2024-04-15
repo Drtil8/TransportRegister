@@ -1,14 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace TransportRegister.Server.Models
+﻿namespace TransportRegister.Server.Models
 {
     public class LicensePlateHistory
 
     {
-        public Guid LicensePlateHistoryId { get; set; } = Guid.NewGuid();
+        public int LicensePlateHistoryId { get; set; }
         public string LicensePlate { get; set; }
         public DateTime ChangedOn { get; set; }
-        public Guid VehicleId { get; set; }
+        public int VehicleId { get; set; }
         public Vehicle Vehicle { get; set; }
     }
 }

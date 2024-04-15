@@ -1,6 +1,6 @@
 ﻿namespace TransportRegister.Server.Models
 {
-    public enum VehicleClass
+    public enum VehicleType
     {
         Car,
         Motorcycle,
@@ -10,12 +10,12 @@
     }
     public class DriversLicense
     {
-        public Guid DriversLicenseId { get; set; } = Guid.NewGuid();
+        public int DriversLicenseId { get; set; }
         public DateOnly IssuedOn { get; set; }
         public string Description { get; set; }
 
-        public VehicleClass VehicleClass { get; set; }
-        public Guid DriverId { get; set; }
+        public VehicleType VehicleType { get; set; }
+        public int DriverId { get; set; }
         public Driver IssuedFor { get; set; }
     }
 }

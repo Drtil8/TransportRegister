@@ -6,27 +6,13 @@ namespace TransportRegister.Server.Seeds;
 
 public static class DbCleaner
 {
-    public static async Task ClearAllData(AppDbContext context, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+    /// <summary>
+    /// Deletes the entire database
+    /// </summary>
+    /// <param name="context">DbContext</param>
+    public static void DeleteEntireDb(AppDbContext context)
     {
-        var vehicles = context.Vehicles.ToList();
-        context.Vehicles.RemoveRange(vehicles);
-
-        var owners = context.Owners.ToList();
-        context.Owners.RemoveRange(owners);
-
-        await context.SaveChangesAsync();
-
-        var roles = roleManager.Roles.ToList();
-        foreach (var role in roles)
-        {
-            await roleManager.DeleteAsync(role);
-        }
-
-        var users = userManager.Users.ToList();
-        foreach (var user in users)
-        {
-            await userManager.DeleteAsync(user);
-        }
+        context.Database.EnsureDeleted();
     }
 
 }

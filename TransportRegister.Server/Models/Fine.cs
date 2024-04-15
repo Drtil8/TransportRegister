@@ -2,11 +2,11 @@
 {
     public class Fine
     {
-        public Guid FineId { get; set; } = Guid.NewGuid();
-        public int Amount { get; set; }     // float?
+        public int FineId { get; set; }
+        public double Amount { get; set; } 
         public bool IsActive { get; set; }
         public DateOnly PaidOn { get; set; }
-        public Guid OffenceId { get; set; }
+        public int OffenceId { get; set; }
         public Offence IssuedFor { get; set; }
     }
 }

@@ -11,7 +11,8 @@ namespace TransportRegister.Server.Seeds
             {
                 new()
                 {
-                    OffenceId = Guid.Parse("87654321-1111-2222-3333-1234567890aa"),
+                    FineId = 1,
+                    OffenceId = 1,
                     Amount= 5000,
                     PaidOn = DateOnly.Parse("2024-04-11"),
                     
@@ -21,14 +22,14 @@ namespace TransportRegister.Server.Seeds
             foreach (var fine in finesToSeed)
             {
                 context.Fines.Add(fine);
-                context.SaveChanges(); // Save changes after adding each fine
+                context.SaveChanges(); 
 
-                // Find the corresponding offence and update its FineId
-                var offence = context.Offences.FirstOrDefault(o => o.OffenceId == Guid.Parse("87654321-1111-2222-3333-1234567890aa"));
+                
+                var offence = context.Offences.FirstOrDefault(o => o.OffenceId == 1);
                 if (offence != null)
                 {
                     offence.FineId = fine.FineId;
-                    context.SaveChanges(); // Save changes after updating the offence
+                    context.SaveChanges(); 
                 }
             }
         }

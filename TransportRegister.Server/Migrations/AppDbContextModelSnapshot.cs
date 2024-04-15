@@ -157,20 +157,22 @@ namespace TransportRegister.Server.Migrations
 
             modelBuilder.Entity("TransportRegister.Server.Models.DriversLicense", b =>
                 {
-                    b.Property<Guid>("DriversLicenseId")
+                    b.Property<int>("DriversLicenseId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DriversLicenseId"));
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("DriverId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("DriverId")
+                        .HasColumnType("int");
 
                     b.Property<DateOnly>("IssuedOn")
                         .HasColumnType("date");
 
-                    b.Property<int>("VehicleClass")
+                    b.Property<int>("VehicleType")
                         .HasColumnType("int");
 
                     b.HasKey("DriversLicenseId");
@@ -182,17 +184,17 @@ namespace TransportRegister.Server.Migrations
 
             modelBuilder.Entity("TransportRegister.Server.Models.Fine", b =>
                 {
-                    b.Property<Guid>("FineId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Amount")
+                    b.Property<int>("FineId")
                         .HasColumnType("int");
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("OffenceId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("OffenceId")
+                        .HasColumnType("int");
 
                     b.Property<DateOnly>("PaidOn")
                         .HasColumnType("date");
@@ -204,9 +206,11 @@ namespace TransportRegister.Server.Migrations
 
             modelBuilder.Entity("TransportRegister.Server.Models.LicensePlateHistory", b =>
                 {
-                    b.Property<Guid>("LicensePlateHistoryId")
+                    b.Property<int>("LicensePlateHistoryId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LicensePlateHistoryId"));
 
                     b.Property<DateTime>("ChangedOn")
                         .HasColumnType("datetime2");
@@ -214,8 +218,8 @@ namespace TransportRegister.Server.Migrations
                     b.Property<string>("LicensePlate")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("VehicleId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("VehicleId")
+                        .HasColumnType("int");
 
                     b.HasKey("LicensePlateHistoryId");
 
@@ -226,35 +230,35 @@ namespace TransportRegister.Server.Migrations
 
             modelBuilder.Entity("TransportRegister.Server.Models.Offence", b =>
                 {
-                    b.Property<Guid>("OffenceId")
+                    b.Property<int>("OffenceId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OffenceId"));
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("FineId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int?>("FineId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsValid")
                         .HasColumnType("bit");
 
                     b.Property<string>("OfficerId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("OfficialId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid>("PersonId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("PersonId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("ReportedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("VehicleId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("VehicleId")
+                        .HasColumnType("int");
 
                     b.HasKey("OffenceId");
 
@@ -271,12 +275,11 @@ namespace TransportRegister.Server.Migrations
 
             modelBuilder.Entity("TransportRegister.Server.Models.Person", b =>
                 {
-                    b.Property<Guid>("PersonId")
+                    b.Property<int>("PersonId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
 
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PersonId"));
 
                     b.Property<string>("BirthNumber")
                         .HasColumnType("nvarchar(max)");
@@ -300,9 +303,6 @@ namespace TransportRegister.Server.Migrations
                     b.Property<string>("OfficialId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("PostalCode")
-                        .HasColumnType("int");
-
                     b.Property<bool>("Sex_Male")
                         .HasColumnType("bit");
 
@@ -319,14 +319,16 @@ namespace TransportRegister.Server.Migrations
 
             modelBuilder.Entity("TransportRegister.Server.Models.Theft", b =>
                 {
-                    b.Property<Guid>("TheftId")
+                    b.Property<int>("TheftId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TheftId"));
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("FoundOn")
+                    b.Property<DateTime?>("FoundOn")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("OfficialId")
@@ -338,8 +340,8 @@ namespace TransportRegister.Server.Migrations
                     b.Property<string>("ReportingOfficerId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid>("ReportingPersonId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("ReportingPersonId")
+                        .HasColumnType("int");
 
                     b.Property<string>("ResolvingOfficerId")
                         .HasColumnType("nvarchar(450)");
@@ -347,8 +349,8 @@ namespace TransportRegister.Server.Migrations
                     b.Property<DateTime>("StolenOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("VehicleId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("VehicleId")
+                        .HasColumnType("int");
 
                     b.HasKey("TheftId");
 
@@ -373,9 +375,6 @@ namespace TransportRegister.Server.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<string>("AccountState")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -397,12 +396,12 @@ namespace TransportRegister.Server.Migrations
                     b.Property<bool>("IsAdmin")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsValid")
+                        .HasColumnType("bit");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("LevelOfAuthority")
-                        .HasColumnType("int");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -428,9 +427,6 @@ namespace TransportRegister.Server.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Telephone")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("TwoFactorEnabled")
@@ -464,23 +460,31 @@ namespace TransportRegister.Server.Migrations
 
             modelBuilder.Entity("TransportRegister.Server.Models.Vehicle", b =>
                 {
-                    b.Property<Guid>("VehicleId")
+                    b.Property<int>("VehicleId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VehicleId"));
 
                     b.Property<string>("Color")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("EngineVolume_CM3")
-                        .HasColumnType("int");
+                    b.Property<double>("EngineVolume_CM3")
+                        .HasColumnType("float");
 
-                    b.Property<string>("Horsepower_KW")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double>("Height_CM")
+                        .HasColumnType("float");
 
-                    b.Property<int>("Length_CM")
-                        .HasColumnType("int");
+                    b.Property<double>("Horsepower_KW")
+                        .HasColumnType("float");
 
-                    b.Property<int>("LoadCapacity")
+                    b.Property<double>("Length_CM")
+                        .HasColumnType("float");
+
+                    b.Property<double>("LoadCapacity_KG")
+                        .HasColumnType("float");
+
+                    b.Property<int>("ManufacturedYear")
                         .HasColumnType("int");
 
                     b.Property<string>("Manufacturer")
@@ -492,8 +496,8 @@ namespace TransportRegister.Server.Migrations
                     b.Property<string>("OfficialId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid?>("OwnerId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("OwnerId")
+                        .HasColumnType("int");
 
                     b.Property<string>("VIN")
                         .HasColumnType("nvarchar(max)");
@@ -503,11 +507,8 @@ namespace TransportRegister.Server.Migrations
                         .HasMaxLength(13)
                         .HasColumnType("nvarchar(13)");
 
-                    b.Property<int>("Width_CM3")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Year")
-                        .HasColumnType("int");
+                    b.Property<double>("Width_CM")
+                        .HasColumnType("float");
 
                     b.HasKey("VehicleId");
 
@@ -532,17 +533,14 @@ namespace TransportRegister.Server.Migrations
                     b.Property<string>("DriversLicenseNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("DrivingSuspendedUntil")
+                    b.Property<DateTime?>("DrivingSuspendedUntil")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("HasSuspendedLicense")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("LastCrimeCommited")
+                    b.Property<DateTime?>("LastCrimeCommited")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Signature")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("Driver");
                 });
@@ -591,6 +589,9 @@ namespace TransportRegister.Server.Migrations
                 {
                     b.HasBaseType("TransportRegister.Server.Models.Vehicle");
 
+                    b.Property<int>("NumberOfDoors")
+                        .HasColumnType("int");
+
                     b.HasDiscriminator().HasValue("Car");
                 });
 
@@ -609,13 +610,6 @@ namespace TransportRegister.Server.Migrations
                     b.HasBaseType("TransportRegister.Server.Models.Vehicle");
 
                     b.HasDiscriminator().HasValue("Truck");
-                });
-
-            modelBuilder.Entity("TransportRegister.Server.Models.Admin", b =>
-                {
-                    b.HasBaseType("TransportRegister.Server.Models.Official");
-
-                    b.HasDiscriminator().HasValue("Admin");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -706,15 +700,12 @@ namespace TransportRegister.Server.Migrations
                 {
                     b.HasOne("TransportRegister.Server.Models.Officer", "ReportedByOfficer")
                         .WithMany("ReportedOffences")
-                        .HasForeignKey("OfficerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OfficerId");
 
                     b.HasOne("TransportRegister.Server.Models.Official", "ProcessedByOfficial")
                         .WithMany("ProcessedOffences")
                         .HasForeignKey("OfficialId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("TransportRegister.Server.Models.Person", "CommitedBy")
                         .WithMany("CommitedOffences")
@@ -725,7 +716,7 @@ namespace TransportRegister.Server.Migrations
                     b.HasOne("TransportRegister.Server.Models.Vehicle", "OffenceOnVehicle")
                         .WithMany("Offences")
                         .HasForeignKey("VehicleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("CommitedBy");
@@ -743,7 +734,40 @@ namespace TransportRegister.Server.Migrations
                         .WithMany("AddedPersons")
                         .HasForeignKey("OfficialId");
 
+                    b.OwnsOne("TransportRegister.Server.Models.Address", "Address", b1 =>
+                        {
+                            b1.Property<int>("PersonId")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("City")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Country")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<int>("HouseNumber")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("PostalCode")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("State")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Street")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("PersonId");
+
+                            b1.ToTable("Persons");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PersonId");
+                        });
+
                     b.Navigation("AddedByOfficial");
+
+                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("TransportRegister.Server.Models.Theft", b =>
@@ -769,7 +793,7 @@ namespace TransportRegister.Server.Migrations
                     b.HasOne("TransportRegister.Server.Models.Vehicle", "StolenVehicle")
                         .WithMany("Thefts")
                         .HasForeignKey("VehicleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("ProcessedByOfficial");
@@ -791,7 +815,9 @@ namespace TransportRegister.Server.Migrations
 
                     b.HasOne("TransportRegister.Server.Models.Owner", "Owner")
                         .WithMany("Vehicles")
-                        .HasForeignKey("OwnerId");
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("AddedByOfficial");
 

@@ -6,18 +6,15 @@ namespace TransportRegister.Server.Models
     public class User : IdentityUser
     {
         // public Guid UserId { get; set; } = Guid.NewGuid();
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } 
+        public bool IsValid { get; set; }
         public bool IsAdmin { get; set; }
 
         [Required]
         public string FirstName { get; set; }
         [Required]
         public string LastName { get; set; }
-        public string Telephone { get; set; }
-        public string AccountState { get; set; }
-        public int LevelOfAuthority { get; set; }
-
-
+        
     }
 
     public class Official : User
@@ -27,11 +24,6 @@ namespace TransportRegister.Server.Models
         public ICollection<Vehicle> AddedVehicles { get; set; }
         public ICollection<Person> AddedPersons { get; set; }
 
-
-    }
-
-    public class Admin : Official
-    {
 
     }
 
