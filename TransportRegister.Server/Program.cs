@@ -44,24 +44,26 @@ namespace TransportRegister.Server
             });
             
             var app = builder.Build();
-            
+
             // For seed data use cmd: dotnet run seed
-            if (args.Length > 0 && args[0] == "seed")
+            if (args.Length > 0)
             {
-                await DbSeeder.SeedAll(app.Services);
-                return;
+                if (args[0] == "seed")
+                {
+                    // For seed data use cmd: dotnet run seed
+                    await DbSeeder.SeedAll(app.Services);
+                    return;
+                }
+                else if (args[0] == "delete-db")
+                {
+                    // For database delete use cmd: dotnet run delete-db
+                    using var scope = app.Services.CreateScope();
+                    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                    DbCleaner.DeleteEntireDb(dbContext);
+                    return;
+                }
             }
-            // For database cleanup use cmd: dotnet run clear-db
-            if (args.Length > 0 && args[0] == "clear-db")
-            {
-                using var scope = app.Services.CreateScope();
-                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-                await DbCleaner.ClearAllData(dbContext, userManager, roleManager);
-                return;
-            }
-            
+
             // Set Cors
             app.UseCors(corsBuilder =>
             {

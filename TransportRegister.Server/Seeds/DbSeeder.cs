@@ -10,13 +10,20 @@ public static class DbSeeder
     {
         using var scope = serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        
-        // Synchronous seeding 
-        OwnerSeed.Seed(context);
-        VehicleSeed.Seed(context);
-            
+
+
+
         // Asynchronous seeding
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
         await UserSeed.Seed(userManager);
+                
+        // Synchronous seeding 
+        PersonSeed.Seed(context);
+        VehicleSeed.Seed(context);
+        OffenceSeed.Seed(context);
+        TheftSeed.Seed(context);
+        FineSeed.Seed(context);
+        DriversLicenseSeed.Seed(context);
+        LicensePlateHistorySeed.Seed(context);
     }
 }
