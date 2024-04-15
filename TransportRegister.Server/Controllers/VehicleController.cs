@@ -15,7 +15,7 @@ namespace TransportRegister.Server.Controllers
         {
             _context = context;
         }
-        
+
         // GET: api/<VehicleController>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Vehicle>>> GetCars()

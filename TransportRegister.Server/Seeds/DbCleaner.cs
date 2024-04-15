@@ -1,6 +1,4 @@
-using Microsoft.AspNetCore.Identity;
 using TransportRegister.Server.Data;
-using TransportRegister.Server.Models;
 
 namespace TransportRegister.Server.Seeds;
 
@@ -14,5 +12,4 @@ public static class DbCleaner
     {
         context.Database.EnsureDeleted();
     }
-
 }

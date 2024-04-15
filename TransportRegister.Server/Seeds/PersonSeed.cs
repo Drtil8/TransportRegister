@@ -24,11 +24,9 @@ public class PersonSeed
                     PostalCode = 12345
                 },
                 OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999"
-
             },
             new()
             {
-
                 FirstName = "Jane",
                 LastName = "Doe",
                 BirthNumber = "ABCD11111",
@@ -46,18 +44,16 @@ public class PersonSeed
         };
 
         var driversToSeed = new Driver[]
-{
+        {
             new()
             {
                 FirstName = "Joseph",
                 LastName = "Driver",
-
-                DriversLicenseNumber="ABC1234",
+                BirthNumber = "ABCD99999",
+                DriversLicenseNumber ="ABC1234",
                 BadPoints = 5,
                 HasSuspendedLicense = false,
                 LastCrimeCommited = DateTime.Now,
-
-                BirthNumber = "ABCD99999",
                 Address = new Address
                 {
                     Street = "Bad Street",

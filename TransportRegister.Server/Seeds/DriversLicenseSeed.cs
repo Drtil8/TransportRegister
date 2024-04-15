@@ -11,19 +11,16 @@ namespace TransportRegister.Server.Seeds
             {
                 new()
                 {
-
                     VehicleType = VehicleType.Bus,
                     DriverId = 1,
                     Description = "Vodičák na autobus",
                     IssuedOn = DateOnly.Parse("2024-04-11"),
-
-
                 }
             };
             foreach (var license in licensesToSeed)
             {
                 context.DriversLicenses.Add(license);
-                context.SaveChanges(); 
+                context.SaveChanges();
             }
         }
 

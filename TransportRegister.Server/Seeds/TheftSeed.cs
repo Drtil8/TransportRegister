@@ -14,16 +14,13 @@ namespace TransportRegister.Server.Seeds
                     StolenOn = DateTime.Now,
                     ReportedOn = DateTime.Now,
                     FoundOn = DateTime.Now,
-                    Description= "Krádež motorového vozidla",
+                    Description = "Krádež motorového vozidla",
 
                     VehicleId = 1,
                     ReportingOfficerId = "39123a3c-3ce3-4bcc-8887-eb7d8e975ea8",
                     ResolvingOfficerId = "39123a3c-3ce3-4bcc-8887-eb7d8e975ea8",
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    ReportingPersonId= 1
-
-
-
+                    ReportingPersonId = 1
                 }
             };
             foreach (var theft in theftsToSeed)

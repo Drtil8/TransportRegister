@@ -41,15 +41,14 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
                 .HasValue<User>("User")
                 .HasValue<Official>("Official")
                 .HasValue<Officer>("Officer");
-                
         });
 
         // Vehicle
         modelBuilder.Entity<Vehicle>(entity =>
         {
             entity.ToTable("Vehicles");
-            entity.HasDiscriminator<string>("VehicleType") 
-                .HasValue<Vehicle>("VehicleBase") 
+            entity.HasDiscriminator<string>("VehicleType")
+                .HasValue<Vehicle>("VehicleBase")
                 .HasValue<Car>("Car")
                 .HasValue<Truck>("Truck")
                 .HasValue<Motorcycle>("Motorcycle")
@@ -60,7 +59,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
             .HasMany(o => o.Offences)
             .WithOne(v => v.OffenceOnVehicle)
             .HasForeignKey(v => v.VehicleId)
-            .OnDelete(DeleteBehavior.NoAction); // vraj tiež
+            .OnDelete(DeleteBehavior.NoAction);
 
         modelBuilder.Entity<Vehicle>()
             .HasMany(t => t.Thefts)
@@ -73,8 +72,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
             .WithOne(v => v.Vehicle)
             .HasForeignKey(i => i.VehicleId);
 
-
-        // Official 
+        // Official
         modelBuilder.Entity<Official>()
             .HasMany(a => a.AddedVehicles)
             .WithOne(o => o.AddedByOfficial)
@@ -94,7 +92,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
             .HasMany(p => p.ProcessedOffences)
             .WithOne(o => o.ProcessedByOfficial)
             .HasForeignKey(i => i.OfficialId)
-            .OnDelete(DeleteBehavior.NoAction); // vraj
+            .OnDelete(DeleteBehavior.NoAction);
 
         // Officer
         modelBuilder.Entity<Officer>()
@@ -128,7 +126,5 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
             .HasOne(o => o.Fine)
             .WithOne(c => c.IssuedFor)
             .HasForeignKey<Fine>(i => i.FineId);
-
-
     }
 }

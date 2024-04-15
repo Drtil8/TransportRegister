@@ -11,13 +11,12 @@ namespace TransportRegister.Server.Seeds
                 new()
                 {
                     ReportedOn = DateTime.Now,
-                    IsValid= true,
+                    IsValid = true,
                     FineId = null,
                     VehicleId =1,
                     OfficerId = "39123a3c-3ce3-4bcc-8887-eb7d8e975ea8",
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    PersonId= 2
-
+                    PersonId = 2
                 }
             };
             foreach (var offence in offencesToSeed)

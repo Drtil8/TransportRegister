@@ -69,7 +69,7 @@ public static class UserSeed
             const string officerTelephone = "+420 123 456";
             var officerUser = new Officer()
             {
-                Id= officerId,
+                Id = officerId,
                 FirstName = "Petr",
                 LastName = "Pavel",
                 UserName = officerEmail,

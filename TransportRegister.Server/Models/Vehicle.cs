@@ -13,17 +13,15 @@ public abstract class Vehicle
     public double Length_CM { get; set; }
     public double Width_CM { get; set; }
     public double Height_CM { get; set; }
-    public double LoadCapacity_KG {  get; set; }
+    public double LoadCapacity_KG { get; set; }
 
+    public int OwnerId { get; set; }            // TODO: owner == štát (komunizmus !!)
+    public Owner Owner { get; set; }
+    public string OfficialId { get; set; }
+    public Official AddedByOfficial { get; set; }
     public ICollection<LicensePlateHistory> LicensePlates { get; set; }
     public ICollection<Offence> Offences { get; set; }
     public ICollection<Theft> Thefts { get; set; }
-
-    public int OwnerId { get; set; }            // owner == štát (komunizmus !!)
-    public Owner Owner { get; set; }
-
-    public string OfficialId { get; set; }
-    public Official AddedByOfficial { get; set; }
 }
 
 public class Car : Vehicle
@@ -33,7 +31,6 @@ public class Car : Vehicle
 
 public class Truck : Vehicle
 {
-
 }
 
 public class Motorcycle : Vehicle

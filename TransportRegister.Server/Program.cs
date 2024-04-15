@@ -18,22 +18,23 @@ namespace TransportRegister.Server
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            
+
             // Add in-memory database
             //builder.Services.AddDbContext<AppDbContext>(options => 
             //options.UseInMemoryDatabase("TransportRegisterDb"));
-            
+
             // MSSQL database
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-            
+
             // User authentication
             builder.Services.AddIdentity<User, IdentityRole>(IdentityConfiguration.ConfigureIdentityOptions)
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
-            
+
             // Cookies settings
-            builder.Services.ConfigureApplicationCookie(options => {
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
                 options.LoginPath = "/login";
                 options.Cookie.HttpOnly = true;
                 options.Cookie.SameSite = SameSiteMode.None;
@@ -42,7 +43,7 @@ namespace TransportRegister.Server
                 options.Cookie.SameSite = SameSiteMode.None;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             });
-            
+
             var app = builder.Build();
 
             // For seed data use cmd: dotnet run seed
@@ -73,9 +74,8 @@ namespace TransportRegister.Server
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials();
-              
             });
-            
+
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
@@ -95,8 +95,7 @@ namespace TransportRegister.Server
             app.MapControllers();
 
             app.MapFallbackToFile("/index.html");
-    
-            
+
             app.Run();
         }
     }

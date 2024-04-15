@@ -10,13 +10,13 @@ public class VehicleSeed
         var carsToSeed = new Car[]
         {
             new()
-            { 
+            {
                 VIN = "TOY123456T",
-                Manufacturer = "Toyota", 
-                Model = "Corolla", 
+                Manufacturer = "Toyota",
+                Model = "Corolla",
                 Horsepower_KW = 100.0,
                 EngineVolume_CM3 = 2000.0,
-                ManufacturedYear = 2020, 
+                ManufacturedYear = 2020,
                 Color = "Èierna metalíza",
                 Length_CM = 437.0,
                 Width_CM = 179.0,
@@ -25,7 +25,6 @@ public class VehicleSeed
                 NumberOfDoors = 5,
                 OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999"
             }
-            
         };
         var motorcyclesToSeed = new Motorcycle[]
         {

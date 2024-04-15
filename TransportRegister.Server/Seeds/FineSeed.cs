@@ -15,21 +15,18 @@ namespace TransportRegister.Server.Seeds
                     OffenceId = 1,
                     Amount= 5000,
                     PaidOn = DateOnly.Parse("2024-04-11"),
-                    
-
                 }
             };
             foreach (var fine in finesToSeed)
             {
                 context.Fines.Add(fine);
-                context.SaveChanges(); 
+                context.SaveChanges();
 
-                
                 var offence = context.Offences.FirstOrDefault(o => o.OffenceId == 1);
                 if (offence != null)
                 {
                     offence.FineId = fine.FineId;
-                    context.SaveChanges(); 
+                    context.SaveChanges();
                 }
             }
         }

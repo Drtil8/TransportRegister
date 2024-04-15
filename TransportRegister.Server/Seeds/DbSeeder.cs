@@ -11,13 +11,11 @@ public static class DbSeeder
         using var scope = serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-
-
         // Asynchronous seeding
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
         await UserSeed.Seed(userManager);
-                
-        // Synchronous seeding 
+
+        // Synchronous seeding
         PersonSeed.Seed(context);
         VehicleSeed.Seed(context);
         OffenceSeed.Seed(context);

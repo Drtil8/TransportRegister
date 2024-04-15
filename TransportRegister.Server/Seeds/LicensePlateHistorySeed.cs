@@ -14,14 +14,12 @@ namespace TransportRegister.Server.Seeds
                     VehicleId= 1,
                     LicensePlate = "NR123RN",
                     ChangedOn = DateTime.Now,
-
                 }
             };
             foreach (var licensePlate in platesToSeed)
             {
                 context.LicensePlates.Add(licensePlate);
                 context.SaveChanges();
-
             }
         }
     }
