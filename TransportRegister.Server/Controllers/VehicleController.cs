@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TransportRegister.Server.DTOs._Transformers;
 using TransportRegister.Server.DTOs.LicensePlateHistoryDTOs;
 using TransportRegister.Server.DTOs.VehicleDTOs;
 using TransportRegister.Server.Models;
@@ -29,9 +28,9 @@ namespace TransportRegister.Server.Controllers
         }
 
         [HttpGet("{vehicleId}")]
-        public async Task<ActionResult<VehicleDto>> GetVehicle(int vehicleId)
+        public async Task<ActionResult<VehicleDto>> GetVehicleById(int vehicleId)
         {
-            Vehicle vehicle = await _vehicleRepository.GetVehicleAsync(vehicleId);
+            Vehicle vehicle = await _vehicleRepository.GetVehicleByIdAsync(vehicleId);
             if (vehicle == null)
                 return NotFound();
             
@@ -72,7 +71,7 @@ namespace TransportRegister.Server.Controllers
         [HttpDelete("{vehicleId}")]
         public async Task<IActionResult> DeleteVehicle(int vehicleId)
         {
-            Vehicle vehicleExists = await _vehicleRepository.GetVehicleAsync(vehicleId);
+            Vehicle vehicleExists = await _vehicleRepository.GetVehicleByIdAsync(vehicleId);
             if (vehicleExists == null)
             {
                 return NotFound();

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using TransportRegister.Server.Configurations;
 using TransportRegister.Server.Data;
-using TransportRegister.Server.DTOs._Convertors;
+using TransportRegister.Server.DTOs.VehicleDTOs;
 using TransportRegister.Server.Models;
 using TransportRegister.Server.Repositories;
 using TransportRegister.Server.Repositories.VehicleRepository;

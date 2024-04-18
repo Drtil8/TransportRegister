@@ -1,7 +1,6 @@
-using TransportRegister.Server.DTOs.VehicleDTOs;
 using TransportRegister.Server.Models;
 
-namespace TransportRegister.Server.DTOs._Transformers
+namespace TransportRegister.Server.DTOs.VehicleDTOs
 {
     public abstract class VehicleDtoTransformer
     {

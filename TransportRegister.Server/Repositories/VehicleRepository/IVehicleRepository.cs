@@ -7,7 +7,7 @@ namespace TransportRegister.Server.Repositories.VehicleRepository
     {
         Task<List<string>> GetVehicleTypesAsync();
         Task<List<LicensePlateHistoryDto>> GetLicensePlateHistoryAsync(int vehicleId);
-        Task<Vehicle> GetVehicleAsync(int vehicleId);
+        Task<Vehicle> GetVehicleByIdAsync(int vehicleId);
         Task DeleteVehicleAsync(int vehicleId);
         Task SaveVehicleAsync(Vehicle vehicle);
     }

@@ -39,7 +39,7 @@ namespace TransportRegister.Server.Repositories.VehicleRepository
                 .ToListAsync();
         }
         
-        public async Task<Vehicle> GetVehicleAsync(int vehicleId)
+        public async Task<Vehicle> GetVehicleByIdAsync(int vehicleId)
         {
             return await _context.Vehicles
                 .Include(v => v.LicensePlates)
@@ -47,7 +47,7 @@ namespace TransportRegister.Server.Repositories.VehicleRepository
                 .Include(v => v.Thefts)
                 .FirstOrDefaultAsync(v => v.VehicleId == vehicleId);
         }
-
+        
         public async Task SaveVehicleAsync(Vehicle vehicle)
         {
             if (vehicle.VehicleId == 0)

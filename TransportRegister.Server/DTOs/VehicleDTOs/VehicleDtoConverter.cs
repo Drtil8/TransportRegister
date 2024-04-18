@@ -1,8 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using TransportRegister.Server.DTOs.VehicleDTOs;
 
-namespace TransportRegister.Server.DTOs._Convertors
+namespace TransportRegister.Server.DTOs.VehicleDTOs
 {
     public class VehicleDtoConverter : JsonConverter<VehicleDto>
     {
