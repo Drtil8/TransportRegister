@@ -1,51 +1,98 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using TransportRegister.Server.Data;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using TransportRegister.Server.DTOs._Transformers;
+using TransportRegister.Server.DTOs.LicensePlateHistoryDTOs;
+using TransportRegister.Server.DTOs.VehicleDTOs;
 using TransportRegister.Server.Models;
+using TransportRegister.Server.Repositories.VehicleRepository;
 
 namespace TransportRegister.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize]
     public class VehicleController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IVehicleRepository _vehicleRepository;
 
-        public VehicleController(AppDbContext context)
+        public VehicleController(IVehicleRepository vehicleRepository)
         {
-            _context = context;
+            _vehicleRepository = vehicleRepository;
+        }
+        
+        [HttpGet("VehicleTypes")]
+        public async Task<ActionResult<List<string>>> GetVehicleTypes()
+        {
+            List<string> vehicleTypes = await _vehicleRepository.GetVehicleTypesAsync();
+
+            return Ok(vehicleTypes);
         }
 
-        // GET: api/<VehicleController>
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Vehicle>>> GetCars()
+        [HttpGet("{vehicleId}")]
+        public async Task<ActionResult<VehicleDto>> GetVehicle(int vehicleId)
         {
-            return await _context.Vehicles.ToListAsync();
+            Vehicle vehicle = await _vehicleRepository.GetVehicleAsync(vehicleId);
+            if (vehicle == null)
+                return NotFound();
+            
+            VehicleDto vehicleDto = VehicleDtoTransformer.TransformToDto(vehicle);
+            if (vehicleDto == null)
+                return NotFound("Vehicle type is not supported.");
+
+            return Ok(vehicleDto);
         }
 
-        // GET api/<VehicleController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/<VehicleController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<ActionResult<VehicleDto>> SaveVehicle([FromBody] VehicleDto vehicleDto)
         {
-        }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            
+            // TODO kontrola zda daný Owner a Official existují
+            
+            Vehicle vehicle = VehicleDtoTransformer.TransformToEntity(vehicleDto);
+            if (vehicle == null)
+            {
+                return BadRequest("Invalid vehicle data.");
+            }
 
-        // PUT api/<VehicleController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+            await _vehicleRepository.SaveVehicleAsync(vehicle);
 
-        // DELETE api/<VehicleController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+            VehicleDto updatedDto = VehicleDtoTransformer.TransformToDto(vehicle);
+            if (updatedDto == null)
+            {
+                return NotFound("Failed to update vehicle data.");
+            }
+
+            return Ok(updatedDto);
+        }
+        
+        [HttpDelete("{vehicleId}")]
+        public async Task<IActionResult> DeleteVehicle(int vehicleId)
         {
+            Vehicle vehicleExists = await _vehicleRepository.GetVehicleAsync(vehicleId);
+            if (vehicleExists == null)
+            {
+                return NotFound();
+            }
+
+            await _vehicleRepository.DeleteVehicleAsync(vehicleId);
+            return NoContent();
+        }
+        
+        [HttpGet("LicensePlateHistory/{id}")]
+        public async Task<ActionResult<List<LicensePlateHistoryDto>>> GetLicensePlateHistory(int id)
+        {
+            List<LicensePlateHistoryDto> licensePlateHistory = await _vehicleRepository.GetLicensePlateHistoryAsync(id);
+            // TODO check if it's useful
+            // if (licensePlateHistory == null || licensePlateHistory.Count == 0)
+            // {
+            //     return NotFound($"No license plate history found for vehicle with ID {id}.");
+            // }
+
+            return Ok(licensePlateHistory);
         }
     }
 }

@@ -1,8 +1,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 using TransportRegister.Server.Configurations;
 using TransportRegister.Server.Data;
+using TransportRegister.Server.DTOs._Convertors;
 using TransportRegister.Server.Models;
+using TransportRegister.Server.Repositories;
+using TransportRegister.Server.Repositories.VehicleRepository;
 using TransportRegister.Server.Seeds;
 
 namespace TransportRegister.Server
@@ -31,7 +35,18 @@ namespace TransportRegister.Server
             builder.Services.AddIdentity<User, IdentityRole>(IdentityConfiguration.ConfigureIdentityOptions)
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
-
+            
+            // Repositories
+            builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
+            
+            // Convertors
+            builder.Services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new VehicleDtoConverter());
+                // Preventing cyclic dependencies
+                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+            });
+            
             // Cookies settings
             builder.Services.ConfigureApplicationCookie(options =>
             {
