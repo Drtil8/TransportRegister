@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using TransportRegister.Server.ViewModels;
 using TransportRegister.Server.Models;
+using TransportRegister.Server.ViewModels;
 
 namespace TransportRegister.Server.Controllers;
 
@@ -15,7 +15,7 @@ public class AccountController : ControllerBase
     {
         _signInManager = signInManager;
     }
-    
+
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginViewModel model)
     {
@@ -33,18 +33,18 @@ public class AccountController : ControllerBase
         }
         return BadRequest(ModelState);
     }
-    
+
     [HttpPost("logout")]
     public async Task<IActionResult> Logout()
     {
         await _signInManager.SignOutAsync();
         return Ok();
     }
-    
+
     [HttpGet("IsLoggedIn")]
     public IActionResult IsLoggedIn()
     {
         return Ok(new { IsLoggedIn = User.Identity is { IsAuthenticated: true } });
     }
-    
+
 }

@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "run-script-os": "^1.1.6"
+  },
+  "dependencies": {
+    "typescript": "^5.4.4"
   }
 }

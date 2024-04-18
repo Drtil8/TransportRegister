@@ -1,0 +1,19 @@
+﻿# IsRoot
+root = true
+
+# All files
+[*.*]
+# The encoding of the file for support of czech language
+charset = utf-8-bom
+
+
+# Typescript files
+[*.{ts,tsx}]
+# Indentation and spacing
+indent_style = space
+indent_size = 2
+tab_width = 2
+
+# New line preferences
+end_of_line = crlf
+insert_final_newline = true
