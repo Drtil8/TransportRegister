@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 interface AuthContextType {
   isLoggedIn: boolean;
   isLoading: boolean;
+  email: string;
   login: (email: string, password: string, rememberMe: boolean) => Promise<void>;
   logout: () => void;
 }
@@ -19,6 +20,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
+  const [email, setEmail] = useState('abc');   // TODO: fix saving data when refresh
 
   useEffect(() => {
     setIsLoading(true);
@@ -59,6 +61,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     if (response.ok) {
       setIsLoggedIn(true);
+      setEmail(email);
       navigate('/');
     } else {
       console.error('Login failed');
@@ -89,7 +92,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, isLoading, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, isLoading, email, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
