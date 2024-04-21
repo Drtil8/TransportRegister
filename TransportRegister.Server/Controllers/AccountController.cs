@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using TransportRegister.Server.Models;
 using TransportRegister.Server.ViewModels;
 
@@ -44,7 +46,17 @@ public class AccountController : ControllerBase
     [HttpGet("IsLoggedIn")]
     public IActionResult IsLoggedIn()
     {
-        return Ok(new { IsLoggedIn = User.Identity is { IsAuthenticated: true } });
-    }
+        //var isAdmin = User.IsInRole("Admin");     // todo isAdmin query
+        bool isLoggedIn = User.Identity is { IsAuthenticated: true };   // todo why not User.Identity.IsAuthenticated
+        string role = null;
+        if (isLoggedIn)
+            role = User.FindFirstValue(ClaimTypes.Role);
 
+        return Ok(new
+        {
+            IsLoggedIn = isLoggedIn,
+            Email = User.Identity?.Name,
+            Role = role
+        });
+    }
 }

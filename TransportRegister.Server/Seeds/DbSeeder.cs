@@ -13,7 +13,8 @@ public static class DbSeeder
 
         // Asynchronous seeding
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-        await UserSeed.Seed(userManager);
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        await UserSeed.Seed(userManager, roleManager);
 
         // Synchronous seeding
         PersonSeed.Seed(context);

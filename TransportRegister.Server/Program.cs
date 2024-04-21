@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using System.Text.Json.Serialization;
 using TransportRegister.Server.Configurations;
 using TransportRegister.Server.Data;
@@ -15,6 +16,9 @@ namespace TransportRegister.Server
     {
         public static async Task Main(string[] args)
         {
+            // Set default czech datetime format
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("cs-CZ");
+
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
@@ -34,7 +38,8 @@ namespace TransportRegister.Server
             // User authentication
             builder.Services.AddIdentity<User, IdentityRole>(IdentityConfiguration.ConfigureIdentityOptions)
                 .AddEntityFrameworkStores<AppDbContext>()
-                .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders()
+                .AddRoles<IdentityRole>();
             
             // Repositories
             builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();

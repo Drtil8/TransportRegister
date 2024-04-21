@@ -25,3 +25,7 @@ a.navbar-brand {
 nav a {
     color: black !important;
 }
+
+nav .navbar-brand {
+    white-space: nowrap;
+}

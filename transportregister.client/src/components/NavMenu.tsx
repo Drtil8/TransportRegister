@@ -70,27 +70,21 @@ export class NavMenu extends Component<object, NavMenuState> {
   };
 
   render() {
+    console.log(this.context);
     if (!this.context) {
       return null;
     }
-    const { isLoggedIn, logout } = this.context;
-    const driverDropOpen = this.state.driverDropOpen;
-    const vehicleDropOpen = this.state.vehicleDropOpen;
-    const offenceDropOpen = this.state.offenceDropOpen;
-    const theftDropOpen = this.state.theftDropOpen;
-    const userDropOpen = this.state.userDropOpen;
-
 
     return (
       <header>
         <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" container light>
           <NavbarBrand className="me-5" tag={Link} to="/">RVŘP</NavbarBrand>
           <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
-          {isLoggedIn && (
+          {this.context.isLoggedIn && (
             <Collapse className="d-sm-inline-flex navbarDropdownBar" isOpen={!this.state.collapsed} navbar>
               {/*<div className="navbarDropdownBar">*/}
               <ul className="navbar-nav">
-                <Dropdown isOpen={driverDropOpen} toggle={this.toggleDriverDropdown} >
+                <Dropdown isOpen={this.state.driverDropOpen} toggle={this.toggleDriverDropdown} >
                   <DropdownToggle nav caret>
                     Řidiči
                   </DropdownToggle>
@@ -102,7 +96,7 @@ export class NavMenu extends Component<object, NavMenuState> {
                   </DropdownMenu>
                 </Dropdown>
 
-                <Dropdown isOpen={vehicleDropOpen} toggle={this.toggleVehicleDropdown}>
+                <Dropdown isOpen={this.state.vehicleDropOpen} toggle={this.toggleVehicleDropdown}>
                   <DropdownToggle nav caret>
                     Vozidla
                   </DropdownToggle>
@@ -114,7 +108,7 @@ export class NavMenu extends Component<object, NavMenuState> {
                   </DropdownMenu>
                 </Dropdown>
 
-                <Dropdown isOpen={offenceDropOpen} toggle={this.toggleOffenceDropdown}>
+                <Dropdown isOpen={this.state.offenceDropOpen} toggle={this.toggleOffenceDropdown}>
                   <DropdownToggle nav caret>
                     Přestupky
                   </DropdownToggle>
@@ -127,7 +121,7 @@ export class NavMenu extends Component<object, NavMenuState> {
                   </DropdownMenu>
                 </Dropdown>
 
-                <Dropdown isOpen={theftDropOpen} toggle={this.toggleTheftDropdown}>
+                <Dropdown isOpen={this.state.theftDropOpen} toggle={this.toggleTheftDropdown}>
                   <DropdownToggle nav caret>
                     Kradená vozidla
                   </DropdownToggle>
@@ -142,12 +136,12 @@ export class NavMenu extends Component<object, NavMenuState> {
               </ul>
 
               <ul className="navbar-nav ms-auto">
-                <Dropdown isOpen={userDropOpen} toggle={this.toggleUserDropdown}>
+                <Dropdown isOpen={this.state.userDropOpen} toggle={this.toggleUserDropdown}>
                   <DropdownToggle nav caret>
                     Přihlášen jako: {this.context.email}
                   </DropdownToggle>
                   <DropdownMenu>
-                    <DropdownItem tag={Link} onClick={logout}>Odhlásit se</DropdownItem>
+                    <DropdownItem tag={Link} onClick={this.context.logout}>Odhlásit se</DropdownItem>
                   </DropdownMenu>
                 </Dropdown>
               </ul>
