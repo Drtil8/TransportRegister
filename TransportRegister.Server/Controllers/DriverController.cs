@@ -1,29 +1,40 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using TransportRegister.Server.DTOs.LicensePlateHistoryDTOs;
+using TransportRegister.Server.DTOs.VehicleDTOs;
+using TransportRegister.Server.Models;
+using TransportRegister.Server.Repositories.DriverRepository;
+using TransportRegister.Server.Repositories.VehicleRepository;
 namespace TransportRegister.Server.Controllers
 {
-    public class PersonController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class DriverController : ControllerBase
     {
-        // GET: HomeController
+        private readonly IDriverRepository _driverRepository;
+        public DriverController(IDriverRepository driverRepository)
+        {
+            _driverRepository = driverRepository;
+        }
+        // GET: DriverController
         public ActionResult Index()
         {
-            return View();
+            return Ok();
         }
 
-        // GET: HomeController/Details/5
+        // GET: DriverController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            return Ok();
         }
 
-        // GET: HomeController/Create
+        // GET: DriverController/Create
         public ActionResult Create()
         {
-            return View();
+            return Ok();
         }
 
-        // POST: HomeController/Create
+        // POST: DriverController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
@@ -34,17 +45,17 @@ namespace TransportRegister.Server.Controllers
             }
             catch
             {
-                return View();
+                return Ok();
             }
         }
 
-        // GET: HomeController/Edit/5
+        // GET: DriverController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            return Ok();
         }
 
-        // POST: HomeController/Edit/5
+        // POST: DriverController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
@@ -55,17 +66,17 @@ namespace TransportRegister.Server.Controllers
             }
             catch
             {
-                return View();
+                return Ok();
             }
         }
 
-        // GET: HomeController/Delete/5
+        // GET: DriverController/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            return Ok();
         }
 
-        // POST: HomeController/Delete/5
+        // POST: DriverController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
@@ -76,7 +87,7 @@ namespace TransportRegister.Server.Controllers
             }
             catch
             {
-                return View();
+                return Ok();
             }
         }
     }
