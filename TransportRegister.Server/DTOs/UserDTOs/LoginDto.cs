@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace TransportRegister.Server.ViewModels;
+namespace TransportRegister.Server.DTOs.UserDTOs;
 
-public class LoginViewModel
+public class LoginDto
 {
     [Required]
     [EmailAddress]

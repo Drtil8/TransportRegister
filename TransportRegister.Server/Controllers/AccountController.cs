@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Security.Claims;
+using TransportRegister.Server.DTOs.UserDTOs;
 using TransportRegister.Server.Models;
-using TransportRegister.Server.ViewModels;
 
 namespace TransportRegister.Server.Controllers;
 
@@ -21,7 +21,7 @@ public class AccountController : ControllerBase
 
     [HttpPost("login")]
     [Produces("application/json")]
-    public async Task<IActionResult> Login([FromBody] LoginViewModel model)
+    public async Task<IActionResult> Login([FromBody] LoginDto model)
     {
         if (ModelState.IsValid)
         {
