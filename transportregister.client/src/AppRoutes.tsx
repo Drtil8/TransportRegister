@@ -3,7 +3,7 @@ import Login from './components/Login';
 import VehicleSearch from "./components/VehicleSearch";
 import DriverSearch from "./components/DriverSearch";
 import DriverCreate from "./components/DriverCreate";
-import VehicleCreate from "./components/VehicelCreate";
+import VehicleCreate from "./components/VehicleCreate";
 import OffenceCreate from "./components/OffenceCreate";
 import OffencePending from "./components/OffencePending";
 import TheftCreate from "./components/TheftCreate";

@@ -29,3 +29,23 @@ nav a {
 nav .navbar-brand {
     white-space: nowrap;
 }
+
+
+.vehicelRegForm {
+    display: grid;
+    /*grid-template-columns: repeat(2, minmax(160px, 1fr));*/
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem; /* Remove any gap between cells */
+    padding: 1rem; /* Remove padding */
+    justify-content: center;
+    align-content:center;
+}
+
+.vehicelRegForm > div  {
+    display: inline;
+}
+
+.vehicelRegForm button {
+    grid-column: 2 / span 1;
+    width: 150px;
+}
