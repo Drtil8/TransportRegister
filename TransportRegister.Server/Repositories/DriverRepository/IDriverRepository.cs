@@ -1,7 +1,13 @@
-﻿namespace TransportRegister.Server.Repositories.DriverRepository
+﻿using TransportRegister.Server.Models;
+
+namespace TransportRegister.Server.Repositories.DriverRepository
 {
     public interface IDriverRepository
     {
-        // Tasks
+        Task<Driver> GetDriverAsync(string licenseNumber);
+        Task SaveDriverAsync(Driver driver);
+        Task DeleteDriverAsync(int driverId);
+        Task<List<Tuple<Driver, int>>> GetDriversAndPoints();
+        Task<Driver> GetDriverByIdAsync(int driverId);
     }
 }

@@ -1,7 +1,13 @@
-﻿namespace TransportRegister.Server.Repositories.OwnerRepository
+﻿using TransportRegister.Server.Models;
+namespace TransportRegister.Server.Repositories.OwnerRepository
+
 {
     public interface IOwnerRepository
     {
-    // Tasks
+        Task<Owner> GetOwnerByVINAsync(string VIN_number);
+        Task SaveOwnerAsync(Owner owner);
+        Task DeleteOwnerAsync(int ownerId);
+        Task<Owner> GetOwnerByIdAsync(int ownerId);
+        
     }
 }
