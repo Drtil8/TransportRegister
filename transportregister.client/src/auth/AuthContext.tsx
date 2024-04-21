@@ -1,5 +1,4 @@
 ﻿import { createContext, useState, useEffect, ReactNode } from 'react';
-import { API_URL } from "./constants.tsx";
 import { useNavigate } from "react-router-dom";
 
 interface AuthContextType {
@@ -11,11 +10,17 @@ interface AuthContextType {
   logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextType | null>(null);
-
 interface AuthProviderProps {
   children: ReactNode;
 }
+
+interface ILoginResponse {
+  isLoggedIn: boolean;
+  email: string;
+  role: string;
+}
+
+const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -28,10 +33,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setIsLoading(true);
     const checkIsLoggedIn = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/Account/IsLoggedIn`, {
+        const response = await fetch('/api/Account/IsLoggedIn', {
           credentials: 'include',
         });
-        const data = await response.json();
+        const data: ILoginResponse = await response.json();
         setIsLoggedIn(data.isLoggedIn);
         setEmail(data.email);
         setRole(data.role);
@@ -56,7 +61,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       rememberMe
     };
 
-    const response = await fetch(`${API_URL}/api/Account/login`, {
+    const response = await fetch('/api/Account/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -66,8 +71,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     });
 
     if (response.ok) {
+      const data = await response.json();
       setIsLoggedIn(true);
       setEmail(email);
+      setRole(data.role);
       navigate('/');
     }
     else {
@@ -78,7 +85,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const logout = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/Account/logout`, {
+      const response = await fetch('/api/Account/logout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -87,6 +94,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       });
       if (response.ok) {
         setIsLoggedIn(false);
+        setEmail('');
+        setRole('');
         navigate('/login');
       }
       else {

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using System.Security.Claims;
 using TransportRegister.Server.Models;
 using TransportRegister.Server.ViewModels;
@@ -19,6 +20,7 @@ public class AccountController : ControllerBase
     }
 
     [HttpPost("login")]
+    [Produces("application/json")]
     public async Task<IActionResult> Login([FromBody] LoginViewModel model)
     {
         if (ModelState.IsValid)
@@ -26,7 +28,10 @@ public class AccountController : ControllerBase
             var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
             if (result.Succeeded)
             {
-                return Ok();
+                string role = null;
+                if (User.Identity is { IsAuthenticated: true })
+                    role = User.FindFirstValue(ClaimTypes.Role);
+                return Ok(new { role });
             }
             else
             {
@@ -46,12 +51,10 @@ public class AccountController : ControllerBase
     [HttpGet("IsLoggedIn")]
     public IActionResult IsLoggedIn()
     {
-        //var isAdmin = User.IsInRole("Admin");     // todo isAdmin query
-        bool isLoggedIn = User.Identity is { IsAuthenticated: true };   // todo why not User.Identity.IsAuthenticated
         string role = null;
+        bool isLoggedIn = User.Identity is { IsAuthenticated: true };
         if (isLoggedIn)
             role = User.FindFirstValue(ClaimTypes.Role);
-
         return Ok(new
         {
             IsLoggedIn = isLoggedIn,
