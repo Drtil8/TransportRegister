@@ -51,7 +51,7 @@ const Login = () => {
             <div className="card-body">
               <h3 className="text-center mb-4">Přihlášení</h3>
               <hr />
-              {loginError && ( // Display error message if loginError is true
+              {loginError && (
                 <div className="alert alert-danger mt-3" role="alert">
                   <div className="text-center text-danger">
                     Přihlášení se nezdařilo, nesprávné přihlašovací údaje.

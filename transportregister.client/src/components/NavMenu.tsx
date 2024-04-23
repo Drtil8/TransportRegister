@@ -3,8 +3,6 @@ import { Collapse, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Navbar,
 import { Link } from 'react-router-dom';
 import AuthContext from '../auth/AuthContext';
 
-
-// TODO navbar when NavbarToggle - page is small (in hamburger menu)
 interface NavMenuState {
   collapsed: boolean;
   driverDropOpen: boolean;
@@ -73,9 +71,6 @@ export class NavMenu extends Component<object, NavMenuState> {
     if (!this.context) {
       return null;
     }
-    console.log(this.context.isAdmin);
-    console.log(this.context.isOfficial);
-    console.log(this.context.isOfficer);
 
     return (
       <header>
@@ -84,7 +79,6 @@ export class NavMenu extends Component<object, NavMenuState> {
           <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
           {this.context.isLoggedIn && (
             <Collapse className="d-sm-inline-flex navbarDropdownBar" isOpen={!this.state.collapsed} navbar>
-              {/*<div className="navbarDropdownBar">*/}
               <ul className="navbar-nav">
                 <Dropdown isOpen={this.state.driverDropOpen} toggle={this.toggleDriverDropdown} >
                   <DropdownToggle nav caret>
