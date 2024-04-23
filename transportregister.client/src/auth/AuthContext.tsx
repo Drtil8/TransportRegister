@@ -6,6 +6,9 @@ interface AuthContextType {
   isLoggedIn: boolean;
   email: string;
   role: string;
+  isAdmin: boolean;
+  isOfficial: boolean;
+  isOfficer: boolean;
   login: (email: string, password: string, rememberMe: boolean) => Promise<void>;
   logout: () => void;
 }
@@ -28,6 +31,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('');
+
+  const isAdmin    = role === 'Admin';
+  const isOfficial = role === 'Official';
+  const isOfficer  = role === 'Officer';
 
   useEffect(() => {
     setIsLoading(true);
@@ -78,7 +85,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       navigate('/');
     }
     else {
-      console.error('Login failed');
+      throw new Error('Login failed');
     }
     setIsLoading(false);
   };
@@ -110,8 +117,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+
   return (
-    <AuthContext.Provider value={{ isLoading, isLoggedIn, email, role, login, logout }}>
+    <AuthContext.Provider value={{ isLoading, isLoggedIn, email, role, isAdmin, isOfficial, isOfficer, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

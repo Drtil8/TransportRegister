@@ -70,10 +70,12 @@ export class NavMenu extends Component<object, NavMenuState> {
   };
 
   render() {
-    console.log(this.context);
     if (!this.context) {
       return null;
     }
+    console.log(this.context.isAdmin);
+    console.log(this.context.isOfficial);
+    console.log(this.context.isOfficer);
 
     return (
       <header>
