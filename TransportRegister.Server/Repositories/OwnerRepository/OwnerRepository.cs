@@ -14,11 +14,9 @@ namespace TransportRegister.Server.Repositories.OwnerRepository
 
         public async Task<Owner> GetOwnerByVINAsync(string VIN_number)
         {
-            var car =  _context.Vehicles
-                .FirstOrDefault(v => v.VIN == VIN_number);
-
             return await _context.Owners
-                .FirstOrDefaultAsync(o => o.PersonId == car.OwnerId);
+                .Include(o => o.Vehicles)
+                .FirstOrDefaultAsync(o => o.Vehicles.Any(v => v.VIN == VIN_number));
         }
 
         public async Task SaveOwnerAsync(Owner owner)
@@ -50,6 +48,7 @@ namespace TransportRegister.Server.Repositories.OwnerRepository
                 .Include(o => o.Vehicles)
                 .FirstOrDefaultAsync(o => o.PersonId == ownerId);
         }
+
 
     }
 }

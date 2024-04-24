@@ -65,7 +65,7 @@ namespace TransportRegister.Server.Repositories.DriverRepository
                 .ToList();
 
             return result;
-        }
+        }      
 
     }
 }
