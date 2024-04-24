@@ -22,7 +22,7 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
         public string BirthNumber { get; set; }
         public bool Sex_Male { get; set; }
         public DateOnly DateOfBirth { get; set; }
-        public Address AddressDto { get; set; }
+        public AddressDto AddressDto { get; set; }
 
         public string OfficialId { get; set; }
         //public ICollection<Offence> CommitedOffences { get; set; }  // TODO: Needs Offence and thefts Dto's
