@@ -1,5 +1,8 @@
 ﻿import { Component } from 'react';
 
+
+/// TODO Outdated? main page will be diffrent, VehicleList will not be used
+
 interface CounterState {
   currentCount: number;
 }

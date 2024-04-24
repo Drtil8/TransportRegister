@@ -1,6 +1,5 @@
 @TransportRegister.Server_HostAddress = http://localhost:5014
 
-GET {{TransportRegister.Server_HostAddress}}/weatherforecast/
-Accept: application/json
+GET {{TransportRegister.Server_HostAddress}}/
 
 ###

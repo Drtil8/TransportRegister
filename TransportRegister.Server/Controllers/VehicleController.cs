@@ -7,9 +7,13 @@ using TransportRegister.Server.Repositories.VehicleRepository;
 
 namespace TransportRegister.Server.Controllers
 {
+    // todo adjust roles
+    //[Authorize]       // All roles can access
+    //[Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Official")]
+    [Authorize(Roles = "Official,Officer")]
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
     public class VehicleController : ControllerBase
     {
         private readonly IVehicleRepository _vehicleRepository;
@@ -22,6 +26,7 @@ namespace TransportRegister.Server.Controllers
         [HttpGet("VehicleTypes")]
         public async Task<ActionResult<List<string>>> GetVehicleTypes()
         {
+            //var isAdmin = User.IsInRole("Admin");     // todo isAdmin query
             List<string> vehicleTypes = await _vehicleRepository.GetVehicleTypesAsync();
 
             return Ok(vehicleTypes);

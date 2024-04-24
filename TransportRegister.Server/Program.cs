@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using System.Text.Json.Serialization;
 using TransportRegister.Server.Configurations;
 using TransportRegister.Server.Data;
@@ -15,17 +16,15 @@ namespace TransportRegister.Server
     {
         public static async Task Main(string[] args)
         {
+            // Set default czech datetime format
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("cs-CZ");
+
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // Add services to the container
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-
-            // Add in-memory database
-            //builder.Services.AddDbContext<AppDbContext>(options => 
-            //options.UseInMemoryDatabase("TransportRegisterDb"));
 
             // MSSQL database
             builder.Services.AddDbContext<AppDbContext>(options =>
@@ -34,7 +33,8 @@ namespace TransportRegister.Server
             // User authentication
             builder.Services.AddIdentity<User, IdentityRole>(IdentityConfiguration.ConfigureIdentityOptions)
                 .AddEntityFrameworkStores<AppDbContext>()
-                .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders()
+                .AddRoles<IdentityRole>();
             
             // Repositories
             builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
@@ -90,6 +90,7 @@ namespace TransportRegister.Server
                     .AllowAnyHeader()
                     .AllowCredentials();
             });
+            app.UseCors("AllowSpecificOrigin");
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
@@ -105,7 +106,6 @@ namespace TransportRegister.Server
 
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseCors("AllowSpecificOrigin");
 
             app.MapControllers();
 

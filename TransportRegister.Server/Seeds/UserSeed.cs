@@ -5,12 +5,25 @@ namespace TransportRegister.Server.Seeds;
 
 public static class UserSeed
 {
-    public static async Task Seed(UserManager<User> userManager)
+    public static async Task Seed(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
     {
+        await SeedRoles(roleManager);
         await SeedOfficial(userManager);
         await SeedOfficer(userManager);
         await SeedAdmin(userManager);
     }
+
+    const string roleAdmin = "Admin";
+    const string roleOfficial = "Official";
+    const string roleOfficer = "Officer";
+
+    private static async Task SeedRoles(RoleManager<IdentityRole> roleManager)
+    {
+        await roleManager.CreateAsync(new IdentityRole(roleAdmin));
+        await roleManager.CreateAsync(new IdentityRole(roleOfficial));
+        await roleManager.CreateAsync(new IdentityRole(roleOfficer));
+    }
+
     private static async Task SeedAdmin(UserManager<User> userManager)
     {
         const string adminID = "d6f46418-2222-4444-bbbb-162fb5e3a999";
@@ -28,11 +41,16 @@ public static class UserSeed
                 PhoneNumber = adminTelephone,
                 EmailConfirmed = true,
                 IsActive = true,
-                IsAdmin = true,
                 IsValid = true,
             };
-
             await userManager.CreateAsync(adminlUser, "Admin123");
+
+            // Add the user role
+            var admin = await userManager.FindByEmailAsync(adminEmail);
+            if (admin is not null)
+            {
+                await userManager.AddToRoleAsync(admin, roleAdmin);
+            }
         }
     }
     private static async Task SeedOfficial(UserManager<User> userManager)
@@ -51,12 +69,17 @@ public static class UserSeed
                 Email = officialEmail,
                 PhoneNumber = officialTelephone,
                 EmailConfirmed = true,
-                IsAdmin = false,
                 IsValid = false,
                 IsActive = true,
             };
-
             await userManager.CreateAsync(officialUser, "Official123");
+
+            // Add the user role
+            var official = await userManager.FindByEmailAsync(officialEmail);
+            if (official is not null)
+            {
+                await userManager.AddToRoleAsync(official, roleOfficial);
+            }
         }
     }
 
@@ -78,12 +101,17 @@ public static class UserSeed
                 EmailConfirmed = true,
                 PersonalId = 123456789,
                 Rank = "President",
-                IsAdmin = false,
                 IsValid = false,
                 IsActive = true,
             };
-
             await userManager.CreateAsync(officerUser, "Officer123");
+
+            // Add the user role
+            var officer = await userManager.FindByEmailAsync(officerEmail);
+            if (officer is not null)
+            {
+                await userManager.AddToRoleAsync(officer, roleOfficer);
+            }
         }
     }
 }
