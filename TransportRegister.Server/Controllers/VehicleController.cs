@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using TransportRegister.Server.DTOs.DatatableDTOs;
 using TransportRegister.Server.DTOs.LicensePlateHistoryDTOs;
 using TransportRegister.Server.DTOs.VehicleDTOs;
 using TransportRegister.Server.Models;
@@ -7,11 +9,12 @@ using TransportRegister.Server.Repositories.VehicleRepository;
 
 namespace TransportRegister.Server.Controllers
 {
+    // todo when not authorized returns 404 instead of 401 -> create custom error handler in frontend
     // todo adjust roles
     //[Authorize]       // All roles can access
     //[Authorize(Roles = "Admin")]
     //[Authorize(Roles = "Official")]
-    [Authorize(Roles = "Official,Officer")]
+    //[Authorize(Roles = "Official,Officer")]
     [Route("api/[controller]")]
     [ApiController]
     public class VehicleController : ControllerBase
@@ -22,7 +25,29 @@ namespace TransportRegister.Server.Controllers
         {
             _vehicleRepository = vehicleRepository;
         }
-        
+
+        /// <summary>
+        /// Get filtered vehicles
+        /// </summary>
+        /// <param name="dtParams">Data table filtering parameters</param>
+        /// <returns>Filtered vehicles DTOs</returns>
+        [HttpPost("/api/VehicleSearch")]
+        [Produces("application/json")]
+        public async Task<IActionResult> VehicleSearch([FromBody] DtParamsDto dtParams)
+        {
+            var query = _vehicleRepository.QueryVehicleSearch(dtParams);
+            int totalRowCount = await query.CountAsync();
+            var filteredData = await query
+                .Skip(dtParams.Start)
+                .Take(dtParams.Size)
+                .ToListAsync();
+            return new JsonResult(new DtResultDto<VehicleListItemDto>
+            {
+                Data = filteredData,
+                TotalRowCount = totalRowCount
+            });
+        }
+
         [HttpGet("VehicleTypes")]
         public async Task<ActionResult<List<string>>> GetVehicleTypes()
         {
@@ -33,13 +58,13 @@ namespace TransportRegister.Server.Controllers
         }
 
         [HttpGet("{vehicleId}")]
-        public async Task<ActionResult<VehicleDto>> GetVehicleById(int vehicleId)
+        public async Task<ActionResult<VehicleDetailDto>> GetVehicleById(int vehicleId)
         {
             Vehicle vehicle = await _vehicleRepository.GetVehicleByIdAsync(vehicleId);
             if (vehicle == null)
                 return NotFound();
             
-            VehicleDto vehicleDto = VehicleDtoTransformer.TransformToDto(vehicle);
+            VehicleDetailDto vehicleDto = VehicleDtoTransformer.TransformToDto(vehicle);
             if (vehicleDto == null)
                 return NotFound("Vehicle type is not supported.");
 
@@ -47,7 +72,7 @@ namespace TransportRegister.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<VehicleDto>> SaveVehicle([FromBody] VehicleDto vehicleDto)
+        public async Task<ActionResult<VehicleDetailDto>> SaveVehicle([FromBody] VehicleDetailDto vehicleDto)
         {
             if (!ModelState.IsValid)
             {
@@ -64,7 +89,7 @@ namespace TransportRegister.Server.Controllers
 
             await _vehicleRepository.SaveVehicleAsync(vehicle);
 
-            VehicleDto updatedDto = VehicleDtoTransformer.TransformToDto(vehicle);
+            VehicleDetailDto updatedDto = VehicleDtoTransformer.TransformToDto(vehicle);
             if (updatedDto == null)
             {
                 return NotFound("Failed to update vehicle data.");

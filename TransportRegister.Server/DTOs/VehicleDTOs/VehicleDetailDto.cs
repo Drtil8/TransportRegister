@@ -1,9 +1,10 @@
 namespace TransportRegister.Server.DTOs.VehicleDTOs
 {
-    public abstract class VehicleDto
+    public abstract class VehicleDetailDto
     {
         public int VehicleId { get; set; }
         public string VIN { get; set; }
+        public string LicensePlate { get; set; }        // todo add to VehicleDtoConverter
         public string Manufacturer { get; set; }
         public string Model { get; set; }
         public double HorsepowerKW { get; set; }
@@ -14,29 +15,31 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
         public double WidthCM { get; set; }
         public double HeightCM { get; set; }
         public double LoadCapacityKG { get; set; }
-        public int OwnerId { get; set; }
-        public string OfficialId { get; set; }
         public string VehicleType { get; set; }
-        
+        public int OwnerId { get; set; }
+        public string OwnerFullName { get; set; }        // todo add to VehicleDtoConverter
+        public string OfficialId { get; set; }
+        public string OfficialFullName { get; set; }    // todo add to VehicleDtoConverter
+
         // TODO maybe add list of Thefts and Fines (need TheftDto and FineDto)
     }
     
-    public class TruckDto : VehicleDto
+    public class TruckDto : VehicleDetailDto
     {
         
     }
     
-    public class MotorcycleDto : VehicleDto
+    public class MotorcycleDto : VehicleDetailDto
     {
         public string Constraints { get; set; }
     }
     
-    public class CarDto : VehicleDto
+    public class CarDto : VehicleDetailDto
     {
         public int NumberOfDoors { get; set; }
     }
     
-    public class BusDto : VehicleDto
+    public class BusDto : VehicleDetailDto
     {
         public int SeatCapacity { get; set; }
         public int StandingCapacity { get; set; }

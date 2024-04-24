@@ -4,7 +4,7 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
 {
     public abstract class VehicleDtoTransformer
     {
-        public static VehicleDto TransformToDto(Vehicle vehicle)
+        public static VehicleDetailDto TransformToDto(Vehicle vehicle)
         {
             return vehicle switch
             {
@@ -80,7 +80,7 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
             };
         }
         
-        public static Vehicle TransformToEntity(VehicleDto dto)
+        public static Vehicle TransformToEntity(VehicleDetailDto dto)
         {
             return dto switch
             {
