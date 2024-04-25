@@ -6,7 +6,7 @@ using TransportRegister.Server.DTOs.LicensePlateHistoryDTOs;
 using TransportRegister.Server.DTOs.VehicleDTOs;
 using TransportRegister.Server.Models;
 
-namespace TransportRegister.Server.Repositories.VehicleRepository.Implementations
+namespace TransportRegister.Server.Repositories.Implementations
 {
     public class VehicleRepository : IVehicleRepository
     {

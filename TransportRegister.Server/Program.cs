@@ -7,8 +7,7 @@ using TransportRegister.Server.Data;
 using TransportRegister.Server.DTOs.VehicleDTOs;
 using TransportRegister.Server.Models;
 using TransportRegister.Server.Repositories;
-using TransportRegister.Server.Repositories.VehicleRepository;
-using TransportRegister.Server.Repositories.VehicleRepository.Implementations;
+using TransportRegister.Server.Repositories.Implementations;
 using TransportRegister.Server.Seeds;
 
 namespace TransportRegister.Server

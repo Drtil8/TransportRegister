@@ -3,7 +3,7 @@ using TransportRegister.Server.DTOs.LicensePlateHistoryDTOs;
 using TransportRegister.Server.DTOs.VehicleDTOs;
 using TransportRegister.Server.Models;
 
-namespace TransportRegister.Server.Repositories.VehicleRepository
+namespace TransportRegister.Server.Repositories
 {
     public interface IVehicleRepository
     {
