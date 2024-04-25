@@ -9,6 +9,7 @@ import OffencePending from "./components/OffencePending";
 import TheftCreate from "./components/TheftCreate";
 import TheftFound from "./components/TheftFound";
 import DriverDetail from "./components/DriverDetail";
+import VehicleDetail from "./components/VehicleDetail";
 
 const AppRoutes = [
   {
@@ -32,8 +33,13 @@ const AppRoutes = [
     isProtected: true
   },
   {
-    path: '/driver/{i}Example',   // TODO delete, DrierDetail will not be called like this, this is a bad solution for GUI example
-    element: <DriverDetail id={1} />,
+    path: '/driver/:id',   // TODO delete, DrierDetail will not be called like this, this is a bad solution for GUI example
+    element: <DriverDetail />,
+    isProtected: true
+  },
+  {
+    path: '/vehicle/:id',
+    element: <VehicleDetail />,
     isProtected: true
   },
   {
