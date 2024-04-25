@@ -62,17 +62,17 @@ export class VehicleDetail extends Component<object> {
               type="file"
               accept="image/*" />
           </FormGroup>
-          <FormGroup>
-            <Label for="vehicleGallery">
-              Galerie vozidla
-            </Label>
-            <Input
-              id="vehicleGallery"
-              name="file"
-              type="file"
-              accept="image/*"
-              multiple />
-          </FormGroup>
+          {/*<FormGroup>*/}
+          {/*  <Label for="vehicleGallery">*/}
+          {/*    Galerie vozidla*/}
+          {/*  </Label>*/}
+          {/*  <Input*/}
+          {/*    id="vehicleGallery"*/}
+          {/*    name="file"*/}
+          {/*    type="file"*/}
+          {/*    accept="image/*"*/}
+          {/*    multiple />*/}
+          {/*</FormGroup>*/}
           <Button type="submit" className="btn btn-primary">Uložit</Button>
         </Form>
       </>
