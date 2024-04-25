@@ -81,11 +81,11 @@ namespace TransportRegister.Server.Repositories.VehicleRepository.Implementation
             {
                 Sorting sorting = dtParams.Sorting.First();
                 return query.OrderBy($"{sorting.Id} {sorting.Dir}")
-                    .ThenByDescending(v => v.VehicleId);
+                    .ThenByDescending(v => v.Id);
             }
             else
             {
-                return query.OrderByDescending(v => v.VehicleId);
+                return query.OrderByDescending(v => v.Id);
             }
         }
 
@@ -97,14 +97,14 @@ namespace TransportRegister.Server.Repositories.VehicleRepository.Implementation
                 // todo string properties can be filtered by Contains or StartsWith
                 query = filter.PropertyName switch
                 {
-                    nameof(VehicleListItemDto.VehicleId) =>
-                        query.Where(v => v.VehicleId.ToString().StartsWith(filter.Value)), // numeric property
-                    nameof(VehicleListItemDto.VIN) =>
-                        query.Where(v => v.VIN.StartsWith(filter.Value)),                  // string property
+                    nameof(VehicleListItemDto.Id) =>
+                        query.Where(v => v.Id.ToString().StartsWith(filter.Value)), // numeric property
+                    "Vin" =>
+                        query.Where(v => v.VIN.StartsWith(filter.Value)),           // string property
                     nameof(VehicleListItemDto.LicensePlate) =>
                         query.Where(v => v.LicensePlate.StartsWith(filter.Value)),
                     nameof(VehicleListItemDto.VehicleType) =>
-                        query.Where(v => v.VehicleType.StartsWith(filter.Value)),
+                        query.Where(v => v.VehicleType == filter.Value),        // todo fix VehicleType getting
                     nameof(VehicleListItemDto.Manufacturer) =>
                         query.Where(v => v.Manufacturer.StartsWith(filter.Value)),
                     nameof(VehicleListItemDto.Model) =>
@@ -127,13 +127,14 @@ namespace TransportRegister.Server.Repositories.VehicleRepository.Implementation
             var query = _context.Vehicles
                 .AsNoTracking()
                 .Include(v => v.LicensePlates)
-                .Include(v => v.Owner)
+                .Include(v => v.Owner)          // todo inconsitency with driver and owner
+                .Where(v => v.Owner != null)    // todo should never happend, fix the seeds or model
                 .Select(v =>
                     new VehicleListItemDto
                     {
-                        VehicleId = v.VehicleId,
+                        Id = v.VehicleId,
                         VIN = v.VIN,
-                        VehicleType = v.GetType().Name,     // todo probably not right
+                        VehicleType = v.GetType().Name,     // todo fix VehicleType getting
                         LicensePlate = v.LicensePlates
                             .OrderByDescending(lp => lp.ChangedOn)
                             .Select(lp => lp.LicensePlate)

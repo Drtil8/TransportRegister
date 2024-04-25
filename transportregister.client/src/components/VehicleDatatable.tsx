@@ -12,6 +12,7 @@ import IDtFetchData from './interfaces/datatables/IDtFetchData';
 import IVehicleListItem from './interfaces/IVehicleListItem';
 import IDtParams from './interfaces/datatables/IDtParams';
 import DetailIcon from '@mui/icons-material/VisibilityOutlined';
+import { Button } from 'reactstrap';
 
 export const VehicleDatatable: React.FC<{
   fetchDataRef: React.MutableRefObject<IDtFetchData | null>
@@ -58,7 +59,7 @@ export const VehicleDatatable: React.FC<{
         body: JSON.stringify(dtParams)
       });
       const json: IDtResult<IVehicleListItem> = await response.json();
-      console.log(json);    // todo fix loading data into table
+      //console.log(json.data);     // todo fix invalid array format with c# JsonConvertors
       setData(json.data);
       setRowCount(json.totalRowCount);
     }
@@ -70,18 +71,22 @@ export const VehicleDatatable: React.FC<{
     setIsError(false);
     setIsLoading(false);
     setIsRefetching(false);
+
+    // Show table body
+    const tableBody = document.querySelector('tbody') as HTMLElement;
+    tableBody.style.display = 'table-row-group';
   };
   fetchDataRef.current = fetchData;
 
-  useEffect(() => {
-    fetchDataRef.current?.();
-  }, [
-    columnFilters,
-    globalFilter,
-    pagination.pageIndex,
-    pagination.pageSize,
-    sorting,
-  ]);
+  //useEffect(() => {
+  //  fetchDataRef.current?.();
+  //}, [
+  //  columnFilters,
+  //  globalFilter,
+  //  pagination.pageIndex,
+  //  pagination.pageSize,
+  //  sorting,
+  //]);
 
   const columns = useMemo<MRT_ColumnDef<IVehicleListItem>[]>(
     () => [
@@ -107,7 +112,8 @@ export const VehicleDatatable: React.FC<{
         id: 'vehicleType',
         accessorKey: 'vehicleType',
         header: 'Typ vozidla',
-        filterFn: 'startsWith',
+        filterVariant: 'select',
+        filterSelectOptions: ['Car', 'Motorcycle', 'Truck', 'Bus'],
       },
       {
         id: 'manufacturer',
@@ -137,6 +143,22 @@ export const VehicleDatatable: React.FC<{
     []
   );
 
+  // todo probably should perform on component mount
+  useEffect(() => {
+    const actionTableHeader = document.querySelector('th:last-child') as HTMLElement;
+    const existingButton = actionTableHeader.querySelector('button');
+    if (!existingButton) {
+      let searchButton = document.createElement('button');
+      searchButton.classList.add('btn');
+      searchButton.classList.add('btn-primary');
+      searchButton.textContent = 'Vyhledat';
+      searchButton.addEventListener('click', () => { fetchDataRef.current?.() });
+      actionTableHeader.appendChild(searchButton);
+    }
+    const tableBody = document.querySelector('tbody') as HTMLElement;
+    tableBody.style.display = 'none';
+  }, []);
+
   const table = useMaterialReactTable({
     ...MUITableCommonOptions<IVehicleListItem>(), // Add common and basic options
     columns,
@@ -157,11 +179,12 @@ export const VehicleDatatable: React.FC<{
     },
     enableSorting: false,   // todo create state to enable sorting dynamically
     enablePagination: false,
-    enableRowActions: true,        // Display row actions
+    enableTopToolbar: false,
+    enableRowActions: true,       // Display row actions
     renderRowActions: ({ row }) => (// todo why not href instead of onClick
       <Box sx={{ display: 'flex', gap: '1rem' }}>
         <Tooltip title="Zobrazit detail vozidla">
-          <IconButton onClick={() => navigate(`/vehicle/${row.original.vehicleId}`)}>
+          <IconButton onClick={() => navigate(`/vehicle/${row.original.id}`)}>
             <DetailIcon />
           </IconButton>
         </Tooltip>

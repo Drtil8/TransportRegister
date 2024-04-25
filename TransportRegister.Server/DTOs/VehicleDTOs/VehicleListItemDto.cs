@@ -2,7 +2,7 @@
 {
     public class VehicleListItemDto
     {
-        public int VehicleId { get; set; }
+        public int Id { get; set; }
         public string VIN { get; set; }
         public string LicensePlate { get; set; }
         public string VehicleType { get; set; }

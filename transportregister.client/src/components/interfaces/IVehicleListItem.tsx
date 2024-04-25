@@ -1,6 +1,6 @@
 ﻿interface IVehicleListItem {
-  vehicleId: number;
-  VIN: string;
+  id: number;
+  vin: string;
   licensePlate: string;
   vehicleType: string;
   manufacturer: string;
