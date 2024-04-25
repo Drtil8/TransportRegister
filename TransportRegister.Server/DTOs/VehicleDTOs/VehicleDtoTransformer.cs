@@ -79,7 +79,7 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
                 _ => null
             };
         }
-        
+
         public static Vehicle TransformToEntity(VehicleDetailDto dto)
         {
             return dto switch

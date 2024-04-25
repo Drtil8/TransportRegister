@@ -1,10 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
-using System.Text.Json.Serialization;
 using TransportRegister.Server.Configurations;
 using TransportRegister.Server.Data;
-using TransportRegister.Server.DTOs.VehicleDTOs;
 using TransportRegister.Server.Models;
 using TransportRegister.Server.Repositories;
 using TransportRegister.Server.Repositories.Implementations;
@@ -35,7 +33,7 @@ namespace TransportRegister.Server
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders()
                 .AddRoles<IdentityRole>();
-            
+
             // Repositories
             builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
             builder.Services.AddScoped<ITheftRepository, TheftRepository>();

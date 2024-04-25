@@ -26,21 +26,21 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
 
         // TODO maybe add list of Thefts and Fines (need TheftDto and FineDto)
     }
-    
+
     public class TruckDto : VehicleDetailDto
     {
     }
-    
+
     public class MotorcycleDto : VehicleDetailDto
     {
         public string Constraints { get; set; }
     }
-    
+
     public class CarDto : VehicleDetailDto
     {
         public int NumberOfDoors { get; set; }
     }
-    
+
     public class BusDto : VehicleDetailDto
     {
         public int SeatCapacity { get; set; }

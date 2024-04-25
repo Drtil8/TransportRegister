@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
 using TransportRegister.Server.DTOs.DatatableDTOs;
@@ -64,7 +63,7 @@ namespace TransportRegister.Server.Controllers
             Vehicle vehicle = await _vehicleRepository.GetVehicleByIdAsync(vehicleId);
             if (vehicle == null)
                 return NotFound();
-            
+
             VehicleDetailDto vehicleDto = VehicleDtoTransformer.TransformToDto(vehicle);
             if (vehicleDto == null)
                 return NotFound("Vehicle type is not supported.");
@@ -79,9 +78,9 @@ namespace TransportRegister.Server.Controllers
             {
                 return BadRequest(ModelState);
             }
-            
+
             // TODO kontrola zda daný Owner a Official existují
-            
+
             Vehicle vehicle = VehicleDtoTransformer.TransformToEntity(vehicleDto);
             if (vehicle == null)
             {
@@ -98,7 +97,7 @@ namespace TransportRegister.Server.Controllers
 
             return Ok(updatedDto);
         }
-        
+
         [HttpDelete("{vehicleId}")]
         public async Task<IActionResult> DeleteVehicle(int vehicleId)
         {
@@ -111,7 +110,7 @@ namespace TransportRegister.Server.Controllers
             await _vehicleRepository.DeleteVehicleAsync(vehicleId);
             return Ok();
         }
-        
+
         [HttpGet("LicensePlateHistory/{id}")]
         public async Task<ActionResult<List<LicensePlateHistoryDto>>> GetLicensePlateHistory(int id)
         {

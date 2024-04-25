@@ -1,5 +1,4 @@
 ﻿using TransportRegister.Server.DTOs.VehicleDTOs;
-using TransportRegister.Server.Models;
 
 namespace TransportRegister.Server.DTOs.TheftDTOs
 {

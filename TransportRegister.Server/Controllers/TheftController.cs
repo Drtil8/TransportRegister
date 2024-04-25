@@ -1,11 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TransportRegister.Server.Repositories;
 using TransportRegister.Server.DTOs.TheftDTOs;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using TransportRegister.Server.Data;
-using TransportRegister.Server.Models;
-using TransportRegister.Server.Repositories.Implementations;
+using TransportRegister.Server.Repositories;
 
 namespace TransportRegister.Server.Controllers;
 
