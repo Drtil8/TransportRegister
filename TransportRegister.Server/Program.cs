@@ -38,7 +38,8 @@ namespace TransportRegister.Server
             
             // Repositories
             builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
-            
+            builder.Services.AddScoped<ITheftRepository, TheftRepository>();
+
             // todo convertors create unreadable array objects from client side
             // Convertors
             //builder.Services.AddControllers().AddJsonOptions(options =>
@@ -47,7 +48,7 @@ namespace TransportRegister.Server
             //    // Preventing cyclic dependencies
             //    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
             //});
-            
+
             // Cookies settings
             builder.Services.ConfigureApplicationCookie(options =>
             {

@@ -12,7 +12,6 @@ import IDtFetchData from './interfaces/datatables/IDtFetchData';
 import IVehicleListItem from './interfaces/IVehicleListItem';
 import IDtParams from './interfaces/datatables/IDtParams';
 import DetailIcon from '@mui/icons-material/VisibilityOutlined';
-import { Button } from 'reactstrap';
 
 export const VehicleDatatable: React.FC<{
   fetchDataRef: React.MutableRefObject<IDtFetchData | null>
