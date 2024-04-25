@@ -72,7 +72,7 @@ namespace TransportRegister.Server.Controllers
             return Ok(vehicleDto);
         }
 
-        [HttpPost]
+        [HttpPost("SaveVehicle")]
         public async Task<ActionResult<VehicleDetailDto>> SaveVehicle([FromBody] VehicleDetailDto vehicleDto)
         {
             if (!ModelState.IsValid)
@@ -109,7 +109,7 @@ namespace TransportRegister.Server.Controllers
             }
 
             await _vehicleRepository.DeleteVehicleAsync(vehicleId);
-            return NoContent();
+            return Ok();
         }
         
         [HttpGet("LicensePlateHistory/{id}")]

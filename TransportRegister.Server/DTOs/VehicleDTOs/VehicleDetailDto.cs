@@ -1,5 +1,8 @@
+using System.Text.Json.Serialization;
+
 namespace TransportRegister.Server.DTOs.VehicleDTOs
 {
+    [JsonConverter(typeof(VehicleDtoConverter))]
     public abstract class VehicleDetailDto
     {
         public int VehicleId { get; set; }
@@ -26,7 +29,6 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
     
     public class TruckDto : VehicleDetailDto
     {
-        
     }
     
     public class MotorcycleDto : VehicleDetailDto

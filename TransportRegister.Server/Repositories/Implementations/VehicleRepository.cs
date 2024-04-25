@@ -53,7 +53,7 @@ namespace TransportRegister.Server.Repositories.Implementations
 
         public async Task SaveVehicleAsync(Vehicle vehicle)
         {
-            if (vehicle.VehicleId == 0)
+            if (vehicle.VehicleId == default)
             {
                 _context.Vehicles.Add(vehicle);
             }
