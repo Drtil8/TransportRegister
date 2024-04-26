@@ -11,12 +11,23 @@ namespace TransportRegister.Server.Seeds
             {
                 new()
                 {
-                    StolenOn = DateTime.Now,
-                    ReportedOn = DateTime.Now,
-                    FoundOn = DateTime.Now,
+                    StolenOn = DateTime.Parse("2024-02-03"),
+                    ReportedOn = DateTime.Parse("2024-02-03"),
+                    FoundOn = DateTime.Parse("2024-02-27"),
                     Description = "Krádež motorového vozidla",
-
                     VehicleId = 1,
+                    ReportingOfficerId = "39123a3c-3ce3-4bcc-8887-eb7d8e975ea8",
+                    ResolvingOfficerId = "39123a3c-3ce3-4bcc-8887-eb7d8e975ea8",
+                    OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
+                    ReportingPersonId = 1
+                },
+                new()
+                {
+                    StolenOn = DateTime.Parse("2024-03-15"),
+                    ReportedOn = DateTime.Parse("2024-03-16"),
+                    FoundOn = null,
+                    Description = "Krádež2",
+                    VehicleId = 3,
                     ReportingOfficerId = "39123a3c-3ce3-4bcc-8887-eb7d8e975ea8",
                     ResolvingOfficerId = "39123a3c-3ce3-4bcc-8887-eb7d8e975ea8",
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",

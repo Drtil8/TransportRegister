@@ -1,38 +1,30 @@
-﻿import { Component } from 'react';
+﻿import React, { Component } from 'react';
+import { Col, Row } from 'reactstrap';
+import IDtFetchData from './interfaces/datatables/IDtFetchData';
+import VehicleDatatable from './VehicleDatatable';
 
-
-/// TODO Outdated? main page will be diffrent, VehicleList will not be used
-
-interface CounterState {
-  currentCount: number;
-}
-
-export class VehicleList extends Component<object, CounterState> {
-  static displayName = VehicleList.name;
-
+// todo change to search later
+export class VehicleList extends Component<object> {
+  fetchDataRef: React.MutableRefObject<IDtFetchData | null> = { current: null };
   constructor(props: object) {
     super(props);
-    this.state = { currentCount: 0 };
-    this.incrementCounter = this.incrementCounter.bind(this);
-  }
-
-  incrementCounter() {
-    this.setState({
-      currentCount: this.state.currentCount + 1
-    });
   }
 
   render() {
     return (
-      <div>
-        <h1>VehicleList</h1>
-
-        <p>This is a simple example of a React component.</p>
-
-        <p aria-live="polite">Current count: <strong>{this.state.currentCount}</strong></p>
-
-        <button className="btn btn-primary" onClick={this.incrementCounter}>Increment</button>
-      </div>
+      <>
+        <Row>
+          <Col>
+            <h4>Vozidla</h4>
+          </Col>
+          <Col className="d-flex justify-content-end">
+            {/*<CreateVehicleModal />*/}
+          </Col>
+        </Row>
+        <VehicleDatatable fetchDataRef={this.fetchDataRef} />
+      </>
     );
   }
 }
+
+export default VehicleList;

@@ -8,18 +8,15 @@ interface IDriverDetail {
   id: number;
 }
 interface DriverDetailState {
-  id: number;
   activeTab: string;
 }
 export class DriverDetail extends Component<IDriverDetail, DriverDetailState> {
   constructor(props: IDriverDetail) {
     super(props);
     this.state = {
-      id: props.id,
       activeTab: 'detail',
     };
   }
-
 
   toggleTab = (tab: string) => {
     if (this.state.activeTab !== tab) {

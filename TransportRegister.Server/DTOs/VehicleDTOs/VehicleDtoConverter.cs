@@ -3,9 +3,9 @@ using System.Text.Json.Serialization;
 
 namespace TransportRegister.Server.DTOs.VehicleDTOs
 {
-    public class VehicleDtoConverter : JsonConverter<VehicleDto>
+    public class VehicleDtoConverter : JsonConverter<VehicleDetailDto>
     {
-        public override VehicleDto Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override VehicleDetailDto Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             JsonDocument jsonDocument = JsonDocument.ParseValue(ref reader);
             JsonElement vehicleTypeProp = jsonDocument.RootElement.GetProperty("vehicleType");
@@ -28,7 +28,7 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
             };
         }
 
-        public override void Write(Utf8JsonWriter writer, VehicleDto value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, VehicleDetailDto value, JsonSerializerOptions options)
         {
             JsonSerializer.Serialize(writer, value, value.GetType(), options);
         }

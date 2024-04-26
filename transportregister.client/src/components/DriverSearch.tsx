@@ -19,7 +19,7 @@ export class DriverSearch extends Component<object> {
           <Col>
             inputy pro vyhledavani
           </Col>
-          <Link to="/driver/{i}Example">
+          <Link to="/driver/1">
             <Button color="primary">Example driver detail</Button>
           </Link>
         </Row>

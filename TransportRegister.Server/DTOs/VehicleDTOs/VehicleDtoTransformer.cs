@@ -4,7 +4,7 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
 {
     public abstract class VehicleDtoTransformer
     {
-        public static VehicleDto TransformToDto(Vehicle vehicle)
+        public static VehicleDetailDto TransformToDto(Vehicle vehicle)
         {
             return vehicle switch
             {
@@ -23,7 +23,7 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
                     HeightCM = car.Height_CM,
                     LoadCapacityKG = car.LoadCapacity_KG,
                     VehicleType = "Car",
-                    NumberOfDoors = car.NumberOfDoors
+                    NumberOfDoors = car.NumberOfDoors,
                 },
                 Motorcycle motorcycle => new MotorcycleDto
                 {
@@ -79,8 +79,8 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
                 _ => null
             };
         }
-        
-        public static Vehicle TransformToEntity(VehicleDto dto)
+
+        public static Vehicle TransformToEntity(VehicleDetailDto dto)
         {
             return dto switch
             {

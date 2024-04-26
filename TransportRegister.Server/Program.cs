@@ -1,13 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
-using System.Text.Json.Serialization;
 using TransportRegister.Server.Configurations;
 using TransportRegister.Server.Data;
-using TransportRegister.Server.DTOs.VehicleDTOs;
 using TransportRegister.Server.Models;
 using TransportRegister.Server.Repositories;
-using TransportRegister.Server.Repositories.VehicleRepository;
+using TransportRegister.Server.Repositories.Implementations;
 using TransportRegister.Server.Seeds;
 
 namespace TransportRegister.Server
@@ -35,18 +33,20 @@ namespace TransportRegister.Server
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders()
                 .AddRoles<IdentityRole>();
-            
+
             // Repositories
             builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
-            
+            builder.Services.AddScoped<ITheftRepository, TheftRepository>();
+
+            // todo convertors create unreadable array objects from client side
             // Convertors
-            builder.Services.AddControllers().AddJsonOptions(options =>
-            {
-                options.JsonSerializerOptions.Converters.Add(new VehicleDtoConverter());
-                // Preventing cyclic dependencies
-                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-            });
-            
+            //builder.Services.AddControllers().AddJsonOptions(options =>
+            //{
+            //    options.JsonSerializerOptions.Converters.Add(new VehicleDtoConverter());
+            //    // Preventing cyclic dependencies
+            //    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+            //});
+
             // Cookies settings
             builder.Services.ConfigureApplicationCookie(options =>
             {
