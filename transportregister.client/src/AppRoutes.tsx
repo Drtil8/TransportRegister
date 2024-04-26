@@ -4,11 +4,12 @@ import VehicleSearch from "./components/VehicleSearch";
 import DriverSearch from "./components/DriverSearch";
 import DriverCreate from "./components/DriverCreate";
 import VehicleCreate from "./components/VehicleCreate";
-import OffenceCreate from "./components/OffenceCreate";
-import OffencePending from "./components/OffencePending";
+import OffenceCreate from "./components/offence/OffenceCreate";
+import OffencePending from "./components/offence/OffencePending";
 import TheftCreate from "./components/TheftCreate";
 import TheftFound from "./components/TheftFound";
 import DriverDetail from "./components/DriverDetail";
+import OffenceDetail from "./components/offence/OffenceDetail";
 import VehicleDetail from "./components/VehicleDetail";
 
 const AppRoutes = [
@@ -60,6 +61,11 @@ const AppRoutes = [
   {
     path: '/offencePending',
     element: <OffencePending />,
+    isProtected: true
+  },
+  {
+    path: '/offenceDetail',
+    element: <OffenceDetail />,
     isProtected: true
   },
   {
