@@ -69,7 +69,7 @@ public static class UserSeed
                 Email = officialEmail,
                 PhoneNumber = officialTelephone,
                 EmailConfirmed = true,
-                IsValid = false,
+                IsValid = true,
                 IsActive = true,
             };
             await userManager.CreateAsync(officialUser, "Official123");
@@ -79,6 +79,32 @@ public static class UserSeed
             if (official is not null)
             {
                 await userManager.AddToRoleAsync(official, roleOfficial);
+            }
+        }
+
+        const string officialId2 = "26c13c10-18e6-4967-8ff3-fc9a76421333";
+        if (await userManager.FindByIdAsync(officialId2) == null)
+        {
+            const string officialEmail2 = "official2@example.com";
+            const string officialTelephone2 = "+420 789 789";
+            var officialUser2 = new Official()
+            {
+                Id = officialId2,
+                FirstName = "Pavel",
+                LastName = "Nedvìd",
+                UserName = officialEmail2,
+                Email = officialEmail2,
+                PhoneNumber = officialTelephone2,
+                EmailConfirmed = true,
+                IsValid = true,
+                IsActive = true,
+            };
+            await userManager.CreateAsync(officialUser2, "Official123");
+
+            var official2 = await userManager.FindByEmailAsync(officialEmail2);
+            if (official2 is not null)
+            {
+                await userManager.AddToRoleAsync(official2, roleOfficial);
             }
         }
     }
@@ -101,7 +127,7 @@ public static class UserSeed
                 EmailConfirmed = true,
                 PersonalId = 123456789,
                 Rank = "President",
-                IsValid = false,
+                IsValid = true,
                 IsActive = true,
             };
             await userManager.CreateAsync(officerUser, "Officer123");
