@@ -34,12 +34,12 @@ class OffenceCreate extends Component {
                   <Input type="textarea" />
                 </FormGroup>
               </Row>
-              <Row>
-                <FormGroup>
-                  <Label>Datum a čas:</Label>
-                  <Input type="datetime-local" />
-                </FormGroup>
-              </Row>
+              {/*<Row>*/}
+              {/*  <FormGroup>*/}
+              {/*    <Label>Datum a čas:</Label>*/}
+              {/*    <Input type="datetime-local" />*/}
+              {/*  </FormGroup>*/}
+              {/*</Row>*/}
               <Row>
                 <FormGroup>
                   <Label>Místo činu:</Label>
