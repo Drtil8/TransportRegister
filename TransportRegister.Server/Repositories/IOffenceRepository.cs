@@ -5,15 +5,15 @@ namespace TransportRegister.Server.Repositories
 {
     public interface IOffenceRepository
     {
-        Task<IEnumerable<OffenceListItemDto>> GetUnresolvedOfficialsOffences(string officialId);
-        Task<IEnumerable<OffenceListItemDto>> GetPersonsOffences(int personId);
-        Task<IEnumerable<OffenceListItemDto>> GetVehiclesOffences(int vehicleId);
-        Task<OffenceDetailDto> GetOffenceById(int offenceId);
-        Task<bool> AssignOffenceToOfficial(Offence offence); //(int offenceId);
-        Task<int> ReportOffence(OffenceCreateDto offenceDto);
-        Task<int> ResolveOffence(int offenceId, bool action);
-        Task<int> EditOffence(OffenceDetailDto offenceDto); // TODO -> change dto?
-        Task<bool> DeleteOffence(int offenceId);
+        Task<IEnumerable<OffenceListItemDto>> GetUnresolvedOfficialsOffencesAsync(string officialId);
+        Task<IEnumerable<OffenceListItemDto>> GetPersonsOffencesAsync(int personId);
+        Task<IEnumerable<OffenceListItemDto>> GetVehiclesOffencesAsync(int vehicleId);
+        Task<OffenceDetailDto> GetOffenceByIdAsync(int offenceId);
+        Task<bool> AssignOffenceToOfficialAsync(Offence offence); //(int offenceId);
+        Task<Offence> ReportOffenceAsync(OffenceCreateDto offenceDto);
+        Task<bool> ResolveOffenceAsync(int offenceId, bool action);
+        Task<int> EditOffenceAsync(OffenceDetailDto offenceDto); // TODO -> change dto?
+        Task<bool> DeleteOffenceAsync(int offenceId);
         // TODO -> define methods
     }
 }

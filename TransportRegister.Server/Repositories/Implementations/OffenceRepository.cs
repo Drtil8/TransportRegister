@@ -11,7 +11,7 @@ namespace TransportRegister.Server.Repositories.Implementations
     {
         private readonly AppDbContext _context = context;
 
-        public async Task<IEnumerable<OffenceListItemDto>> GetUnresolvedOfficialsOffences(string officialId)
+        public async Task<IEnumerable<OffenceListItemDto>> GetUnresolvedOfficialsOffencesAsync(string officialId)
         {
             var offences = await _context.Offences
                 .Where(of => of.OfficialId == officialId && !of.IsApproved && of.IsValid)
@@ -31,7 +31,7 @@ namespace TransportRegister.Server.Repositories.Implementations
             return offences;
         }
 
-        public async Task<IEnumerable<OffenceListItemDto>> GetPersonsOffences(int personId)
+        public async Task<IEnumerable<OffenceListItemDto>> GetPersonsOffencesAsync(int personId)
         {
             // TODO
             var offences = await _context.Offences
@@ -52,7 +52,7 @@ namespace TransportRegister.Server.Repositories.Implementations
             return offences;
         }
 
-        public async Task<IEnumerable<OffenceListItemDto>> GetVehiclesOffences(int vehicleId)
+        public async Task<IEnumerable<OffenceListItemDto>> GetVehiclesOffencesAsync(int vehicleId)
         {
             // TODO 
             var offences = await _context.Offences
@@ -73,7 +73,7 @@ namespace TransportRegister.Server.Repositories.Implementations
             return offences;
         }
 
-        public async Task<OffenceDetailDto> GetOffenceById(int offenceId)
+        public async Task<OffenceDetailDto> GetOffenceByIdAsync(int offenceId)
         {
             var offenceDto = await _context.Offences
                 .Where(of => of.OffenceId == offenceId)
@@ -106,10 +106,15 @@ namespace TransportRegister.Server.Repositories.Implementations
                     }
             }).FirstOrDefaultAsync();
 
+            if (offenceDto == null)
+            {
+                return null;
+            }
+
             return offenceDto;
         }
 
-        public async Task<bool> AssignOffenceToOfficial(Offence offence) //(int offenceId)
+        public async Task<bool> AssignOffenceToOfficialAsync(Offence offence) //(int offenceId)
         {
             // need to get official with least offences and wchich is not on vacation
             //var offence = await _context.Offences.FindAsync(offenceId); // one less query
@@ -130,12 +135,13 @@ namespace TransportRegister.Server.Repositories.Implementations
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<int> ReportOffence(OffenceCreateDto offenceDto)
+        public async Task<Offence> ReportOffenceAsync(OffenceCreateDto offenceDto)
         {
             // TODO -> implement
+            return null;
         }
 
-        public async Task<bool> ResolveOffence(int offenceId, bool action)
+        public async Task<bool> ResolveOffenceAsync(int offenceId, bool action)
         {
             var offence = await _context.Offences.FindAsync(offenceId);
             if (offence == null)
@@ -153,12 +159,13 @@ namespace TransportRegister.Server.Repositories.Implementations
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<int> EditOffence(OffenceDetailDto offenceDto)
+        public async Task<int> EditOffenceAsync(OffenceDetailDto offenceDto)
         {
             // TODO -> implement
+            return -1;
         }
 
-        public async Task<bool> DeleteOffence(int offenceId)
+        public async Task<bool> DeleteOffenceAsync(int offenceId)
         { 
             var offence = await _context.Offences.FindAsync(offenceId);
             if (offence == null)
