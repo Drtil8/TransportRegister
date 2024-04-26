@@ -15,6 +15,8 @@ namespace TransportRegister.Server.DTOs.OffenceDTOs
         public string Description { get; set; }
         public VehicleListItemDto Vehicle { get; set; } // TODO -> mby do smaller dto when vehicle is just used for display
         //TODO -> add personDto
+        // TODO -> officerDto
+        // TODO -> officialDto ??
         public FineDetailDto Fine { get; set; }
     }
 }
