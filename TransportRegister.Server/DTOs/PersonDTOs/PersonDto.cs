@@ -43,7 +43,7 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
     
     public class OwnerDto : PersonDto
     {
-        public IEnumerable<VehicleDto> Vehicles { get; set; }
+        public IEnumerable<VehicleDetailDto> Vehicles { get; set; }
     }
 }
 

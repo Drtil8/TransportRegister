@@ -3,7 +3,7 @@ using TransportRegister.Server.Data;
 using TransportRegister.Server.DTOs.LicensePlateHistoryDTOs;
 using TransportRegister.Server.DTOs.PersonDTOs;
 using TransportRegister.Server.Models;
-using TransportRegister.Server.Repositories.VehicleRepository;
+using TransportRegister.Server.Repositories.Implementations;
 
 namespace TransportRegister.Server.Repositories.DriverRepository
 {
