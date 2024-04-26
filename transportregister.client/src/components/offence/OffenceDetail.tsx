@@ -1,5 +1,5 @@
-﻿import { Component, FormEvent } from 'react';
-import { Col, Form, FormGroup, Input, Label, Row } from 'reactstrap';
+﻿import { Component } from 'react';
+import { Col, Row } from 'reactstrap';
 //import LocationPicker from '../location/LocationPicker';
 
 interface OffenceDetailProps {
