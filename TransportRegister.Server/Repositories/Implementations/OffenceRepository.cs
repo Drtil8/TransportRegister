@@ -27,7 +27,7 @@ namespace TransportRegister.Server.Repositories.Implementations
                     IsPaid = !of.Fine.IsActive,
                     Amount = of.Fine.Amount
                 }).ToListAsync();
-        
+
             return offences;
         }
 
@@ -104,7 +104,7 @@ namespace TransportRegister.Server.Repositories.Implementations
                         IsActive = of.Fine.IsActive,
                         IsPaid = !of.Fine.IsActive
                     }
-            }).FirstOrDefaultAsync();
+                }).FirstOrDefaultAsync();
 
             if (offenceDto == null)
             {
@@ -151,7 +151,7 @@ namespace TransportRegister.Server.Repositories.Implementations
 
             offence.IsApproved = action;
 
-            if(!action) // If offence is denied -> it is also taken as invalid
+            if (!action) // If offence is denied -> it is also taken as invalid
             {
                 offence.IsValid = action;
             }
@@ -166,7 +166,7 @@ namespace TransportRegister.Server.Repositories.Implementations
         }
 
         public async Task<bool> DeleteOffenceAsync(int offenceId)
-        { 
+        {
             var offence = await _context.Offences.FindAsync(offenceId);
             if (offence == null)
             {

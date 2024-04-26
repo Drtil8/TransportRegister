@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
 
 namespace TransportRegister.Server.Models
 {

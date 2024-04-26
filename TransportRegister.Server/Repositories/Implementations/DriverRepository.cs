@@ -1,11 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TransportRegister.Server.Data;
-using TransportRegister.Server.DTOs.LicensePlateHistoryDTOs;
-using TransportRegister.Server.DTOs.PersonDTOs;
 using TransportRegister.Server.Models;
-using TransportRegister.Server.Repositories.Implementations;
+using TransportRegister.Server.Repositories.DriverRepository;
 
-namespace TransportRegister.Server.Repositories.DriverRepository
+namespace TransportRegister.Server.Repositories.Implementations
 {
     public class DriverRepository : IDriverRepository
     {
@@ -61,11 +59,11 @@ namespace TransportRegister.Server.Repositories.DriverRepository
 
             // Convert to DTO ??
             var result = driversWithPoints
-                .Select(item => Tuple.Create((item.Driver), item.Points))
+                .Select(item => Tuple.Create(item.Driver, item.Points))
                 .ToList();
 
             return result;
-        }      
+        }
 
     }
 }

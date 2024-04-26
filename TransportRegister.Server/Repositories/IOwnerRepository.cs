@@ -1,5 +1,5 @@
 ﻿using TransportRegister.Server.Models;
-namespace TransportRegister.Server.Repositories.OwnerRepository
+namespace TransportRegister.Server.Repositories
 
 {
     public interface IOwnerRepository
@@ -8,6 +8,6 @@ namespace TransportRegister.Server.Repositories.OwnerRepository
         Task SaveOwnerAsync(Owner owner);
         Task DeleteOwnerAsync(int ownerId);
         Task<Owner> GetOwnerByIdAsync(int ownerId);
-        
+
     }
 }

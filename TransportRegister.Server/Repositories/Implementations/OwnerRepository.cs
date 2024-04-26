@@ -1,7 +1,7 @@
-﻿using TransportRegister.Server.Data;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using TransportRegister.Server.Data;
 using TransportRegister.Server.Models;
-namespace TransportRegister.Server.Repositories.OwnerRepository
+namespace TransportRegister.Server.Repositories.Implementations
 {
     public class OwnerRepository : IOwnerRepository
     {
@@ -42,7 +42,7 @@ namespace TransportRegister.Server.Repositories.OwnerRepository
             }
         }
 
-        public async Task <Owner> GetOwnerByIdAsync(int ownerId)
+        public async Task<Owner> GetOwnerByIdAsync(int ownerId)
         {
             return await _context.Owners
                 .Include(o => o.Vehicles)

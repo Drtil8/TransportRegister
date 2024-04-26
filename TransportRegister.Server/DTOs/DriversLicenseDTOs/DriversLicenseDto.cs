@@ -1,6 +1,4 @@
-﻿using TransportRegister.Server.Models;
-
-namespace TransportRegister.Server.DTOs.DriversLicenseDTOs
+﻿namespace TransportRegister.Server.DTOs.DriversLicenseDTOs
 {
     public enum VehicleType
     {

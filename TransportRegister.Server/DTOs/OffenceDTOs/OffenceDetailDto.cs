@@ -1,5 +1,4 @@
-﻿using Microsoft.Identity.Client;
-using TransportRegister.Server.DTOs.FineDTOs;
+﻿using TransportRegister.Server.DTOs.FineDTOs;
 using TransportRegister.Server.DTOs.VehicleDTOs;
 
 namespace TransportRegister.Server.DTOs.OffenceDTOs

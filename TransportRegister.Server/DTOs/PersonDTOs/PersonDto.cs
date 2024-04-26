@@ -1,7 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using TransportRegister.Server.DTOs.DriversLicenseDTOs;
+﻿using TransportRegister.Server.DTOs.DriversLicenseDTOs;
 using TransportRegister.Server.DTOs.VehicleDTOs;
-using TransportRegister.Server.Models;
 
 namespace TransportRegister.Server.DTOs.PersonDTOs
 {
@@ -40,7 +38,7 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
 
         public IEnumerable<DriversLicenseDto> Licenses { get; set; } // Licenses DTo
     }
-    
+
     public class OwnerDto : PersonDto
     {
         public IEnumerable<VehicleDetailDto> Vehicles { get; set; }
