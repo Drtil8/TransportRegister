@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TransportRegister.Server.Data;
 using TransportRegister.Server.DTOs.OffenceDTOs;
@@ -13,11 +14,13 @@ namespace TransportRegister.Server.Controllers
     {
         private readonly AppDbContext _context;
         private readonly IOffenceRepository _offenceRepository;
+        private readonly UserManager<User> _userManager;
 
-        public OffenceController(AppDbContext context, IOffenceRepository offenceRepository)
+        public OffenceController(AppDbContext context, IOffenceRepository offenceRepository, UserManager<User> userManager)
         {
             _context = context;
             _offenceRepository = offenceRepository;
+            _userManager = userManager;
         }
 
         ////////////////// GET METHODS //////////////////
@@ -58,7 +61,8 @@ namespace TransportRegister.Server.Controllers
         [Authorize(Roles = "Officer")]
         public async Task<ActionResult<int>> ReportOffence(OffenceCreateDto offenceDto)
         {
-            var offence = await _offenceRepository.ReportOffenceAsync(offenceDto);
+            var activeUser = await _userManager.GetUserAsync(User);
+            var offence = await _offenceRepository.ReportOffenceAsync(offenceDto, activeUser);
 
             if (offence == null)
             {
@@ -102,6 +106,32 @@ namespace TransportRegister.Server.Controllers
 
             //return NoContent();
             return Ok();
+        }
+
+        [HttpPut("{id}/Approve")]
+        [Authorize(Roles = "Official")]
+        public async Task<IActionResult> ApproveOffence(int id, OffenceCreateDto offenceDto)
+        {
+            var result = await _offenceRepository.ApproveOffenceAsync(id, offenceDto);
+            if (!result)
+            {
+                return BadRequest("Přestupek se nepodařilo schválit.");
+            }
+
+            return Ok("Přestupek byl úspěšně schálen.");
+        }
+
+        [HttpPut("{offenceId}/Decline")]
+        [Authorize(Roles = "Official")]
+        public async Task<IActionResult> DeclineOffence(int offenceId)
+        {
+            var result = await _offenceRepository.DeclineOffenceAsync(offenceId);
+            if (!result)
+            {
+                return BadRequest("Přestupek se nepodařilo zamítnout.");
+            }
+
+            return Ok("Přestupek byl úspěšně zamítnut.");
         }
 
         ////////////////// DELETE METHODS //////////////////
