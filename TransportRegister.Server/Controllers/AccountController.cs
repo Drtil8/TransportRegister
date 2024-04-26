@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using TransportRegister.Server.DTOs.UserDTOs;
 using TransportRegister.Server.Models;
-using TransportRegister.Server.ViewModels;
 
 namespace TransportRegister.Server.Controllers;
 
@@ -17,14 +18,18 @@ public class AccountController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginViewModel model)
+    [Produces("application/json")]
+    public async Task<IActionResult> Login([FromBody] LoginDto model)
     {
         if (ModelState.IsValid)
         {
             var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
             if (result.Succeeded)
             {
-                return Ok();
+                string role = null;
+                if (User.Identity is { IsAuthenticated: true })
+                    role = User.FindFirstValue(ClaimTypes.Role);
+                return Ok(new { role });
             }
             else
             {
@@ -44,7 +49,15 @@ public class AccountController : ControllerBase
     [HttpGet("IsLoggedIn")]
     public IActionResult IsLoggedIn()
     {
-        return Ok(new { IsLoggedIn = User.Identity is { IsAuthenticated: true } });
+        string role = null;
+        bool isLoggedIn = User.Identity is { IsAuthenticated: true };
+        if (isLoggedIn)
+            role = User.FindFirstValue(ClaimTypes.Role);
+        return Ok(new
+        {
+            IsLoggedIn = isLoggedIn,
+            Email = User.Identity?.Name,
+            Role = role
+        });
     }
-
 }

@@ -11,10 +11,12 @@ namespace TransportRegister.Server.Seeds
             {
                 new()
                 {
-                    FineId = 1,
+                    //FineId = 1,
                     OffenceId = 1,
                     Amount= 5000,
-                    PaidOn = DateOnly.Parse("2024-04-11"),
+                    IsActive = true, // Not yet paid
+                    DueDate = DateOnly.Parse("2024-05-20"),
+                    //PaidOn = DateOnly.Parse("2024-04-11"),
                 }
             };
             foreach (var fine in finesToSeed)
@@ -22,12 +24,12 @@ namespace TransportRegister.Server.Seeds
                 context.Fines.Add(fine);
                 context.SaveChanges();
 
-                var offence = context.Offences.FirstOrDefault(o => o.OffenceId == 1);
-                if (offence != null)
-                {
-                    offence.FineId = fine.FineId;
-                    context.SaveChanges();
-                }
+                //var offence = context.Offences.FirstOrDefault(o => o.OffenceId == 4); // TODO redo
+                //if (offence != null)
+                //{
+                //    //offence.FineId = fine.FineId;
+                //    context.SaveChanges();
+                //}
             }
         }
     }

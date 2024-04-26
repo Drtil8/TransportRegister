@@ -15,6 +15,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
     public DbSet<LicensePlateHistory> LicensePlates { get; set; }
     public DbSet<Offence> Offences { get; set; }
     public DbSet<Theft> Thefts { get; set; }
+    public DbSet<Official> Officials { get; set; }
+    public DbSet<Officer> Officers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -122,9 +124,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
             .HasForeignKey(i => i.ReportingPersonId);
 
         // Offence
-        modelBuilder.Entity<Offence>()
-            .HasOne(o => o.Fine)
-            .WithOne(c => c.IssuedFor)
-            .HasForeignKey<Fine>(i => i.FineId);
+        //modelBuilder.Entity<Offence>()
+        //    .HasOne(o => o.Fine)
+        //    .WithOne(c => c.IssuedFor)
+        //    .HasForeignKey<Fine>(i => i.FineId)
+        //    .IsRequired();
     }
 }

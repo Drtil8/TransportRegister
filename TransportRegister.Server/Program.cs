@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using TransportRegister.Server.Configurations;
 using TransportRegister.Server.Data;
 using TransportRegister.Server.Models;
+using TransportRegister.Server.Repositories;
+using TransportRegister.Server.Repositories.Implementations;
 using TransportRegister.Server.Seeds;
 
 namespace TransportRegister.Server
@@ -11,17 +14,15 @@ namespace TransportRegister.Server
     {
         public static async Task Main(string[] args)
         {
+            // Set default czech datetime format
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("cs-CZ");
+
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // Add services to the container
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-
-            // Add in-memory database
-            //builder.Services.AddDbContext<AppDbContext>(options => 
-            //options.UseInMemoryDatabase("TransportRegisterDb"));
 
             // MSSQL database
             builder.Services.AddDbContext<AppDbContext>(options =>
@@ -30,7 +31,22 @@ namespace TransportRegister.Server
             // User authentication
             builder.Services.AddIdentity<User, IdentityRole>(IdentityConfiguration.ConfigureIdentityOptions)
                 .AddEntityFrameworkStores<AppDbContext>()
-                .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders()
+                .AddRoles<IdentityRole>();
+
+            // Repositories
+            builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
+            builder.Services.AddScoped<ITheftRepository, TheftRepository>();
+            builder.Services.AddScoped<IOffenceRepository, OffenceRepository>();
+
+            // todo convertors create unreadable array objects from client side
+            // Convertors
+            //builder.Services.AddControllers().AddJsonOptions(options =>
+            //{
+            //    options.JsonSerializerOptions.Converters.Add(new VehicleDtoConverter());
+            //    // Preventing cyclic dependencies
+            //    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+            //});
 
             // Cookies settings
             builder.Services.ConfigureApplicationCookie(options =>
@@ -75,6 +91,7 @@ namespace TransportRegister.Server
                     .AllowAnyHeader()
                     .AllowCredentials();
             });
+            app.UseCors("AllowSpecificOrigin");
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
@@ -90,7 +107,6 @@ namespace TransportRegister.Server
 
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseCors("AllowSpecificOrigin");
 
             app.MapControllers();
 

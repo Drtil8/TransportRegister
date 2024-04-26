@@ -12,15 +12,15 @@ using TransportRegister.Server.Data;
 namespace TransportRegister.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240415165041_NewModels")]
-    partial class NewModels
+    [Migration("20240426091118_InitDb")]
+    partial class InitDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.3")
+                .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -188,10 +188,16 @@ namespace TransportRegister.Server.Migrations
             modelBuilder.Entity("TransportRegister.Server.Models.Fine", b =>
                 {
                     b.Property<int>("FineId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FineId"));
 
                     b.Property<double>("Amount")
                         .HasColumnType("float");
+
+                    b.Property<DateOnly>("DueDate")
+                        .HasColumnType("date");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -203,6 +209,9 @@ namespace TransportRegister.Server.Migrations
                         .HasColumnType("date");
 
                     b.HasKey("FineId");
+
+                    b.HasIndex("OffenceId")
+                        .IsUnique();
 
                     b.ToTable("Fines");
                 });
@@ -242,8 +251,8 @@ namespace TransportRegister.Server.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("FineId")
-                        .HasColumnType("int");
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsValid")
                         .HasColumnType("bit");
@@ -253,6 +262,9 @@ namespace TransportRegister.Server.Migrations
 
                     b.Property<string>("OfficialId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("PenaltyPoints")
+                        .HasColumnType("int");
 
                     b.Property<int>("PersonId")
                         .HasColumnType("int");
@@ -297,6 +309,9 @@ namespace TransportRegister.Server.Migrations
 
                     b.Property<string>("FirstName")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
@@ -396,9 +411,6 @@ namespace TransportRegister.Server.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsAdmin")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsValid")
                         .HasColumnType("bit");
 
@@ -480,6 +492,9 @@ namespace TransportRegister.Server.Migrations
 
                     b.Property<double>("Horsepower_KW")
                         .HasColumnType("float");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Length_CM")
                         .HasColumnType("float");
@@ -679,13 +694,13 @@ namespace TransportRegister.Server.Migrations
 
             modelBuilder.Entity("TransportRegister.Server.Models.Fine", b =>
                 {
-                    b.HasOne("TransportRegister.Server.Models.Offence", "IssuedFor")
+                    b.HasOne("TransportRegister.Server.Models.Offence", "Offence")
                         .WithOne("Fine")
-                        .HasForeignKey("TransportRegister.Server.Models.Fine", "FineId")
+                        .HasForeignKey("TransportRegister.Server.Models.Fine", "OffenceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("IssuedFor");
+                    b.Navigation("Offence");
                 });
 
             modelBuilder.Entity("TransportRegister.Server.Models.LicensePlateHistory", b =>
@@ -721,6 +736,39 @@ namespace TransportRegister.Server.Migrations
                         .HasForeignKey("VehicleId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.OwnsOne("TransportRegister.Server.Models.Address", "Address", b1 =>
+                        {
+                            b1.Property<int>("OffenceId")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("City")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Country")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<int>("HouseNumber")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("PostalCode")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("State")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Street")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("OffenceId");
+
+                            b1.ToTable("Offences");
+
+                            b1.WithOwner()
+                                .HasForeignKey("OffenceId");
+                        });
+
+                    b.Navigation("Address");
 
                     b.Navigation("CommitedBy");
 
