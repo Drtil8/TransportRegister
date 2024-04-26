@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace TransportRegister.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class NewModels : Migration
+    public partial class InitDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -31,7 +32,6 @@ namespace TransportRegister.Server.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     IsValid = table.Column<bool>(type: "bit", nullable: false),
-                    IsAdmin = table.Column<bool>(type: "bit", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserType = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
@@ -172,14 +172,15 @@ namespace TransportRegister.Server.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BirthNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Sex_Male = table.Column<bool>(type: "bit", nullable: false),
+                    DateOfBirth = table.Column<DateOnly>(type: "date", nullable: false),
                     Address_Street = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Address_City = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Address_State = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Address_Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Address_HouseNumber = table.Column<int>(type: "int", nullable: true),
                     Address_PostalCode = table.Column<int>(type: "int", nullable: true),
-                    DateOfBirth = table.Column<DateOnly>(type: "date", nullable: false),
-                    Sex_Male = table.Column<bool>(type: "bit", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OfficialId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Discriminator = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
                     DriversLicenseNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -237,6 +238,7 @@ namespace TransportRegister.Server.Migrations
                     Width_CM = table.Column<double>(type: "float", nullable: false),
                     Height_CM = table.Column<double>(type: "float", nullable: false),
                     LoadCapacity_KG = table.Column<double>(type: "float", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OwnerId = table.Column<int>(type: "int", nullable: false),
                     OfficialId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     VehicleType = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
@@ -290,8 +292,15 @@ namespace TransportRegister.Server.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ReportedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsValid = table.Column<bool>(type: "bit", nullable: false),
+                    IsApproved = table.Column<bool>(type: "bit", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FineId = table.Column<int>(type: "int", nullable: true),
+                    PenaltyPoints = table.Column<int>(type: "int", nullable: false),
+                    Address_Street = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address_City = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address_State = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address_Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address_HouseNumber = table.Column<int>(type: "int", nullable: true),
+                    Address_PostalCode = table.Column<int>(type: "int", nullable: true),
                     VehicleId = table.Column<int>(type: "int", nullable: false),
                     OfficerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     OfficialId = table.Column<string>(type: "nvarchar(450)", nullable: true),
@@ -374,18 +383,20 @@ namespace TransportRegister.Server.Migrations
                 name: "Fines",
                 columns: table => new
                 {
-                    FineId = table.Column<int>(type: "int", nullable: false),
+                    FineId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Amount = table.Column<double>(type: "float", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     PaidOn = table.Column<DateOnly>(type: "date", nullable: false),
+                    DueDate = table.Column<DateOnly>(type: "date", nullable: false),
                     OffenceId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Fines", x => x.FineId);
                     table.ForeignKey(
-                        name: "FK_Fines_Offences_FineId",
-                        column: x => x.FineId,
+                        name: "FK_Fines_Offences_OffenceId",
+                        column: x => x.OffenceId,
                         principalTable: "Offences",
                         principalColumn: "OffenceId",
                         onDelete: ReferentialAction.Cascade);
@@ -422,6 +433,12 @@ namespace TransportRegister.Server.Migrations
                 name: "IX_DriversLicenses_DriverId",
                 table: "DriversLicenses",
                 column: "DriverId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Fines_OffenceId",
+                table: "Fines",
+                column: "OffenceId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_LicensePlates_VehicleId",
