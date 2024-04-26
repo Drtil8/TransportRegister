@@ -124,9 +124,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
             .HasForeignKey(i => i.ReportingPersonId);
 
         // Offence
-        modelBuilder.Entity<Offence>()
-            .HasOne(o => o.Fine)
-            .WithOne(c => c.IssuedFor)
-            .HasForeignKey<Fine>(i => i.FineId);
+        //modelBuilder.Entity<Offence>()
+        //    .HasOne(o => o.Fine)
+        //    .WithOne(c => c.IssuedFor)
+        //    .HasForeignKey<Fine>(i => i.FineId)
+        //    .IsRequired();
     }
 }
