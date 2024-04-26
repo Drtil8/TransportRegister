@@ -13,6 +13,7 @@
   widthCM: number;
   heightCM: number;
   loadCapacityKG: number;
+  imageBase64?: string;
 
   // todo probably load whole interface
   ownerId: number;

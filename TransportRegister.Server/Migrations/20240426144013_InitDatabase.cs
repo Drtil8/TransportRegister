@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace TransportRegister.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class InitDb : Migration
+    public partial class InitDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -237,7 +238,7 @@ namespace TransportRegister.Server.Migrations
                     Width_CM = table.Column<double>(type: "float", nullable: false),
                     Height_CM = table.Column<double>(type: "float", nullable: false),
                     LoadCapacity_KG = table.Column<double>(type: "float", nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Image = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     OwnerId = table.Column<int>(type: "int", nullable: false),
                     OfficialId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     VehicleType = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),

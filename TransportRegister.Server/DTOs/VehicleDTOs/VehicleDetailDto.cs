@@ -18,6 +18,7 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
         public double WidthCM { get; set; }
         public double HeightCM { get; set; }
         public double LoadCapacityKG { get; set; }
+        public string ImageBase64 { get; set; }
         public string VehicleType { get; set; }
         public int OwnerId { get; set; }
         public string OwnerFullName { get; set; }        // todo add to VehicleDtoConverter

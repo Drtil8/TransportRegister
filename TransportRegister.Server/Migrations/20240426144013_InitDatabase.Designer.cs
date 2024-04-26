@@ -12,8 +12,8 @@ using TransportRegister.Server.Data;
 namespace TransportRegister.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240426091118_InitDb")]
-    partial class InitDb
+    [Migration("20240426144013_InitDatabase")]
+    partial class InitDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -493,8 +493,8 @@ namespace TransportRegister.Server.Migrations
                     b.Property<double>("Horsepower_KW")
                         .HasColumnType("float");
 
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<byte[]>("Image")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<double>("Length_CM")
                         .HasColumnType("float");

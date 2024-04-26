@@ -8,18 +8,14 @@ export class VehicleDetail extends Component<object> {
 
   // todo later load Interface IVehicleDetail
   vehicleId = 1;
-
   async uploadVehicleFile(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     let formData = new FormData(document.getElementById("vehicleFileUpload") as HTMLFormElement);
     formData.append("vehicleId", String(this.vehicleId));
     try {
-      const response = await fetch(`/api/Vehicle/${this.vehicleId}/FileUpload`, {
+      const response = await fetch(`/api/Vehicle/${this.vehicleId}/UploadImage`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
         body: formData
       });
 
@@ -44,6 +40,7 @@ export class VehicleDetail extends Component<object> {
           </Col>
           <Col className="d-flex justify-content-end">
             {/*<CreateVehicleModal />*/}
+            {/*Image is in base64 <img src={`data:image/jpeg;base64,${imageSrc}`} alt="Vehicle" style={{ maxWidth: '100%' }} />*/}
           </Col>
         </Row>
 
