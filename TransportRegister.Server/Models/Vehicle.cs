@@ -14,9 +14,8 @@ public abstract class Vehicle
     public double Width_CM { get; set; }
     public double Height_CM { get; set; }
     public double LoadCapacity_KG { get; set; }
-    public byte?[] Image { get; set; } = default!;
-
-    public int OwnerId { get; set; }            // TODO: owner == štát (komunizmus !!)
+    public byte[] Image { get; set; } = default!;
+    public int OwnerId { get; set; }            // TODO: owner == ï¿½tï¿½t (komunizmus !!)
     public Owner Owner { get; set; }
     public string OfficialId { get; set; }
     public Official AddedByOfficial { get; set; }

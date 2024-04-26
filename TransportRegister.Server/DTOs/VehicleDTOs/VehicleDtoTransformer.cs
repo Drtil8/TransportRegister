@@ -22,6 +22,7 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
                     WidthCM = car.Width_CM,
                     HeightCM = car.Height_CM,
                     LoadCapacityKG = car.LoadCapacity_KG,
+                    ImageBase64 = car.Image != null ? Convert.ToBase64String(car.Image) : null,
                     VehicleType = "Car",
                     NumberOfDoors = car.NumberOfDoors,
                 },
@@ -39,6 +40,7 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
                     WidthCM = motorcycle.Width_CM,
                     HeightCM = motorcycle.Height_CM,
                     LoadCapacityKG = motorcycle.LoadCapacity_KG,
+                    ImageBase64 = motorcycle.Image != null ? Convert.ToBase64String(motorcycle.Image) : null,
                     VehicleType = "Motorcycle",
                     Constraints = motorcycle.Constraints
                 },
@@ -56,24 +58,26 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
                     WidthCM = bus.Width_CM,
                     HeightCM = bus.Height_CM,
                     LoadCapacityKG = bus.LoadCapacity_KG,
+                    ImageBase64 = bus.Image != null ? Convert.ToBase64String(bus.Image) : null,
                     VehicleType = "Bus",
                     SeatCapacity = bus.SeatCapacity,
                     StandingCapacity = bus.StandingCapacity
                 },
-                Truck bus => new TruckDto
+                Truck truck => new TruckDto
                 {
-                    VehicleId = bus.VehicleId,
-                    VIN = bus.VIN,
-                    Manufacturer = bus.Manufacturer,
-                    Model = bus.Model,
-                    HorsepowerKW = bus.Horsepower_KW,
-                    EngineVolumeCM3 = bus.EngineVolume_CM3,
-                    ManufacturedYear = bus.ManufacturedYear,
-                    Color = bus.Color,
-                    LengthCM = bus.Length_CM,
-                    WidthCM = bus.Width_CM,
-                    HeightCM = bus.Height_CM,
-                    LoadCapacityKG = bus.LoadCapacity_KG,
+                    VehicleId = truck.VehicleId,
+                    VIN = truck.VIN,
+                    Manufacturer = truck.Manufacturer,
+                    Model = truck.Model,
+                    HorsepowerKW = truck.Horsepower_KW,
+                    EngineVolumeCM3 = truck.EngineVolume_CM3,
+                    ManufacturedYear = truck.ManufacturedYear,
+                    Color = truck.Color,
+                    LengthCM = truck.Length_CM,
+                    WidthCM = truck.Width_CM,
+                    HeightCM = truck.Height_CM,
+                    LoadCapacityKG = truck.LoadCapacity_KG,
+                    ImageBase64 = truck.Image != null ? Convert.ToBase64String(truck.Image) : null,
                     VehicleType = "Truck"
                 },
                 _ => null
@@ -98,6 +102,7 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
                     Width_CM = carDto.WidthCM,
                     Height_CM = carDto.HeightCM,
                     LoadCapacity_KG = carDto.LoadCapacityKG,
+                    Image = !string.IsNullOrEmpty(carDto.ImageBase64) ? Convert.FromBase64String(carDto.ImageBase64) : null,
                     OwnerId = carDto.OwnerId,
                     OfficialId = carDto.OfficialId,
                     NumberOfDoors = carDto.NumberOfDoors
@@ -116,6 +121,7 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
                     Width_CM = motorcycleDto.WidthCM,
                     Height_CM = motorcycleDto.HeightCM,
                     LoadCapacity_KG = motorcycleDto.LoadCapacityKG,
+                    Image = !string.IsNullOrEmpty(motorcycleDto.ImageBase64) ? Convert.FromBase64String(motorcycleDto.ImageBase64) : null,
                     OwnerId = motorcycleDto.OwnerId,
                     OfficialId = motorcycleDto.OfficialId,
                     Constraints = motorcycleDto.Constraints
@@ -134,6 +140,7 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
                     Width_CM = busDto.WidthCM,
                     Height_CM = busDto.HeightCM,
                     LoadCapacity_KG = busDto.LoadCapacityKG,
+                    Image = !string.IsNullOrEmpty(busDto.ImageBase64) ? Convert.FromBase64String(busDto.ImageBase64) : null,
                     OwnerId = busDto.OwnerId,
                     OfficialId = busDto.OfficialId,
                     SeatCapacity = busDto.SeatCapacity,
@@ -153,6 +160,7 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
                     Width_CM = truckDto.WidthCM,
                     Height_CM = truckDto.HeightCM,
                     LoadCapacity_KG = truckDto.LoadCapacityKG,
+                    Image = !string.IsNullOrEmpty(truckDto.ImageBase64) ? Convert.FromBase64String(truckDto.ImageBase64) : null,
                     OwnerId = truckDto.OwnerId,
                     OfficialId = truckDto.OfficialId
                 },

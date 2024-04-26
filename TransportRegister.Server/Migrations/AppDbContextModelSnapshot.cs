@@ -490,8 +490,8 @@ namespace TransportRegister.Server.Migrations
                     b.Property<double>("Horsepower_KW")
                         .HasColumnType("float");
 
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<byte[]>("Image")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<double>("Length_CM")
                         .HasColumnType("float");
