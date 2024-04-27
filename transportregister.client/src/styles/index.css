@@ -49,3 +49,11 @@ nav .navbar-brand {
     grid-column: 2 / span 1;
     width: 150px;
 }
+
+.hidden {
+    display: none;
+}
+
+.hidden {
+    display: none;
+}
