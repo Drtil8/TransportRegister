@@ -15,6 +15,7 @@ namespace TransportRegister.Server.Repositories
         Task<bool> DeclineOffenceAsync(int offenceId);
         Task<int> EditOffenceAsync(int offenceId, OffenceDetailDto offenceDto); // TODO -> change dto?
         Task<bool> DeleteOffenceAsync(int offenceId);
+        Task<IEnumerable<OffenceTypeDto>> GetOffenceTypesAsync();
         // TODO -> define methods
     }
 }

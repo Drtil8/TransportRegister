@@ -114,6 +114,18 @@ namespace TransportRegister.Server.Repositories.Implementations
             return offenceDto;
         }
 
+        public async Task<IEnumerable<OffenceTypeDto>> GetOffenceTypesAsync()
+        {
+            var offenceTypes = await _context.OffenceTypes
+                .Select(ot => new OffenceTypeDto
+                {
+                    Id = ot.OffenceTypeId,
+                    Name = ot.Name,
+                }).ToListAsync();
+
+            return offenceTypes;
+        }
+
         public async Task<bool> AssignOffenceToOfficialAsync(Offence offence) //(int offenceId)
         {
             var official = (await _context.Officials.Where(of => of.IsValid && of.IsActive)
