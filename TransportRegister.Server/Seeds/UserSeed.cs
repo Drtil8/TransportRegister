@@ -64,7 +64,7 @@ public static class UserSeed
             {
                 Id = officialId,
                 FirstName = "Petr",
-                LastName = "�ech",
+                LastName = "�ech",
                 UserName = officialEmail,
                 Email = officialEmail,
                 PhoneNumber = officialTelephone,
@@ -91,7 +91,7 @@ public static class UserSeed
             {
                 Id = officialId2,
                 FirstName = "Pavel",
-                LastName = "Nedv�d",
+                LastName = "Nedv�d",
                 UserName = officialEmail2,
                 Email = officialEmail2,
                 PhoneNumber = officialTelephone2,
@@ -105,6 +105,32 @@ public static class UserSeed
             if (official2 is not null)
             {
                 await userManager.AddToRoleAsync(official2, roleOfficial);
+            }
+        }
+
+        const string officialId3 = "68b7c9cc-5c7a-4abc-bacf-9370c3777326";
+        if (await userManager.FindByIdAsync(officialId3) == null)
+        {
+            const string officialEmail = "official3@example.com";
+            const string officialTelephone2 = "+420 789 789";
+            var officialUser = new Official()
+            {
+                Id = officialId3,
+                FirstName = "Pepa",
+                LastName = "Brňák",
+                UserName = officialEmail,
+                Email = officialEmail,
+                PhoneNumber = officialTelephone2,
+                EmailConfirmed = true,
+                IsValid = true,
+                IsActive = true,
+            };
+            await userManager.CreateAsync(officialUser, "Official123");
+
+            var official = await userManager.FindByEmailAsync(officialEmail);
+            if (official is not null)
+            {
+                await userManager.AddToRoleAsync(official, roleOfficial);
             }
         }
     }
@@ -127,6 +153,35 @@ public static class UserSeed
                 EmailConfirmed = true,
                 PersonalId = 123456789,
                 Rank = "President",
+                IsValid = true,
+                IsActive = true,
+            };
+            await userManager.CreateAsync(officerUser, "Officer123");
+
+            // Add the user role
+            var officer = await userManager.FindByEmailAsync(officerEmail);
+            if (officer is not null)
+            {
+                await userManager.AddToRoleAsync(officer, roleOfficer);
+            }
+        }
+
+        const string officerId2 = "39123a3c-3ce3-4bcc-8887-eb7d8e975ea8";
+        if (await userManager.FindByIdAsync(officerId2) == null)
+        {
+            const string officerEmail = "officer2@example.com";
+            const string officerTelephone = "+420 123 444";
+            var officerUser = new Officer()
+            {
+                Id = officerId2,
+                FirstName = "Zdenda",
+                LastName = "Braník",
+                UserName = officerEmail,
+                Email = officerEmail,
+                PhoneNumber = officerTelephone,
+                EmailConfirmed = true,
+                PersonalId = 1111111,
+                Rank = "Poručík",
                 IsValid = true,
                 IsActive = true,
             };
