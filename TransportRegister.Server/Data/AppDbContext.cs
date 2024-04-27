@@ -17,6 +17,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
     public DbSet<Theft> Thefts { get; set; }
     public DbSet<Official> Officials { get; set; }
     public DbSet<Officer> Officers { get; set; }
+    public DbSet<OffenceType> OffenceTypes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
