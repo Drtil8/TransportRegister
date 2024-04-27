@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Permissions;
 using TransportRegister.Server.Data;
 using TransportRegister.Server.DTOs.OffenceDTOs;
+using TransportRegister.Server.DTOs.VehicleDTOs;
 using TransportRegister.Server.Models;
 using TransportRegister.Server.Repositories;
 
@@ -53,10 +56,24 @@ namespace TransportRegister.Server.Controllers
             return Ok(offence);
         }
 
+        [HttpGet("GetOffenceTypes")]
+        [Authorize(Roles = "Officer")]
+        public async Task<ActionResult<IEnumerable<OffenceTypeDto>>> GetOffenceTypes()
+        {
+            var offenceTypes = await _offenceRepository.GetOffenceTypesAsync();
+
+            if (offenceTypes == null)
+            {
+                return NotFound("Nenalezeny žádné typy přestupků.");
+            }
+
+            return Ok(offenceTypes);
+        }
+
         ////////////////// POST METHODS //////////////////
 
-        // POST: api/Offence
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // url = api/Offence/ReportOffence
         [HttpPost("ReportOffence")]
         [Authorize(Roles = "Officer")]
         public async Task<ActionResult<int>> ReportOffence(OffenceCreateDto offenceDto)
@@ -76,6 +93,27 @@ namespace TransportRegister.Server.Controllers
             }
 
             return Ok(offence.OffenceId);
+        }
+
+        // url = api/Offence/GetVehicleForReport
+        [HttpPost("GetVehicleForReport")]
+        [Authorize(Roles = "Officer")]
+        public async Task<ActionResult<OffenceVehicleDto>> GetVehicleForReport(OffenceVehicleDto vehicleDto)
+        {
+            var vehicle = await _context.Vehicles.Where(v => v.VIN == vehicleDto.VIN).FirstOrDefaultAsync();
+
+            if (vehicle == null)
+            {
+                return NotFound("Vozidlo nebylo nalezeno.");
+            }
+
+            vehicleDto.VehicleId = vehicle.VehicleId;
+            //vehicleDto.LicensePlate = vehicle.LicensePlates.OrderByDescending(lp => lp.ChangedOn).Select(lp => lp.LicensePlate).FirstOrDefault();
+            vehicleDto.Manufacturer = vehicle.Manufacturer;
+            vehicleDto.Model = vehicle.Model;
+            vehicleDto.VIN = vehicle.VIN;
+
+            return Ok(vehicleDto);
         }
 
         ////////////////// PUT METHODS //////////////////
