@@ -19,6 +19,7 @@ public static class DbSeeder
         // Synchronous seeding
         PersonSeed.Seed(context);
         VehicleSeed.Seed(context);
+        OffenceTypeSeed.Seed(context);
         OffenceSeed.Seed(context);
         TheftSeed.Seed(context);
         FineSeed.Seed(context);
