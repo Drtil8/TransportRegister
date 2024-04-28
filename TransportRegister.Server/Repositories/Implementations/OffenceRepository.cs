@@ -151,19 +151,19 @@ namespace TransportRegister.Server.Repositories.Implementations
             // TODO -> implement
             var offence = new Offence
             {
-                //OffenceType = offenceDto.OffenceType, // TODO
+                OffenceTypeId = offenceDto.OffenceTypeId,
                 ReportedOn = DateTime.Now,
                 Description = offenceDto.Description,
                 PenaltyPoints = offenceDto.PenaltyPoints,
-                Address = new Address
-                {
-                    City = offenceDto.Address.City,
-                    Street = offenceDto.Address.Street,
-                    State = offenceDto.Address.State,
-                    Country = offenceDto.Address.Country,
-                    HouseNumber = offenceDto.Address.HouseNumber,
-                    PostalCode = offenceDto.Address.PostalCode
-                },
+                //Address = new Address // TODO
+                //{
+                //    City = offenceDto.Address.City,
+                //    Street = offenceDto.Address.Street,
+                //    State = offenceDto.Address.State,
+                //    Country = offenceDto.Address.Country,
+                //    HouseNumber = offenceDto.Address.HouseNumber,
+                //    PostalCode = offenceDto.Address.PostalCode
+                //},
                 IsApproved = false,
                 IsValid = true,
                 VehicleId = offenceDto.VehicleId,
