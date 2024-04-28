@@ -16,6 +16,7 @@ namespace TransportRegister.Server.DTOs.OffenceDTOs
         //TODO -> add personDto
         // TODO -> officerDto
         // TODO -> officialDto ??
+        public int PenaltyPoints { get; set; }
         public FineDetailDto Fine { get; set; }
     }
 }
