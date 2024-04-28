@@ -80,31 +80,45 @@ namespace TransportRegister.Server.Repositories.Implementations
                 .Include(of => of.OffenceOnVehicle)
                 .Include(of => of.OffenceOnVehicle.LicensePlates)
                 .Include(of => of.Fine)
+                .Include(of => of.OffenceType)
                 .Select(of => new OffenceDetailDto
                 {
                     OffenceId = of.OffenceId,
-                    //OffenceType = of.OffenceType, // TODO
                     ReportedOn = of.ReportedOn,
-                    Description = of.Description,
-                    IsApproved = of.IsApproved,
+                    //Address = of.Address, // TODO
+                    Type = of.OffenceType.Name,
                     IsValid = of.IsValid,
-                    Vehicle = new VehicleListItemDto // TODO
+                    IsApproved = of.IsApproved,
+                    Description = of.Description,
+                    Vehicle = of.VehicleId == null ? 
+                    new VehicleListItemDto // TODO -> doesnt have to be specified, can be null
                     {
                         Id = of.OffenceOnVehicle.VehicleId,
                         Manufacturer = of.OffenceOnVehicle.Manufacturer,
                         Model = of.OffenceOnVehicle.Model,
                         VIN = of.OffenceOnVehicle.VIN,
                         LicensePlate = of.OffenceOnVehicle.LicensePlates.OrderByDescending(lp => lp.ChangedOn).Select(lp => lp.LicensePlate).FirstOrDefault()
-                    },
-                    Fine = new FineDetailDto
-                    {
-                        FineId = of.Fine.FineId,
-                        Amount = of.Fine.Amount,
-                        PaidOn = of.Fine.PaidOn,
-                        IsActive = of.Fine.IsActive,
-                        IsPaid = !of.Fine.IsActive
-                    }
+                    } : null,
+                    PenaltyPoints = of.PenaltyPoints
+                    // TODO -> person dto
                 }).FirstOrDefaultAsync();
+
+            var fine = await _context.Fines
+                .Where(f => f.OffenceId == offenceId)
+                .Select(f => new FineDetailDto
+                {
+                    FineId = f.FineId,
+                    Amount = f.Amount,
+                    PaidOn = f.PaidOn,
+                    DueDate = f.DueDate,
+                    IsActive = f.IsActive,
+                    IsPaid = !f.IsActive
+                }).FirstOrDefaultAsync();
+
+            if (fine != null)
+            {
+                offenceDto.Fine = fine;
+            }
 
             if (offenceDto == null)
             {
@@ -166,17 +180,19 @@ namespace TransportRegister.Server.Repositories.Implementations
                 //},
                 IsApproved = false,
                 IsValid = true,
-                VehicleId = offenceDto.VehicleId,
+                VehicleId = offenceDto.VehicleId != 0 ? offenceDto.VehicleId : null,
                 PersonId = offenceDto.PersonId,
                 OfficerId = activeUser.Id
             };
 
-            if (offenceDto.FineAmount != 0) { // TODO -> mby create fine first and then assign?
+            if (offenceDto.FineAmount != 0) {
                 offence.Fine = new Fine
                 {
                     Amount = offenceDto.FineAmount,
-                    IsActive = !offenceDto.FinePaid
-                };
+                    IsActive = !offenceDto.FinePaid,
+                    PaidOn = offenceDto.FinePaid ? DateOnly.FromDateTime(offence.ReportedOn) : DateOnly.Parse("0001-01-01"),
+                    DueDate = DateOnly.FromDateTime(DateTime.Today.AddDays(7))
+            };
             }
 
             _context.Offences.Add(offence);
