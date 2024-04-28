@@ -64,7 +64,7 @@ const AppRoutes = [
     isProtected: true
   },
   {
-    path: '/offenceDetail',
+    path: '/offence/:id',
     element: <OffenceDetail />,
     isProtected: true
   },
