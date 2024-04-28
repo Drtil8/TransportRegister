@@ -48,10 +48,7 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
         console.error('Error:', error);
       }
     }
-    else {
-      // TODO -> clear form -> mby only when submit
-      setFormData(initialFormData); // clears form
-    }
+
     setModal(!modal)
   }
 
@@ -87,6 +84,7 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
         throw new Error('Network response was not ok');
       }
       else {
+        setFormData(initialFormData);
         toggle();
       }
     }
@@ -95,11 +93,12 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
     }
   }
 
-  const fetchVehicleData = async () => {
-    console.log("fetching vehicle data");
+  const fetchVehicleData = async (event: any) => {
     const errMsg = document.getElementById('reportDriverErrorMsg');
+    const chosenVIN = event.target.name === "reportDriverVehicleVIN";
     errMsg!.classList.add('hidden');
-    if (formData.reportDriverVehicleVIN !== "" || formData.reportDriverVehicleSPZ !== "") {
+    console.log(chosenVIN);
+    if ((formData.reportDriverVehicleVIN !== "" && chosenVIN) || (formData.reportDriverVehicleSPZ !== "" && !chosenVIN)) {
       try {
         const response = await fetch('api/Offence/GetVehicleForReport', {
           method: 'POST',
@@ -108,7 +107,7 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
           },
           body: JSON.stringify({
             vin: formData.reportDriverVehicleVIN,
-            spz: formData.reportDriverVehicleSPZ,
+            licensePlate: formData.reportDriverVehicleSPZ,
           }),
         });
 
@@ -121,7 +120,7 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
             ...formData,
             reportDriverVehicleId: data.vehicleId,
             reportDriverVehicleVIN: data.vin,
-            //reportDriverVehicleSPZ: data.spz,
+            reportDriverVehicleSPZ: data.licensePlate,
             reportDriverVehicleBrand: data.manufacturer,
             reportDriverVehicleModel: data.model,
           });
@@ -133,8 +132,8 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
         setFormData({
           ...formData,
           reportDriverVehicleId: 0,
-          //reportDriverVehicleVIN: "",
-          //reportDriverVehicleSPZ: "",
+          reportDriverVehicleVIN: !chosenVIN ? "" : formData.reportDriverVehicleVIN,
+          reportDriverVehicleSPZ: chosenVIN ? "" : formData.reportDriverVehicleSPZ,
           reportDriverVehicleBrand: "",
           reportDriverVehicleModel: "",
         });
@@ -182,7 +181,7 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
       <Button color="success" onClick={toggle}>
         Nahlásit Přestupek
       </Button>
-      <Modal isOpen={modal} toggle={toggle}>
+      <Modal isOpen={modal} toggle={toggle} backdrop="static">
         <ModalHeader toggle={toggle}>Nahlášení přestupku řidiče</ModalHeader>
         <Form id="reportDriverForm" onSubmit={handleSubmit}>
           <ModalBody>
@@ -292,7 +291,7 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
                   </Col>
                   <Col>
                     <Label> SPZ: </Label>
-                    <Input id="reportDriverVehicleSPZ" name="reportDriverVehicleSPZ" type="text" value={formData.reportDriverVehicleSPZ} onChange={handleChange} />
+                    <Input id="reportDriverVehicleSPZ" name="reportDriverVehicleSPZ" type="text" value={formData.reportDriverVehicleSPZ} onChange={handleChange} onBlur={fetchVehicleData} />
                   </Col>
                 </Row>
                 <Row id="reportDriverVehicleDetailRow" className="hidden">
