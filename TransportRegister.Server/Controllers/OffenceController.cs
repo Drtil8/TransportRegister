@@ -43,6 +43,7 @@ namespace TransportRegister.Server.Controllers
         }
 
         // GET: api/Offence/5
+        // url = api/Offence/5
         [HttpGet("{id}")]
         public async Task<ActionResult<OffenceDetailDto>> GetOffence(int id)
         {
@@ -100,15 +101,28 @@ namespace TransportRegister.Server.Controllers
         [Authorize(Roles = "Officer")]
         public async Task<ActionResult<OffenceVehicleDto>> GetVehicleForReport(OffenceVehicleDto vehicleDto)
         {
-            var vehicle = await _context.Vehicles.Where(v => v.VIN == vehicleDto.VIN).FirstOrDefaultAsync();
+            Vehicle vehicle;
+            if(vehicleDto.LicensePlate != "")
+            {
+                var licensePlate = await _context.LicensePlates.Where(lp => lp.LicensePlate == vehicleDto.LicensePlate).Include(lp => lp.Vehicle).FirstOrDefaultAsync();
+                if (licensePlate == null)
+                {
+                    return NotFound("* SPZ nenalezena v systému.");
+                }
+                vehicle = licensePlate.Vehicle;
+            }
+            else
+            {
+                vehicle = await _context.Vehicles.Where(v => v.VIN == vehicleDto.VIN).Include(v => v.LicensePlates).FirstOrDefaultAsync();
+            }
 
             if (vehicle == null)
             {
-                return NotFound("Vozidlo nebylo nalezeno.");
+                return NotFound("* Vozidlo nebylo nalezeno.");
             }
 
             vehicleDto.VehicleId = vehicle.VehicleId;
-            //vehicleDto.LicensePlate = vehicle.LicensePlates.OrderByDescending(lp => lp.ChangedOn).Select(lp => lp.LicensePlate).FirstOrDefault();
+            vehicleDto.LicensePlate = vehicle.LicensePlates.OrderByDescending(lp => lp.ChangedOn).Select(lp => lp.LicensePlate).FirstOrDefault();
             vehicleDto.Manufacturer = vehicle.Manufacturer;
             vehicleDto.Model = vehicle.Model;
             vehicleDto.VIN = vehicle.VIN;
