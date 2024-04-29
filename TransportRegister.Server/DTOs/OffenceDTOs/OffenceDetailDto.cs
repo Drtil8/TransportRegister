@@ -18,5 +18,6 @@ namespace TransportRegister.Server.DTOs.OffenceDTOs
         // TODO -> officialDto ??
         public int PenaltyPoints { get; set; }
         public FineDetailDto Fine { get; set; }
+        public bool IsResponsibleOfficial { get; set; }
     }
 }
