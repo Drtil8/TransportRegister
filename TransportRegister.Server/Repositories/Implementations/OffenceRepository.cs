@@ -135,6 +135,8 @@ namespace TransportRegister.Server.Repositories.Implementations
                 {
                     Id = ot.OffenceTypeId,
                     Name = ot.Name,
+                    PenaltyPoints= ot.PenaltyPoints,
+                    FineAmount = ot.FineAmount
                 }).ToListAsync();
 
             return offenceTypes;
