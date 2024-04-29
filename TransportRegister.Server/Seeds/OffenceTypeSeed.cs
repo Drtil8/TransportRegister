@@ -10,39 +10,57 @@ namespace TransportRegister.Server.Seeds
             var TypesToSeed = new OffenceType[] {
                 new()
                 {
-                    Name = "Neklasifikován"
+                    Name = "Neklasifikován",
+                    PenaltyPoints = 0,
+                    FineAmount = 0
                 },
                 new()
                 {
-                    Name = "Překročení rychlosti"
+                    Name = "Překročení rychlosti",
+                    PenaltyPoints = 2,
+                    FineAmount = 1000
                 },
                 new()
                 {
-                    Name = "Technicky nezpůsobilé vozidlo"
+                    Name = "Technicky nezpůsobilé vozidlo",
+                    PenaltyPoints = 0,
+                    FineAmount = 2000
                 },
                 new()
                 {
-                    Name = "Chybějící doklady"
+                    Name = "Chybějící doklady",
+                    PenaltyPoints = 3,
+                    FineAmount = 3000
                 },
                 new()
                 {
-                    Name = "Telefonování za jízdy"
+                    Name = "Telefonování za jízdy",
+                    PenaltyPoints = 2,
+                    FineAmount = 1000
                 },
                 new()
                 {
-                    Name = "Jízda na červenou"
+                    Name = "Jízda na červenou",
+                    PenaltyPoints = 5,
+                    FineAmount = 2500
                 },
                 new()
                 {
-                    Name = "Ohrožení chodce"
+                    Name = "Ohrožení chodce",
+                    PenaltyPoints = 4,
+                    FineAmount = 2500
                 },
                 new()
                 {
-                    Name = "Zakázané předjíždění"
+                    Name = "Zakázané předjíždění",
+                    PenaltyPoints = 7,
+                    FineAmount = 5000
                 },
                 new()
                 {
-                    Name = "Nedání přednosti v jízdě"
+                    Name = "Nedání přednosti v jízdě",
+                    PenaltyPoints = 4,
+                    FineAmount = 2500
                 }
             };
 
