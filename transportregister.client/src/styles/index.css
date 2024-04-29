@@ -57,3 +57,11 @@ nav .navbar-brand {
 .hidden {
     display: none;
 }
+
+
+/*driver register*/
+.birthNumberInput {
+    display: flex;
+}
+
+/*driver register*/
