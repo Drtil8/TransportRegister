@@ -44,21 +44,44 @@ const OffenceReportVehicleModal: React.FC<OffenceReportVehicleModalProps> = () =
         console.error('Error:', error);
       }
     }
-    else {
-      // TODO -> clear form -> mby only when submit
-      setFormData(initialFormData); // clears form
-    }
     setModal(!modal)
   }
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
+    setFormData(initialFormData); // TODO -> reset form after submit
     // TODO
+  }
+
+  const handleSpeedChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    const speed = parseInt(value);
+    let points = 0;
+    let amount = 0;
+
+    if (speed <= 20) {
+      amount = 1000;
+      points = 2;
+    }
+    else if (speed > 20 && speed <= 40) {
+      amount = 2500;
+      points = 3;
+    }
+    else {
+      amount = 5000;
+      points = 5;
+    }
+
+    setFormData({
+      ...formData,
+      reportVehicleFineAmount: amount,
+      reportVehiclePenaltyPoints: points,
+    });
   }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = event.target;
-
+    console.log(event.target, value);
 
     if (name === "reportVehicleFineAmount" || name === "reportVehiclePenaltyPoints") {
       setFormData({ ...formData, [name]: parseFloat(value) });
@@ -68,6 +91,28 @@ const OffenceReportVehicleModal: React.FC<OffenceReportVehicleModalProps> = () =
     }
     else {
       setFormData({ ...formData, [name]: value });
+    }
+
+    if (name === "reportVehicleType") {
+      const offenceType = offenceTypes.find((offenceType) => offenceType.id === parseInt(value));
+      if (offenceType) {
+        const speedRow = document.getElementById("reportVehicleSpeedRow");
+        if (offenceType.id == 2) {
+          // show input for speed
+          speedRow?.classList.remove("hidden");
+        }
+        else {
+          // hide input for speed
+          speedRow?.classList.add("hidden");
+          (document.getElementById("reportVehicleSpeed") as HTMLInputElement)!.value = "0";
+        }
+        setFormData({
+          ...formData,
+          reportVehicleType: offenceType.id,
+          reportVehicleFineAmount: offenceType.fineAmount,
+          reportVehiclePenaltyPoints: offenceType.penaltyPoints,
+        });
+      }
     }
   }
 
@@ -93,6 +138,14 @@ const OffenceReportVehicleModal: React.FC<OffenceReportVehicleModalProps> = () =
                         <option key={offenceType.id} value={offenceType.id}> {offenceType.name} </option>
                       ))}
                     </Input>
+                  </Col>
+                </Row>
+                <Row id="reportVehicleSpeedRow" className="hidden">
+                  <Col>
+                    <Label>
+                      Překročeno o:
+                    </Label>
+                    <Input id="reportVehicleSpeed" name="reportVehicleSpeed" type="number" step={1} min={0} onChange={handleSpeedChange} />
                   </Col>
                 </Row>
                 <Row className="mb-1">
