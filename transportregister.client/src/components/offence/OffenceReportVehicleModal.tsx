@@ -10,7 +10,7 @@ const OffenceReportVehicleModal: React.FC<OffenceReportVehicleModalProps> = () =
     reportVehicleType: 1,
     reportVehicleDescription: "",
     //reportVehicleLocation: "", // TODO
-    reportVehicleId: 0, // TODO fetch from backend
+    reportVehicleId: 1, // TODO fetch from backend
     reportVehicleVIN: "fetch from detail",
     reportVehicleSPZ: "fetch from detail",
     reportVehicleBrand: "fetch from detail",
@@ -18,6 +18,7 @@ const OffenceReportVehicleModal: React.FC<OffenceReportVehicleModalProps> = () =
     reportVehicleFineAmount: 0,
     reportVehiclePenaltyPoints: 0,
     reportVehiclePaid: false,
+    reportVehicleOwnerId: 1, // TODO fetch from backend
     reportVehicleOwnerFirstName: "fetch from detail",
     reportVehicleOwnerLastName: "fetch from detail",
     reportVehicleOwnerBirthNumber: "fetch from detail",
@@ -49,8 +50,41 @@ const OffenceReportVehicleModal: React.FC<OffenceReportVehicleModalProps> = () =
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    setFormData(initialFormData); // TODO -> reset form after submit
-    // TODO
+    try {
+      const response = await fetch('api/Offence/ReportOffence', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          description: formData.reportVehicleDescription,
+          personId: formData.reportVehicleOwnerId,
+          vehicleId: formData.reportVehicleId,
+          fineAmount: formData.reportVehicleFineAmount,
+          penaltyPoints: formData.reportVehiclePenaltyPoints,
+          finePaid: formData.reportVehiclePaid,
+          offenceTypeId: formData.reportVehicleType,
+          //address: formData.reportVehicleLocation, // TODO -> add location
+        }),
+      });
+
+      if (!response.ok) {
+        const errP = document.getElementById('reportVehicleErrorMsg');
+        if (errP) {
+          const errMsg = await response.text();
+          errP.innerText = errMsg;
+          errP.classList.remove('hidden');
+        }
+        throw new Error('Network response was not ok');
+      }
+      else {
+        setFormData(initialFormData);
+        toggle();
+      }
+    }
+    catch (error) {
+      console.error('Error:', error);
+    }
   }
 
   const handleSpeedChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,7 +115,6 @@ const OffenceReportVehicleModal: React.FC<OffenceReportVehicleModalProps> = () =
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = event.target;
-    console.log(event.target, value);
 
     if (name === "reportVehicleFineAmount" || name === "reportVehiclePenaltyPoints") {
       setFormData({ ...formData, [name]: parseFloat(value) });

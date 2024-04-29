@@ -185,7 +185,6 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = event.target;
 
-
     if (name === "reportDriverFineAmount" || name === "reportDriverPenaltyPoints") {
       setFormData({ ...formData, [name]: parseFloat(value) });
     }
