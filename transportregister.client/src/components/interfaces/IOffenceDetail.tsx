@@ -1,5 +1,5 @@
 ﻿import IFineDetail from "./IFineDetail";
-import IVehicleDetail from "./IVehicleDetail";
+import IVehicleListItem from "./IVehicleListItem";
 
 interface IOffenceDetail {
   offenceId: number;
@@ -9,10 +9,11 @@ interface IOffenceDetail {
   isValid: boolean;
   isApproved: boolean;
   description: string;
-  vehicle: IVehicleDetail | null; // todo
+  vehicle: IVehicleListItem | null; // todo
   penaltyPoints: number;
   fine: IFineDetail | null;
   //photos: string[]; // todo
+  isResponsibleOfficial: boolean;
 }
 
 export default IOffenceDetail;
