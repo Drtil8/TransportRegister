@@ -73,7 +73,7 @@ namespace TransportRegister.Server.Repositories.Implementations
             return offences;
         }
 
-        public async Task<OffenceDetailDto> GetOffenceByIdAsync(int offenceId)
+        public async Task<OffenceDetailDto> GetOffenceByIdAsync(int offenceId, User user)
         {
             var offenceDto = await _context.Offences
                 .Where(of => of.OffenceId == offenceId)
@@ -90,7 +90,8 @@ namespace TransportRegister.Server.Repositories.Implementations
                     IsValid = of.IsValid,
                     IsApproved = of.IsApproved,
                     Description = of.Description,
-                    Vehicle = of.VehicleId == null ? 
+                    Vehicle = of.VehicleId == null ?
+                    null :
                     new VehicleListItemDto // TODO -> doesnt have to be specified, can be null
                     {
                         Id = of.OffenceOnVehicle.VehicleId,
@@ -98,8 +99,9 @@ namespace TransportRegister.Server.Repositories.Implementations
                         Model = of.OffenceOnVehicle.Model,
                         VIN = of.OffenceOnVehicle.VIN,
                         LicensePlate = of.OffenceOnVehicle.LicensePlates.OrderByDescending(lp => lp.ChangedOn).Select(lp => lp.LicensePlate).FirstOrDefault()
-                    } : null,
-                    PenaltyPoints = of.PenaltyPoints
+                    },
+                    PenaltyPoints = of.PenaltyPoints,
+                    IsResponsibleOfficial = of.OfficialId == user.Id,
                     // TODO -> person dto
                 }).FirstOrDefaultAsync();
 
@@ -207,7 +209,7 @@ namespace TransportRegister.Server.Repositories.Implementations
             return offence;
         }
 
-        public async Task<bool> ApproveOffenceAsync(int offenceId, OffenceCreateDto offenceDto)
+        public async Task<bool> ApproveOffenceAsync(int offenceId)
         {
             var offence = await _context.Offences.FindAsync(offenceId);
             if (offence == null)
@@ -215,9 +217,9 @@ namespace TransportRegister.Server.Repositories.Implementations
                 return false;
             }
 
-            offence.Description = offenceDto.Description;
-            offence.PenaltyPoints = offenceDto.PenaltyPoints;
-            offence.Fine.Amount = offenceDto.FineAmount;
+            //offence.Description = offenceDto.Description;
+            //offence.PenaltyPoints = offenceDto.PenaltyPoints;
+            //offence.Fine.Amount = offenceDto.FineAmount;
             //offence.Fine.IsActive = !offenceDto.FinePaid; // TODO
             //offence.Type = offenceDto.Type; // TODO
             offence.IsApproved = true;
