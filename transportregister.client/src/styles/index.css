@@ -54,6 +54,18 @@ nav .navbar-brand {
     display: none;
 }
 
-.hidden {
-    display: none;
+.clickable {
+    cursor: pointer;
+}
+
+dl dt {
+    margin-bottom: 0.4rem;
+}
+
+.yes {
+    color: green;
+}
+
+.no {
+    color: red;
 }
