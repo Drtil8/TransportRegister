@@ -93,16 +93,29 @@ namespace TransportRegister.Server.Controllers
             if (vehicle.Owner is null)
                 return BadRequest("Owner not found.");
 
-            // todo when edit must checked if vehicle.LicensePlates.Count == 0 in repository
-            // Create new record of license plate history
-            vehicle.LicensePlates =
-            [
-                new LicensePlateHistory
+            var licensePlates = await _vehicleRepository.GetLicensePlateHistoryAsync(vehicle.VehicleId);
+            var newLicensePlate = new LicensePlateHistory
+            {
+                LicensePlate = vehicleDto.CurrentLicensePlate,
+                ChangedOn = DateTime.Now
+            };
+            if (licensePlates.Count == 0)
+            {
+                // Create new record of license plate history
+                //vehicle.LicensePlates.Add(newLicensePlate);
+                vehicle.LicensePlates = [newLicensePlate];
+            }
+            else
+            {
+                if (licensePlates.Last().LicensePlate != vehicleDto.CurrentLicensePlate)
                 {
-                    LicensePlate = vehicleDto.CurrentLicensePlate,
-                    ChangedOn = DateTime.Now
+                    // todo fix this fucking SaveVehicle 1 method do everything dto hell
+                    // Update record of license plate history
+                    //licensePlates.Add(newLicensePlate);
+                    //vehicle.LicensePlates = licensePlates;
+                    ////vehicle.LicensePlates.Add(newLicensePlate);     // cannot be this way
                 }
-            ];
+            }
 
             await _vehicleRepository.SaveVehicleAsync(vehicle);
 
