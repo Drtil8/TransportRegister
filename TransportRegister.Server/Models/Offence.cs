@@ -13,7 +13,7 @@
         public int OffenceTypeId { get; set; }
         public OffenceType OffenceType { get; set; } // Type of the offence
         public Fine Fine { get; set; }      // zmazane ? nullable -- otestovať
-        public int VehicleId { get; set; }
+        public int? VehicleId { get; set; }
         public Vehicle OffenceOnVehicle { get; set; }
         public string OfficerId { get; set; }
         public Officer ReportedByOfficer { get; set; }

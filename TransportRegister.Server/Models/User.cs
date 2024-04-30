@@ -7,6 +7,7 @@ namespace TransportRegister.Server.Models
     {
         public bool IsActive { get; set; }
         public bool IsValid { get; set; }
+        public string UserType { get; set; }
 
         [Required]
         public string FirstName { get; set; }

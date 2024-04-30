@@ -48,10 +48,7 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
         console.error('Error:', error);
       }
     }
-    else {
-      // TODO -> clear form -> mby only when submit
-      setFormData(initialFormData); // clears form
-    }
+
     setModal(!modal)
   }
 
@@ -87,6 +84,7 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
         throw new Error('Network response was not ok');
       }
       else {
+        setFormData(initialFormData);
         toggle();
       }
     }
@@ -95,11 +93,12 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
     }
   }
 
-  const fetchVehicleData = async () => {
-    console.log("fetching vehicle data");
+  const fetchVehicleData = async (event: any) => {
     const errMsg = document.getElementById('reportDriverErrorMsg');
+    const chosenVIN = event.target.name === "reportDriverVehicleVIN";
     errMsg!.classList.add('hidden');
-    if (formData.reportDriverVehicleVIN !== "" || formData.reportDriverVehicleSPZ !== "") {
+    console.log(chosenVIN);
+    if ((formData.reportDriverVehicleVIN !== "" && chosenVIN) || (formData.reportDriverVehicleSPZ !== "" && !chosenVIN)) {
       try {
         const response = await fetch('api/Offence/GetVehicleForReport', {
           method: 'POST',
@@ -108,7 +107,7 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
           },
           body: JSON.stringify({
             vin: formData.reportDriverVehicleVIN,
-            spz: formData.reportDriverVehicleSPZ,
+            licensePlate: formData.reportDriverVehicleSPZ,
           }),
         });
 
@@ -121,7 +120,7 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
             ...formData,
             reportDriverVehicleId: data.vehicleId,
             reportDriverVehicleVIN: data.vin,
-            //reportDriverVehicleSPZ: data.spz,
+            reportDriverVehicleSPZ: data.licensePlate,
             reportDriverVehicleBrand: data.manufacturer,
             reportDriverVehicleModel: data.model,
           });
@@ -133,8 +132,8 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
         setFormData({
           ...formData,
           reportDriverVehicleId: 0,
-          //reportDriverVehicleVIN: "",
-          //reportDriverVehicleSPZ: "",
+          reportDriverVehicleVIN: !chosenVIN ? "" : formData.reportDriverVehicleVIN,
+          reportDriverVehicleSPZ: chosenVIN ? "" : formData.reportDriverVehicleSPZ,
           reportDriverVehicleBrand: "",
           reportDriverVehicleModel: "",
         });
@@ -157,9 +156,34 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
     }
   }
 
+  const handleSpeedChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    const speed = parseInt(value);
+    let points = 0;
+    let amount = 0;
+
+    if (speed <= 20) {
+      amount = 1000;
+      points = 2;
+    }
+    else if (speed > 20 && speed <= 40) {
+      amount = 2500;
+      points = 3;
+    }
+    else {
+      amount = 5000;
+      points = 5;
+    }
+
+    setFormData({
+      ...formData,
+      reportDriverFineAmount: amount,
+      reportDriverPenaltyPoints: points,
+    });
+  }
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = event.target;
-
 
     if (name === "reportDriverFineAmount" || name === "reportDriverPenaltyPoints") {
       setFormData({ ...formData, [name]: parseFloat(value) });
@@ -171,10 +195,27 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
       setFormData({ ...formData, [name]: value });
     }
 
-    //if (name == "reportDriverVehicleVIN" || name == "reportDriverVehicleSPZ") {
-    //  // todo fetch vehicle data
-    //  fetchVehicleData();
-    //}
+    if (name === "reportDriverType") {
+      const offenceType = offenceTypes.find((offenceType) => offenceType.id === parseInt(value));
+      if (offenceType) {
+        const speedRow = document.getElementById("reportDriverSpeedRow");
+        if (offenceType.id == 2) {
+          // show input for speed
+          speedRow?.classList.remove("hidden");
+        }
+        else {
+          // hide input for speed
+          speedRow?.classList.add("hidden");
+          (document.getElementById("reportDriverSpeed") as HTMLInputElement)!.value = "0";
+        }
+        setFormData({
+          ...formData,
+          reportDriverType: offenceType.id,
+          reportDriverFineAmount: offenceType.fineAmount,
+          reportDriverPenaltyPoints: offenceType.penaltyPoints,
+        });
+      }
+    }
   }
 
   return (
@@ -182,37 +223,10 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
       <Button color="success" onClick={toggle}>
         Nahlásit Přestupek
       </Button>
-      <Modal isOpen={modal} toggle={toggle}>
+      <Modal isOpen={modal} toggle={toggle} backdrop="static">
         <ModalHeader toggle={toggle}>Nahlášení přestupku řidiče</ModalHeader>
         <Form id="reportDriverForm" onSubmit={handleSubmit}>
           <ModalBody>
-            <Row>
-              <FormGroup>
-                <Label>
-                  <b>Řidič:</b>
-                </Label>
-                <Row>
-                  <Col>
-                    <Label> Jméno: </Label>
-                    <Input readOnly id="reportDriverFirstName" name="reportDriverFirstName" type="text" value={formData.reportDriverFirstName} />
-                  </Col>
-                  <Col>
-                    <Label> Příjmení: </Label>
-                    <Input readOnly id="reportDriverLastName" name="reportDriverLastName" type="text" value={formData.reportDriverLastName} />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <Label> Rodné číslo: </Label>
-                    <Input readOnly id="reportDriverBirthNumber" name="reportDriverBirthNumber" type="text" value={formData.reportDriverBirthNumber} />
-                  </Col>
-                  <Col>
-                    <Label> Datum narození: </Label>
-                    <Input readOnly id="reportDriverBirthDate" name="reportDriverBirthDate" type="text" value={formData.reportDriverBirthDate} />
-                  </Col>
-                </Row>
-              </FormGroup>
-            </Row>
             <Row>
               <FormGroup>
                 <Label>
@@ -228,6 +242,14 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
                         <option key={offenceType.id} value={offenceType.id}> {offenceType.name} </option>
                       ))}
                     </Input>
+                  </Col>
+                </Row>
+                <Row id="reportDriverSpeedRow" className="hidden">
+                  <Col>
+                    <Label>
+                      Překročeno o:
+                    </Label>
+                    <Input id="reportDriverSpeed" name="reportDriverSpeed" type="number" step={1} min={0} onChange={handleSpeedChange} />
                   </Col>
                 </Row>
                 <Row className="mb-1">
@@ -283,6 +305,33 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
             <Row>
               <FormGroup>
                 <Label>
+                  <b>Řidič:</b>
+                </Label>
+                <Row>
+                  <Col>
+                    <Label> Jméno: </Label>
+                    <Input readOnly id="reportDriverFirstName" name="reportDriverFirstName" type="text" value={formData.reportDriverFirstName} />
+                  </Col>
+                  <Col>
+                    <Label> Příjmení: </Label>
+                    <Input readOnly id="reportDriverLastName" name="reportDriverLastName" type="text" value={formData.reportDriverLastName} />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <Label> Rodné číslo: </Label>
+                    <Input readOnly id="reportDriverBirthNumber" name="reportDriverBirthNumber" type="text" value={formData.reportDriverBirthNumber} />
+                  </Col>
+                  <Col>
+                    <Label> Datum narození: </Label>
+                    <Input readOnly id="reportDriverBirthDate" name="reportDriverBirthDate" type="text" value={formData.reportDriverBirthDate} />
+                  </Col>
+                </Row>
+              </FormGroup>
+            </Row>
+            <Row>
+              <FormGroup>
+                <Label>
                   <b>Vozidlo:</b>
                 </Label>
                 <Row>
@@ -292,7 +341,7 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
                   </Col>
                   <Col>
                     <Label> SPZ: </Label>
-                    <Input id="reportDriverVehicleSPZ" name="reportDriverVehicleSPZ" type="text" value={formData.reportDriverVehicleSPZ} onChange={handleChange} />
+                    <Input id="reportDriverVehicleSPZ" name="reportDriverVehicleSPZ" type="text" value={formData.reportDriverVehicleSPZ} onChange={handleChange} onBlur={fetchVehicleData} />
                   </Col>
                 </Row>
                 <Row id="reportDriverVehicleDetailRow" className="hidden">

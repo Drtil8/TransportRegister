@@ -43,10 +43,12 @@ namespace TransportRegister.Server.Controllers
         }
 
         // GET: api/Offence/5
+        // url = api/Offence/5
         [HttpGet("{id}")]
         public async Task<ActionResult<OffenceDetailDto>> GetOffence(int id)
         {
-            var offence = await _offenceRepository.GetOffenceByIdAsync(id);
+            var activeUser = await _userManager.GetUserAsync(User);
+            var offence = await _offenceRepository.GetOffenceByIdAsync(id, activeUser);
 
             if (offence == null)
             {
@@ -100,15 +102,28 @@ namespace TransportRegister.Server.Controllers
         [Authorize(Roles = "Officer")]
         public async Task<ActionResult<OffenceVehicleDto>> GetVehicleForReport(OffenceVehicleDto vehicleDto)
         {
-            var vehicle = await _context.Vehicles.Where(v => v.VIN == vehicleDto.VIN).FirstOrDefaultAsync();
+            Vehicle vehicle;
+            if(vehicleDto.LicensePlate != "")
+            {
+                var licensePlate = await _context.LicensePlates.Where(lp => lp.LicensePlate == vehicleDto.LicensePlate).Include(lp => lp.Vehicle).FirstOrDefaultAsync();
+                if (licensePlate == null)
+                {
+                    return NotFound("* SPZ nenalezena v systému.");
+                }
+                vehicle = licensePlate.Vehicle;
+            }
+            else
+            {
+                vehicle = await _context.Vehicles.Where(v => v.VIN == vehicleDto.VIN).Include(v => v.LicensePlates).FirstOrDefaultAsync();
+            }
 
             if (vehicle == null)
             {
-                return NotFound("Vozidlo nebylo nalezeno.");
+                return NotFound("* Vozidlo nebylo nalezeno.");
             }
 
             vehicleDto.VehicleId = vehicle.VehicleId;
-            //vehicleDto.LicensePlate = vehicle.LicensePlates.OrderByDescending(lp => lp.ChangedOn).Select(lp => lp.LicensePlate).FirstOrDefault();
+            vehicleDto.LicensePlate = vehicle.LicensePlates.OrderByDescending(lp => lp.ChangedOn).Select(lp => lp.LicensePlate).FirstOrDefault();
             vehicleDto.Manufacturer = vehicle.Manufacturer;
             vehicleDto.Model = vehicle.Model;
             vehicleDto.VIN = vehicle.VIN;
@@ -121,34 +136,27 @@ namespace TransportRegister.Server.Controllers
         // PUT: api/Offence/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOffence(int id, OffenceCreateDto offence)
+        public async Task<IActionResult> PutOffence(int id, OffenceCreateDto offenceDto)
         {
+            var offence = await _context.Offences.Where(of => of.OffenceId == id).Include(of => of.Fine).FirstOrDefaultAsync();
+            if (offence == null)
+            {
+                return NotFound();
+            }
 
-            //_context.Entry(offence).State = EntityState.Modified;
+            offence.PenaltyPoints = offenceDto.PenaltyPoints;
+            if(offence.Fine != null)
+            {
+                offence.Fine.Amount = offenceDto.FineAmount;
+            }
 
-            //try
-            //{
-            //    await _context.SaveChangesAsync();
-            //}
-            //catch (DbUpdateConcurrencyException)
-            //{
-            //    if (!OffenceExists(id))
-            //    {
-            //        return NotFound();
-            //    }
-            //    else
-            //    {
-            //        throw;
-            //    }
-            //}
-
-            //return NoContent();
+            await _context.SaveChangesAsync();
             return Ok();
         }
 
         [HttpPut("{id}/Approve")]
         [Authorize(Roles = "Official")]
-        public async Task<IActionResult> ApproveOffence(int id, OffenceCreateDto offenceDto)
+        public async Task<ActionResult<OffenceDetailDto>> ApproveOffence(int id, OffenceDetailDto offenceDto)
         {
             var result = await _offenceRepository.ApproveOffenceAsync(id, offenceDto);
             if (!result)
@@ -156,9 +164,15 @@ namespace TransportRegister.Server.Controllers
                 return BadRequest("Přestupek se nepodařilo schválit.");
             }
 
-            return Ok("Přestupek byl úspěšně schálen.");
+            return Ok(offenceDto);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="offenceId"></param>
+        /// <returns></returns>
+        /// url = api/Offence/5/Decline
         [HttpPut("{offenceId}/Decline")]
         [Authorize(Roles = "Official")]
         public async Task<IActionResult> DeclineOffence(int offenceId)
@@ -170,6 +184,28 @@ namespace TransportRegister.Server.Controllers
             }
 
             return Ok("Přestupek byl úspěšně zamítnut.");
+        }
+
+        [HttpPut("{offenceId}/PayFine")]
+        [Authorize(Roles = "Official")]
+        public async Task<IActionResult> PayFine(int offenceId)
+        {
+            var offence = await _context.Offences.Where(of => of.OffenceId == offenceId).Include(of => of.Fine).FirstOrDefaultAsync();
+            if (offence == null)
+            {
+                return NotFound("Přestupek nebyl nalezen.");
+            }
+
+            if (offence.Fine == null)
+            {
+                return BadRequest("Přestupek nemá žádnou pokutu.");
+            }
+
+            offence.Fine.IsActive = false;
+            offence.Fine.PaidOn = DateOnly.FromDateTime(DateTime.Now);
+
+            await _context.SaveChangesAsync();
+            return Ok("Pokuta byla úspěšně zaplacena.");
         }
 
         ////////////////// DELETE METHODS //////////////////

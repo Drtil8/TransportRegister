@@ -3,18 +3,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TransportRegister.Server.Models
 {
-    // TODO: move to separate file
-    //[Owned] // TODO: skusiť
-    //public class Address
-    //{
-    //    public string Street { get; set; }    // TODO: tabulka adresy -- krajina, kraj, ulica, mesto, čislo domu, psč -- otestovať
-    //    public string City { get; set; }
-    //    public string State { get; set; }
-    //    public string Country { get; set; }
-    //    public int HouseNumber { get; set; }
-    //    public int PostalCode { get; set; }
-    //}
-
     public abstract class Person
     {
         public int PersonId { get; set; }
@@ -30,7 +18,7 @@ namespace TransportRegister.Server.Models
 
         public string OfficialId { get; set; }
         public Official AddedByOfficial { get; set; }
-        public ICollection<Offence> CommitedOffences { get; set; }  // TODO: zmazane new List
+        public ICollection<Offence> CommitedOffences { get; set; }
         public ICollection<Theft> ReportedThefts { get; set; }
 
     }
@@ -41,7 +29,7 @@ namespace TransportRegister.Server.Models
         [Range(0, 12)]
         public int BadPoints { get; set; }
         public bool HasSuspendedLicense { get; set; }
-        public DateTime? LastCrimeCommited { get; set; }        // TODO: is really nullable?
+        public DateTime? LastCrimeCommited { get; set; }
         public DateTime? DrivingSuspendedUntil { get; set; }
 
         public ICollection<DriversLicense> Licenses { get; set; }
