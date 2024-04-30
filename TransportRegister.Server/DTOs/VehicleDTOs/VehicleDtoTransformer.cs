@@ -6,6 +6,11 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
     {
         public static VehicleDetailDto TransformToDto(Vehicle vehicle)
         {
+            string currentLicencePlate = null;
+            if (vehicle.LicensePlates.Count != 0)
+            {
+                currentLicencePlate = vehicle.LicensePlates.First().LicensePlate;
+            }
             return vehicle switch
             {
                 Car car => new CarDto
@@ -24,6 +29,7 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
                     LoadCapacityKG = car.LoadCapacity_KG,
                     ImageBase64 = car.Image != null ? Convert.ToBase64String(car.Image) : null,
                     VehicleType = "Car",
+                    CurrentLicensePlate = currentLicencePlate,
                     NumberOfDoors = car.NumberOfDoors,
                 },
                 Motorcycle motorcycle => new MotorcycleDto
@@ -40,6 +46,7 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
                     WidthCM = motorcycle.Width_CM,
                     HeightCM = motorcycle.Height_CM,
                     LoadCapacityKG = motorcycle.LoadCapacity_KG,
+                    CurrentLicensePlate = currentLicencePlate,
                     ImageBase64 = motorcycle.Image != null ? Convert.ToBase64String(motorcycle.Image) : null,
                     VehicleType = "Motorcycle",
                     Constraints = motorcycle.Constraints
@@ -58,6 +65,7 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
                     WidthCM = bus.Width_CM,
                     HeightCM = bus.Height_CM,
                     LoadCapacityKG = bus.LoadCapacity_KG,
+                    CurrentLicensePlate = currentLicencePlate,
                     ImageBase64 = bus.Image != null ? Convert.ToBase64String(bus.Image) : null,
                     VehicleType = "Bus",
                     SeatCapacity = bus.SeatCapacity,
@@ -77,6 +85,7 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
                     WidthCM = truck.Width_CM,
                     HeightCM = truck.Height_CM,
                     LoadCapacityKG = truck.LoadCapacity_KG,
+                    CurrentLicensePlate = currentLicencePlate,
                     ImageBase64 = truck.Image != null ? Convert.ToBase64String(truck.Image) : null,
                     VehicleType = "Truck"
                 },
