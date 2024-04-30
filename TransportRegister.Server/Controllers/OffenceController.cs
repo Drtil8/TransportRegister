@@ -156,15 +156,15 @@ namespace TransportRegister.Server.Controllers
 
         [HttpPut("{id}/Approve")]
         [Authorize(Roles = "Official")]
-        public async Task<IActionResult> ApproveOffence(int id)
+        public async Task<ActionResult<OffenceDetailDto>> ApproveOffence(int id, OffenceDetailDto offenceDto)
         {
-            var result = await _offenceRepository.ApproveOffenceAsync(id);
+            var result = await _offenceRepository.ApproveOffenceAsync(id, offenceDto);
             if (!result)
             {
                 return BadRequest("Přestupek se nepodařilo schválit.");
             }
 
-            return Ok("Přestupek byl úspěšně schálen.");
+            return Ok(offenceDto);
         }
 
         /// <summary>
