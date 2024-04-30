@@ -12,7 +12,7 @@ using TransportRegister.Server.Data;
 namespace TransportRegister.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240428223037_MakeVehicleNullable_AddOffenceTypeParams")]
+    [Migration("20240430163501_MakeVehicleNullable_AddOffenceTypeParams")]
     partial class MakeVehicleNullable_AddOffenceTypeParams
     {
         /// <inheritdoc />
