@@ -11,6 +11,7 @@ import TheftFound from "./components/TheftFound";
 import DriverDetail from "./components/DriverDetail";
 import OffenceDetail from "./components/offence/OffenceDetail";
 import VehicleDetail from "./components/VehicleDetail";
+import UserList from "./components/admin/UserList";
 
 const AppRoutes = [
   {
@@ -76,6 +77,11 @@ const AppRoutes = [
   {
     path: '/theftFound',
     element: <TheftFound />,
+    isProtected: true
+  },
+  {
+    path: '/users',
+    element: <UserList />,
     isProtected: true
   }
 ];
