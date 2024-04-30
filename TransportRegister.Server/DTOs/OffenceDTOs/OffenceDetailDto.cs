@@ -3,6 +3,10 @@ using TransportRegister.Server.DTOs.VehicleDTOs;
 
 namespace TransportRegister.Server.DTOs.OffenceDTOs
 {
+    /// <summary>
+    /// TODO - comment
+    /// </summary>
+    /// <author> Dominik Pop </author>
     public class OffenceDetailDto
     {
         public int OffenceId { get; set; }
