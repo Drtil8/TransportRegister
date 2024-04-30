@@ -4,6 +4,7 @@ import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col, FormGroup, Input,
 import IDriverDetail from './interfaces/IDriverDetail';
 import IPersonDetail from './interfaces/IPersonDetail';
 import IDriverFormState from './interfaces/IDriverForm';
+import IVehicleListItem from './interfaces/IVehicleListItem';
 
 
 // TODO fetch the actual driver
@@ -26,6 +27,33 @@ export class DriverDetail extends Component<object, DriverDetailState> {
     // Add other properties as needed
   };
 
+  vehiclesList: IVehicleListItem[] = [
+    {
+      id: 1,
+      vin: "ABC123",
+      licensePlate: "XYZ123",
+      vehicleType: "Car",
+      manufacturer: "Toyota",
+      model: "Camry",
+      color: "Blue",
+      manufacturedYear: 2020,
+      ownerId: 123,
+      ownerFullName: "John Doe",
+    },
+    {
+      id: 2,
+      vin: "DEF456",
+      licensePlate: "LMN456",
+      vehicleType: "Truck",
+      manufacturer: "Ford",
+      model: "F-150",
+      color: "Red",
+      manufacturedYear: 2018,
+      ownerId: 456,
+      ownerFullName: "Jane Smith",
+    },
+  ];
+
   driverDetail: IDriverDetail = {
     person: this.per,
     driversLicenseNumber: 'EN123456',
@@ -34,8 +62,9 @@ export class DriverDetail extends Component<object, DriverDetailState> {
     lastCrimeCommited: '',
     drivingSuspendedUntil: '',
     licenses: [],
+    vehicles: this.vehiclesList,
   };
-  constructor(props: object) {
+    constructor(props: object) {
     super(props);
     const person = this.driverDetail.person;
     const driver = this.driverDetail;
