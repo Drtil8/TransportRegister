@@ -7,7 +7,6 @@
     <SpaRoot>..\transportregister.client</SpaRoot>
     <SpaProxyLaunchCommand>npm run dev</SpaProxyLaunchCommand>
     <SpaProxyServerUrl>https://localhost:5173</SpaProxyServerUrl>
-    <Configurations>Debug;Release;backend</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
