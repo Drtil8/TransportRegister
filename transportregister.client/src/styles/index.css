@@ -57,3 +57,8 @@ nav .navbar-brand {
 .hidden {
     display: none;
 }
+
+.vehicleImage {
+    width: 100%;
+    max-height: 300px;
+}

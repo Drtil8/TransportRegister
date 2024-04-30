@@ -7,7 +7,7 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
     {
         public int VehicleId { get; set; }
         public string VIN { get; set; }
-        public string LicensePlate { get; set; }        // todo add to VehicleDtoConverter
+        public string CurrentLicensePlate { get; set; }        // todo add to VehicleDtoConverter
         public string Manufacturer { get; set; }
         public string Model { get; set; }
         public double HorsepowerKW { get; set; }
