@@ -38,6 +38,7 @@ namespace TransportRegister.Server
             builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
             builder.Services.AddScoped<ITheftRepository, TheftRepository>();
             builder.Services.AddScoped<IOffenceRepository, OffenceRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
 
             // todo convertors create unreadable array objects from client side
             // Convertors
