@@ -60,6 +60,8 @@ namespace TransportRegister.Server
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             });
 
+            builder.Services.AddQuartzConfiguration();
+
             var app = builder.Build();
 
             // For seed data use cmd: dotnet run seed
@@ -69,32 +71,6 @@ namespace TransportRegister.Server
                 {
                     // For seed data use cmd: dotnet run seed
                     await DbSeeder.SeedAll(app.Services);
-                    using (var scope = app.Services.CreateScope())
-                    {
-                        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                        var basePath = AppDomain.CurrentDomain.BaseDirectory; // Získá aktuální adresář, kde běží aplikace
-                        var scriptPath = Path.GetFullPath(Path.Combine(basePath, "../../../SqlScripts/RemovePointsProcedure.sql"));
-                        // Přidejte tuto kontrolu pro jistotu, že cesta je správná
-                        if (!File.Exists(scriptPath))
-                        {
-                            throw new FileNotFoundException("Could not find the SQL script file.", scriptPath);
-                        }
-                        var script = await File.ReadAllTextAsync(scriptPath);
-                        await dbContext.Database.ExecuteSqlRawAsync(script);
-                    }
-                    using (var scope = app.Services.CreateScope())
-                    {
-                        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                        var basePath = AppDomain.CurrentDomain.BaseDirectory; // Získá aktuální adresář, kde běží aplikace
-                        var scriptPath = Path.GetFullPath(Path.Combine(basePath, "../../../SqlScripts/RemovePointsJob.sql"));
-                        // Přidejte tuto kontrolu pro jistotu, že cesta je správná
-                        if (!File.Exists(scriptPath))
-                        {
-                            throw new FileNotFoundException("Could not find the SQL script file.", scriptPath);
-                        }
-                        var script = await File.ReadAllTextAsync(scriptPath);
-                        await dbContext.Database.ExecuteSqlRawAsync(script);
-                    }
                     return;
                 }
                 else if (args[0] == "delete-db")

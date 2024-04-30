@@ -54,6 +54,7 @@ public class PersonSeed
                 BadPoints = 5,
                 HasSuspendedLicense = false,
                 LastCrimeCommited = DateTime.Now,
+                LastPointsDeduction = DateTime.Now,
                 Address = new Address
                 {
                     Street = "Bad Street",
