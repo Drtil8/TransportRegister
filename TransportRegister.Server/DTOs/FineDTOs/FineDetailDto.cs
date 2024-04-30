@@ -7,5 +7,6 @@
         public bool IsActive { get; set; }
         public bool IsPaid { get; set; }
         public DateOnly PaidOn { get; set; }
+        public DateOnly DueDate { get; set; }
     }
 }

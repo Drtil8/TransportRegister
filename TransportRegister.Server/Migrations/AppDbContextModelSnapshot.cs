@@ -272,7 +272,7 @@ namespace TransportRegister.Server.Migrations
                     b.Property<DateTime>("ReportedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("VehicleId")
+                    b.Property<int?>("VehicleId")
                         .HasColumnType("int");
 
                     b.HasKey("OffenceId");
@@ -298,8 +298,14 @@ namespace TransportRegister.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OffenceTypeId"));
 
+                    b.Property<double>("FineAmount")
+                        .HasColumnType("float");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PenaltyPoints")
+                        .HasColumnType("int");
 
                     b.HasKey("OffenceTypeId");
 
@@ -320,17 +326,12 @@ namespace TransportRegister.Server.Migrations
                     b.Property<DateOnly>("DateOfBirth")
                         .HasColumnType("date");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
-
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<byte[]>("Image")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -339,6 +340,11 @@ namespace TransportRegister.Server.Migrations
                     b.Property<string>("OfficialId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("PersonType")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
+
                     b.Property<bool>("Sex_Male")
                         .HasColumnType("bit");
 
@@ -346,9 +352,9 @@ namespace TransportRegister.Server.Migrations
 
                     b.HasIndex("OfficialId");
 
-                    b.ToTable("Persons");
+                    b.ToTable("Persons", (string)null);
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Person");
+                    b.HasDiscriminator<string>("PersonType").HasValue("Person");
 
                     b.UseTphMappingStrategy();
                 });
@@ -761,8 +767,7 @@ namespace TransportRegister.Server.Migrations
                     b.HasOne("TransportRegister.Server.Models.Vehicle", "OffenceOnVehicle")
                         .WithMany("Offences")
                         .HasForeignKey("VehicleId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.OwnsOne("TransportRegister.Server.Models.Address", "Address", b1 =>
                         {

@@ -3,18 +3,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TransportRegister.Server.Models
 {
-    // TODO: move to separate file
-    //[Owned] // TODO: skusiť
-    //public class Address
-    //{
-    //    public string Street { get; set; }    // TODO: tabulka adresy -- krajina, kraj, ulica, mesto, čislo domu, psč -- otestovať
-    //    public string City { get; set; }
-    //    public string State { get; set; }
-    //    public string Country { get; set; }
-    //    public int HouseNumber { get; set; }
-    //    public int PostalCode { get; set; }
-    //}
-
     public abstract class Person
     {
         public int PersonId { get; set; }
@@ -26,11 +14,11 @@ namespace TransportRegister.Server.Models
         public bool Sex_Male { get; set; }
         public DateOnly DateOfBirth { get; set; }
         public Address Address { get; set; }
-        public byte?[] Image { get; set; }
+        public byte[] Image { get; set; }
 
         public string OfficialId { get; set; }
         public Official AddedByOfficial { get; set; }
-        public ICollection<Offence> CommitedOffences { get; set; }  // TODO: zmazane new List
+        public ICollection<Offence> CommitedOffences { get; set; }
         public ICollection<Theft> ReportedThefts { get; set; }
 
     }

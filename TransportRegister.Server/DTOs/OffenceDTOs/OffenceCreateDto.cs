@@ -2,6 +2,10 @@
 
 namespace TransportRegister.Server.DTOs.OffenceDTOs
 {
+    /// <summary>
+    /// TODO - comment
+    /// </summary>
+    /// <author> Dominik Pop </author>
     public class OffenceCreateDto
     {
         public string Description { get; set; }

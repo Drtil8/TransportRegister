@@ -20,10 +20,12 @@ namespace TransportRegister.Server.Controllers
     public class VehicleController : ControllerBase
     {
         private readonly IVehicleRepository _vehicleRepository;
+        private readonly IPersonRepository _personRepository;
 
-        public VehicleController(IVehicleRepository vehicleRepository)
+        public VehicleController(IVehicleRepository vehicleRepository, IPersonRepository ownerRepository)
         {
             _vehicleRepository = vehicleRepository;
+            _personRepository = ownerRepository;
         }
 
         /// <summary>
@@ -79,12 +81,39 @@ namespace TransportRegister.Server.Controllers
                 return BadRequest(ModelState);
             }
 
-            // TODO kontrola zda daný Owner a Official existují
+            // TODO kontrola zda daný Official existují
 
             Vehicle vehicle = VehicleDtoTransformer.TransformToEntity(vehicleDto);
             if (vehicle == null)
             {
                 return BadRequest("Invalid vehicle data.");
+            }
+
+            vehicle.Owner = await _personRepository.GetOwnerByVINAsync(vehicle.VIN);
+            if (vehicle.Owner is null)
+                return BadRequest("Owner not found.");
+
+            var licensePlates = await _vehicleRepository.GetLicensePlateHistoryAsync(vehicle.VehicleId);
+            var newLicensePlate = new LicensePlateHistory
+            {
+                LicensePlate = vehicleDto.CurrentLicensePlate,
+                ChangedOn = DateTime.Now
+            };
+            if (licensePlates.Count == 0)
+            {
+                // Create new record of license plate history
+                vehicle.LicensePlates = [newLicensePlate];
+            }
+            else
+            {
+                if (licensePlates.Last().LicensePlate != vehicleDto.CurrentLicensePlate)
+                {
+                    // todo fix this fucking SaveVehicle 1 method do everything dto hell
+                    // Update record of license plate history
+                    //licensePlates.Add(newLicensePlate);
+                    //vehicle.LicensePlates = licensePlates;
+                    ////vehicle.LicensePlates.Add(newLicensePlate);     // cannot be this way
+                }
             }
 
             await _vehicleRepository.SaveVehicleAsync(vehicle);
@@ -121,7 +150,7 @@ namespace TransportRegister.Server.Controllers
 
             await _vehicleRepository.SaveVehicleAsync(vehicle);
 
-            return Ok("Image uploaded successfully.");
+            return Ok();
         }
 
 

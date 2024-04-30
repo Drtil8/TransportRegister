@@ -5,12 +5,12 @@ import {
   type MRT_ColumnDef, type MRT_ColumnFiltersState,
   type MRT_PaginationState, type MRT_SortingState
 } from 'material-react-table';
-import MUITableCommonOptions from './../common/MUITableCommonOptions';
+import MUITableCommonOptions from '../../common/MUITableCommonOptions';
 import { Box, Tooltip, IconButton } from '@mui/material';
-import IDtResult from './interfaces/datatables/IDtResult';
-import IDtFetchData from './interfaces/datatables/IDtFetchData';
-import IVehicleListItem from './interfaces/IVehicleListItem';
-import IDtParams from './interfaces/datatables/IDtParams';
+import IDtResult from '../interfaces/datatables/IDtResult';
+import IDtFetchData from '../interfaces/datatables/IDtFetchData';
+import IVehicleListItem from '../interfaces/IVehicleListItem';
+import IDtParams from '../interfaces/datatables/IDtParams';
 import DetailIcon from '@mui/icons-material/VisibilityOutlined';
 
 export const VehicleDatatable: React.FC<{

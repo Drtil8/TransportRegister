@@ -1,6 +1,7 @@
 ﻿import { Component, FormEvent } from 'react';
 import { Col, Form, FormGroup, Input, Label, Row } from 'reactstrap';
 import OffenceReportDriverModal from './OffenceReportDriverModal';
+import OffenceReportVehicleModal from './OffenceReportVehicleModal';
 //import LocationPicker from '../location/LocationPicker';
 
 class OffenceCreate extends Component {
@@ -14,7 +15,8 @@ class OffenceCreate extends Component {
   render() {
     return (
       <div className="container-fluid">
-      <OffenceReportDriverModal></OffenceReportDriverModal>
+        <OffenceReportDriverModal></OffenceReportDriverModal>
+        <OffenceReportVehicleModal></OffenceReportVehicleModal>
         <Row>
           <Col>
             <h4>Nahlásit přestupek</h4>

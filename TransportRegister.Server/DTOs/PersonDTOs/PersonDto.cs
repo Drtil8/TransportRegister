@@ -1,17 +1,10 @@
 ﻿using TransportRegister.Server.DTOs.DriversLicenseDTOs;
 using TransportRegister.Server.DTOs.VehicleDTOs;
+using System.Text.Json.Serialization;
 
 namespace TransportRegister.Server.DTOs.PersonDTOs
 {
-    public class AddressDto
-    {
-        public string Street { get; set; }    // TODO: tabulka adresy -- krajina, kraj, ulica, mesto, čislo domu, psč -- otestovať
-        public string City { get; set; }
-        public string State { get; set; }
-        public string Country { get; set; }
-        public int HouseNumber { get; set; }
-        public int PostalCode { get; set; }
-    }
+    [JsonConverter(typeof(PersonDtoConverter))]
     public class PersonDto
     {
         public int PersonId { get; set; }
@@ -21,6 +14,7 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
         public bool Sex_Male { get; set; }
         public DateOnly DateOfBirth { get; set; }
         public AddressDto AddressDto { get; set; }
+        public string ImageBase64 { get; set; }
 
         public string OfficialId { get; set; }
         //public ICollection<Offence> CommitedOffences { get; set; }  // TODO: Needs Offence and thefts Dto's
