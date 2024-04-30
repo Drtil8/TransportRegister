@@ -20,10 +20,12 @@ namespace TransportRegister.Server.Controllers
     public class VehicleController : ControllerBase
     {
         private readonly IVehicleRepository _vehicleRepository;
+        private readonly IOwnerRepository _ownerRepository;
 
-        public VehicleController(IVehicleRepository vehicleRepository)
+        public VehicleController(IVehicleRepository vehicleRepository, IOwnerRepository ownerRepository)
         {
             _vehicleRepository = vehicleRepository;
+            _ownerRepository = ownerRepository;
         }
 
         /// <summary>
@@ -79,13 +81,28 @@ namespace TransportRegister.Server.Controllers
                 return BadRequest(ModelState);
             }
 
-            // TODO kontrola zda daný Owner a Official existují
+            // TODO kontrola zda daný Official existují
 
             Vehicle vehicle = VehicleDtoTransformer.TransformToEntity(vehicleDto);
             if (vehicle == null)
             {
                 return BadRequest("Invalid vehicle data.");
             }
+
+            vehicle.Owner = await _ownerRepository.GetOwnerByIdAsync(vehicle.OwnerId);
+            if (vehicle.Owner is null)
+                return BadRequest("Owner not found.");
+
+            // todo when edit must checked if vehicle.LicensePlates.Count == 0 in repository
+            // Create new record of license plate history
+            vehicle.LicensePlates =
+            [
+                new LicensePlateHistory
+                {
+                    LicensePlate = vehicleDto.CurrentLicensePlate,
+                    ChangedOn = DateTime.Now
+                }
+            ];
 
             await _vehicleRepository.SaveVehicleAsync(vehicle);
 
