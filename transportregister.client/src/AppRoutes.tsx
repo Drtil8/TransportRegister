@@ -1,6 +1,5 @@
 ﻿import { VehicleList } from "./components/vehicle/VehicleList";
 import Login from './components/Login';
-import VehicleSearch from "./components/vehicle/VehicleSearch";
 import DriverSearch from "./components/DriverSearch";
 import DriverCreate from "./components/DriverCreate";
 import VehicleCreate from "./components/vehicle/VehicleCreate";
@@ -10,8 +9,9 @@ import TheftCreate from "./components/TheftCreate";
 import TheftFound from "./components/TheftFound";
 import DriverDetail from "./components/DriverDetail";
 import OffenceDetail from "./components/offence/OffenceDetail";
-import VehicleDetail from "./components/VehicleDetail";
 import UserList from "./components/admin/UserList";
+import VehicleSearch from "./components/vehicle/VehicleSearch";
+import VehicleDetail from "./components/vehicle/VehicleDetail";
 import VehicleEdit from "./components/vehicle/VehicleEdit";
 
 const AppRoutes = [
@@ -38,6 +38,11 @@ const AppRoutes = [
   {
     path: '/driver/:id',   // TODO delete, DrierDetail will not be called like this, this is a bad solution for GUI example
     element: <DriverDetail />,
+    isProtected: true
+  },
+  {
+    path: '/vehicle/edit/:id',
+    element: <VehicleEdit />,
     isProtected: true
   },
   {
