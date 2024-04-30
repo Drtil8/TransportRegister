@@ -1,0 +1,14 @@
+EXEC sp_add_job @job_name = N'UpdateBadPointsJob';
+EXEC sp_add_jobstep @job_name = N'UpdateBadPointsJob',
+                    @step_name = N'ExecuteProcedureStep',
+                    @subsystem = N'TSQL',
+                    @command = N'EXEC ExecuteBadPointsUpdate;',
+                    @retry_attempts = 0,
+                    @retry_interval = 0;
+EXEC sp_add_schedule @schedule_name = N'DailySchedule',
+                     @freq_type = 4,
+                     @freq_interval = 1,
+                     @active_start_time = 010000;
+EXEC sp_attach_schedule @job_name = N'UpdateBadPointsJob',
+                        @schedule_name = N'DailySchedule';
+EXEC sp_add_jobserver @job_name = N'UpdateBadPointsJob';
