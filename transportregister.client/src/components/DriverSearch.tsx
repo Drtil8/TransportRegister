@@ -1,8 +1,6 @@
 ﻿import { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Col, Row } from 'reactstrap';
-import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
-//import { APIProvider, Map } from '@vis.gl/react-google-maps';
 export class DriverSearch extends Component<object> {
   //componentDidMount() {
   //  const API_KEY = "AIzaSyBekkpy5L1p1HJeD-v5i5ZUnuzFk178fZI";
@@ -17,7 +15,7 @@ export class DriverSearch extends Component<object> {
 
   render() {
 
-    let API_KEY = "AIzaSyBekkpy5L1p1HJeD-v5i5ZUnuzFk178fZI";
+    //let API_KEY = "AIzaSyBekkpy5L1p1HJeD-v5i5ZUnuzFk178fZI";
     return (
       <div>
         <Row>
@@ -25,7 +23,6 @@ export class DriverSearch extends Component<object> {
             <h4>Vyhledat řidiče</h4>
           </Col>
         </Row>
-        {/*<ProjectsList fetchUrl={'/api/RiskProject/UserRiskProjects'} />*/}
         <Row>
           <Col>
             inputy pro vyhledavani
@@ -33,20 +30,8 @@ export class DriverSearch extends Component<object> {
           <Link to="/driver/1">
             <Button color="primary">Example driver detail</Button>
           </Link>
-          {/*<APIProvider apiKey={API_KEY}>*/}
-          {/*  <Map*/}
-          {/*    style={{ width: '100vw', height: '100vh' }}*/}
-          {/*    defaultCenter={{ lat: 22.54992, lng: 0 }}*/}
-          {/*    defaultZoom={3}*/}
-          {/*    gestureHandling={'greedy'}*/}
-          {/*    disableDefaultUI={true}*/}
-          {/*  />*/}
-          {/*</APIProvider>*/}
-          <div>
-            <GooglePlacesAutocomplete
-              apiKey="AIzaSyBekkpy5L1p1HJeD-v5i5ZUnuzFk178fZI"
-            />
-          </div>
+          <br></br>
+          {/*<GoogleMapsAutocomplete></GoogleMapsAutocomplete>*/}
         </Row>
       </div>
     );
