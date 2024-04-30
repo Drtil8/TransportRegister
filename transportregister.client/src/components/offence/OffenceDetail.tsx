@@ -5,7 +5,7 @@ import { formatDate, formatDateTime } from '../../common/DateFormatter';
 //import LocationPicker from '../location/LocationPicker';
 import AuthContext from '../../auth/AuthContext';
 import EditIcon from '@mui/icons-material/Edit';
-import { Tooltip, IconButton } from '@mui/material';
+import { IconButton } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 
 interface IOffenceDetailProps {
@@ -126,13 +126,16 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify(this.state.offenceDetail)
       });
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       else {
+        const data = await response.json();
+        this.setState({offenceDetail: data})
         this.setState({ offenceStateText: "Schválen" });
         this.setState({ showButtons: false });
       }
@@ -211,18 +214,18 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
                   <Row>
                     {/*TODO ->errors in dev mode in browser console*/}
                     <Col id="editButton">
-                      <Tooltip title="Upravit přestupek">
+                      {/*<Tooltip title="Upravit přestupek">*/}
                         <IconButton color="primary" size="large" onClick={this.handleEditButton}>
                           <EditIcon fontSize="inherit" />
                         </IconButton>
-                      </Tooltip>
+                      {/*</Tooltip>*/}
                     </Col>
                     <Col className="hidden" id="saveButton">
-                      <Tooltip title="Uložit úpravy">
+                      {/*<Tooltip title="Uložit úpravy">*/}
                         <IconButton color="primary" size="large" onClick={this.handleSaveButton}>
                           <SaveIcon />
                         </IconButton>
-                      </Tooltip>
+                      {/*</Tooltip>*/}
                     </Col>
                   </Row>
                 </Col>
@@ -305,11 +308,11 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
                             <dd>{offenceDetail.fine.amount} Kč</dd>
                           )}
                       </Col>
-                      {offenceDetail.fine.isPaid === false && (
-                        <Col>
-                          <Button color="primary" onClick={this.handlePayFine}> Potvrdit zaplacení </Button>
-                        </Col>
-                      )}
+                      {/*{offenceDetail.fine.isPaid === false && (*/}
+                      {/*  <Col>*/}
+                      {/*    <Button color="primary" onClick={this.handlePayFine}> Potvrdit zaplacení </Button>*/}
+                      {/*  </Col>*/}
+                      {/*)}*/}
                     </Row>
                   </div>
                 )}

@@ -204,12 +204,12 @@ const OffenceReportVehicleModal: React.FC<OffenceReportVehicleModalProps> = () =
                     </Label>
                     <Input id="reportVehicleFineAmount" name="reportVehicleFineAmount" type="number" step={0.01} min={0} value={formData.reportVehicleFineAmount} onChange={handleChange} />
                   </Col>
-                  <Col>
-                    <Label>
-                      Trestné body:
-                    </Label>
-                    <Input id="reportVehiclePenaltyPoints" name="reportVehiclePenaltyPoints" type="number" max={12} min={0} value={formData.reportVehiclePenaltyPoints} onChange={handleChange} />
-                  </Col>
+                  {/*<Col>*/}
+                    {/*<Label>*/}
+                    {/*  Trestné body:*/}
+                    {/*</Label>*/}
+                    {/*<Input id="reportVehiclePenaltyPoints" name="reportVehiclePenaltyPoints" type="number" max={12} min={0} value={formData.reportVehiclePenaltyPoints} onChange={handleChange} />*/}
+                  {/*</Col>*/}
                 </Row>
                 <Row>
                   <Col>
