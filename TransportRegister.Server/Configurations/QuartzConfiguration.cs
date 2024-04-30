@@ -16,7 +16,7 @@ namespace TransportRegister.Server.Configurations
                 q.AddTrigger(opts => opts
                     .ForJob(jobKey)
                     .WithIdentity("UpdateBadPointsJob-trigger")
-                    // .WithCronSchedule("0 * * ? * *")); // every minuty
+                    // .WithCronSchedule("0 * * ? * *")); // every minute
                     .WithCronSchedule("0 0/1 * 1/1 * ? *")); // every hour
 
         });
