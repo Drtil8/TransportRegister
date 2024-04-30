@@ -13,6 +13,7 @@ export interface IPerson {
   imageBase64: string;
   officialId: string;
   personType: string;
+  vehicles: IVehicleDetail[];
 }
 
 export interface IDriver extends IPerson {
@@ -25,5 +26,4 @@ export interface IDriver extends IPerson {
 }
 
 export interface IOwner extends IPerson {
-  vehicles: IVehicleDetail[];
 }

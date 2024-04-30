@@ -20,7 +20,7 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
         public string OfficialId { get; set; }
         //public ICollection<Offence> CommitedOffences { get; set; }  // TODO: Needs Offence and thefts Dto's
         //public ICollection<Theft> ReportedThefts { get; set; }
-
+        public IEnumerable<VehicleDetailDto> Vehicles { get; set; }
     }
 
     public class DriverDto : PersonDto
@@ -36,7 +36,6 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
 
     public class OwnerDto : PersonDto
     {
-        public IEnumerable<VehicleDetailDto> Vehicles { get; set; }
     }
 }
 
