@@ -12,8 +12,8 @@ using TransportRegister.Server.Data;
 namespace TransportRegister.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240427163315_AddOffenceType")]
-    partial class AddOffenceType
+    [Migration("20240430180352_InitDatabase")]
+    partial class InitDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -323,17 +323,12 @@ namespace TransportRegister.Server.Migrations
                     b.Property<DateOnly>("DateOfBirth")
                         .HasColumnType("date");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
-
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<byte[]>("Image")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -342,6 +337,11 @@ namespace TransportRegister.Server.Migrations
                     b.Property<string>("OfficialId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("PersonType")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
+
                     b.Property<bool>("Sex_Male")
                         .HasColumnType("bit");
 
@@ -349,9 +349,9 @@ namespace TransportRegister.Server.Migrations
 
                     b.HasIndex("OfficialId");
 
-                    b.ToTable("Persons");
+                    b.ToTable("Persons", (string)null);
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Person");
+                    b.HasDiscriminator<string>("PersonType").HasValue("Person");
 
                     b.UseTphMappingStrategy();
                 });

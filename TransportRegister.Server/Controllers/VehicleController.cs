@@ -20,12 +20,12 @@ namespace TransportRegister.Server.Controllers
     public class VehicleController : ControllerBase
     {
         private readonly IVehicleRepository _vehicleRepository;
-        private readonly IOwnerRepository _ownerRepository;
+        private readonly IPersonRepository _personRepository;
 
-        public VehicleController(IVehicleRepository vehicleRepository, IOwnerRepository ownerRepository)
+        public VehicleController(IVehicleRepository vehicleRepository, IPersonRepository ownerRepository)
         {
             _vehicleRepository = vehicleRepository;
-            _ownerRepository = ownerRepository;
+            _personRepository = ownerRepository;
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace TransportRegister.Server.Controllers
                 return BadRequest("Invalid vehicle data.");
             }
 
-            vehicle.Owner = await _ownerRepository.GetOwnerByIdAsync(vehicle.OwnerId);
+            vehicle.Owner = await _personRepository.GetOwnerByVINAsync(vehicle.VIN);
             if (vehicle.Owner is null)
                 return BadRequest("Owner not found.");
 

@@ -15,10 +15,27 @@ namespace TransportRegister.Server.Repositories.Implementations
 
         public async Task<Person> GetPersonByIdAsync(int personId)
         {
-            return await _context.Persons
-                //.Include(v => v.CommitedOffences)
-                //.Include(v => v.ReportedThefts)
-                .FirstOrDefaultAsync(v => v.PersonId == personId);
+            var person = await _context.Persons.FirstOrDefaultAsync(v => v.PersonId == personId);
+            if (person is null)
+            {
+                return null;
+            }
+
+            var type = person.GetType();
+
+            if (person.GetType() == typeof(Driver))
+            {
+                return await _context.Drivers
+                    .Include(v => v.Licenses)
+                    .FirstOrDefaultAsync(v => v.PersonId == personId);
+            }
+            else if (person.GetType() == typeof(Owner))
+            {
+                return await _context.Owners
+                    .Include(v => v.Vehicles)
+                    .FirstOrDefaultAsync(v => v.PersonId == personId);
+            }
+            else return null;
         }
         public async Task<Driver> GetDriverAsync(string licenseNumber)
         {
@@ -33,29 +50,29 @@ namespace TransportRegister.Server.Repositories.Implementations
                 .FirstOrDefaultAsync(o => o.Vehicles.Any(v => v.VIN == VIN_number));
         }
 
-        public async Task SetOwnerAsync(Owner owner)
+        public async Task SetOwnerAsync(Person owner)
         {
             if (owner.PersonId == 0)
             {
-                _context.Owners.Add(owner);
+                _context.Owners.Add(owner as Owner);
             }
             else
             {
-                _context.Owners.Update(owner);
+                _context.Owners.Update(owner as Owner);
             }
             await _context.SaveChangesAsync();
         }
 
 
-        public async Task SetDriverAsync(Driver driver)
+        public async Task SetDriverAsync(Person driver)
         {
             if (driver.PersonId == 0)
             {
-                _context.Drivers.Add(driver);
+                _context.Drivers.Add(driver as Driver);
             }
             else
             {
-                _context.Drivers.Update(driver);
+                _context.Drivers.Update(driver as Driver);
             }
             await _context.SaveChangesAsync();
         }

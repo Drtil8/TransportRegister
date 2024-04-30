@@ -5,7 +5,6 @@ using TransportRegister.Server.Configurations;
 using TransportRegister.Server.Data;
 using TransportRegister.Server.Models;
 using TransportRegister.Server.Repositories;
-using TransportRegister.Server.Repositories.DriverRepository;
 using TransportRegister.Server.Repositories.Implementations;
 using TransportRegister.Server.Seeds;
 
@@ -37,8 +36,6 @@ namespace TransportRegister.Server
 
             // Repositories
             builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
-            builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
-            builder.Services.AddScoped<IDriverRepository, DriverRepository>();
             builder.Services.AddScoped<ITheftRepository, TheftRepository>();
             builder.Services.AddScoped<IOffenceRepository, OffenceRepository>();
             builder.Services.AddScoped<IPersonRepository, PersonRepository>();

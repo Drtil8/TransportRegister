@@ -1,30 +1,53 @@
-﻿using TransportRegister.Server.Models;
+﻿using Humanizer;
+using System.Linq;
+using TransportRegister.Server.DTOs.DriversLicenseDTOs;
+using TransportRegister.Server.DTOs.VehicleDTOs;
+using TransportRegister.Server.Models;
 namespace TransportRegister.Server.DTOs.PersonDTOs
 {
     public class PersonDtoTransformer
     {
         public static PersonDto TransformToDto(Person person)
+
         {
-            return person switch
+            if (person == null)
+                return null;
+
+            PersonDto personDto = person switch
             {
                 Driver driver => new DriverDto
                 {
-                    AddressDto = TransformToDto(driver.Address),
-                    PersonId = driver.PersonId,
-                    FirstName = driver.FirstName,
-                    LastName = driver.LastName,
-                    BirthNumber = driver.BirthNumber,
+                    DriversLicenseNumber = driver.DriversLicenseNumber,
+                    BadPoints = driver.BadPoints,
+                    HasSuspendedLicense = driver.HasSuspendedLicense,
+                    LastCrimeCommited = driver.LastCrimeCommited,
+                    DrivingSuspendedUntil = driver.DrivingSuspendedUntil,
+                    Licenses = driver.Licenses.Select(l => DriversLicenseDtoTransformer.TransformToDto(l))
+
                 },
 
                 Owner owner => new OwnerDto
                 {
-                    PersonId = owner.PersonId,
-                    FirstName = owner.FirstName,
-                    LastName = owner.LastName,
-                    BirthNumber = owner.BirthNumber,
+                    Vehicles = owner.Vehicles.Select(v => VehicleDtoTransformer.TransformToDto(v))
+
                 },
                 _ => null
             };
+
+                if (personDto != null)
+                {
+                    personDto.AddressDto = TransformToDto(person.Address);
+                    personDto.PersonId = person.PersonId;
+                    personDto.FirstName = person.FirstName;
+                    personDto.LastName = person.LastName;
+                    personDto.BirthNumber = person.BirthNumber;
+                    personDto.Sex_Male = person.Sex_Male;
+                    personDto.ImageBase64 = person.Image != null ? Convert.ToBase64String(person.Image) : null;
+                    personDto.OfficialId = person.OfficialId;
+
+            };
+            return personDto; 
+
         }
 
         public static AddressDto TransformToDto(Address adress)
@@ -41,7 +64,6 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
 
         }
 
-        // potrebuje dva konvertre???
         public static Person TransformToEntity(PersonDto dto)
         {
             return dto switch

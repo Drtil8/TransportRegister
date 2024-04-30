@@ -39,34 +39,30 @@ namespace TransportRegister.Server.Controllers
 
         // PUT: api/Persons/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPut("{id}")]
-        //public Task<ActionResult> PutPerson(int id, Person person)
-        //{
-        //    //if (id != person.PersonId)
-        //    //{
-        //    //    return BadRequest();
-        //    //}
+        [HttpPut("{id}")]
+        public async Task<ActionResult> PutPerson(int id, string role)
+        {
+            var person = await _personRepository.GetPersonByIdAsync(id);
+            if (person is null)
+            {
+                return BadRequest();
+            }
 
-        //    //_context.Entry(person).State = EntityState.Modified;
+            //switch (role)
+            //    {
+            //    case "Driver":
+            //        await _personRepository.SetDriverAsync(person);
+            //        break;
+            //    case "Owner":
+            //        await _personRepository.SetOwnerAsync(person);
+            //        break;
+            //    default:
+            //        return BadRequest();
+            //    }
 
-        //    //try
-        //    //{
-        //    //    await _context.SaveChangesAsync();
-        //    //}
-        //    //catch (DbUpdateConcurrencyException)
-        //    //{
-        //    //    if (!PersonExists(id))
-        //    //    {
-        //    //        return NotFound();
-        //    //    }
-        //    //    else
-        //    //    {
-        //    //        throw;
-        //    //    }
-        //    //}
 
-        //    return Ok();
-        //}
+                return Ok();
+        }
 
         // POST: api/Persons
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

@@ -7,8 +7,8 @@ namespace TransportRegister.Server.Repositories
         Task<Person> GetPersonByIdAsync(int personId);
         Task<Driver> GetDriverAsync(string licenseNumber);
         Task<Owner> GetOwnerByVINAsync(string VIN_number);
-        Task SetOwnerAsync(Owner owner);
-        Task SetDriverAsync(Driver driver);
+        Task SetOwnerAsync(Person owner);
+        Task SetDriverAsync(Person driver);
         Task DeletePersonAsync(int personId);
         Task<List<Tuple<Driver, int>>> GetDriversAndPoints();
     }

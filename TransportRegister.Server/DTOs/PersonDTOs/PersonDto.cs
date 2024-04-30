@@ -1,5 +1,6 @@
 ﻿using TransportRegister.Server.DTOs.DriversLicenseDTOs;
 using TransportRegister.Server.DTOs.VehicleDTOs;
+using System.Text.Json.Serialization;
 
 namespace TransportRegister.Server.DTOs.PersonDTOs
 {
@@ -12,6 +13,7 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
         public int HouseNumber { get; set; }
         public int PostalCode { get; set; }
     }
+    [JsonConverter(typeof(PersonDtoConverter))]
     public class PersonDto
     {
         public int PersonId { get; set; }
