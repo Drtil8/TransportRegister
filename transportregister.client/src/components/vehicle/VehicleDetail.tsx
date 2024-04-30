@@ -28,7 +28,8 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
         throw new Error(`Failed to load VehicleById.`);
       }
       const vehicle = await response.json();
-      vehicle.imageBase64 = "data:image/jpeg;base64," + vehicle.imageBase64;    // todo set proper image extension
+      if (vehicle.imageBase64)
+        vehicle.imageBase64 = "data:image/jpeg;base64," + vehicle.imageBase64;    // todo set proper image extension
 
       let parsedVehicle: IVehicleDetail;
       switch (vehicle.vehicleType) {
@@ -48,7 +49,6 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
           throw new Error(`Unknown vehicle type: ${vehicle.vehicleType}`);
       }
       this.setState({ vehicleDetail: parsedVehicle });
-      console.log(parsedVehicle);
     }
     catch (error) {
       console.error('Error fetching vehicle data:', error);
@@ -57,6 +57,13 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
 
   render() {
     const { vehicleDetail } = this.state as IVehicleDetailProps;
+    const localizedVehicleTypeMap: { [key: string]: string } = {
+      'Car': 'auta',
+      'Truck': 'nákladního auta',
+      'Motorcycle': 'motocyklu',
+      'Bus': 'autobusu'
+    };
+
     const content = !vehicleDetail ?
       (
         <Alert color="danger">Vozidlo nebylo nalezeno.</Alert>
@@ -66,7 +73,7 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
         <>
           <Row className="mb-3">
             <Col>
-              <h4>Detail vozidla</h4>
+              <h4>Detail {localizedVehicleTypeMap[vehicleDetail.vehicleType]}</h4>
             </Col>
             <Col className="d-flex justify-content-end">
               <Button color="success" href={`/vehicle/edit/${vehicleDetail.vehicleId}`}>
@@ -80,52 +87,68 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
               <Row>
                 <dl>
                   <Row>
-                    <dt>VIN:</dt>
-                    <dd>{vehicleDetail.vin}</dd>
+                    <Col>
+                      <dt>VIN:</dt>
+                      <dd>{vehicleDetail.vin}</dd>
+                    </Col>
+                    <Col>
+                      <dt>SPZ:</dt>
+                      <dd>{vehicleDetail.currentLicensePlate}</dd>
+                    </Col>
                   </Row>
                   <Row>
-                    <dt>SPZ:</dt>
-                    <dd>{vehicleDetail.currentLicensePlate}</dd>
-                  </Row>
-                  <Row>
-                    <dt>Model:</dt>
-                    <dd>{`${vehicleDetail.manufacturer} ${vehicleDetail.model}`}</dd>
-                  </Row>
-                  <Row>
-                    <dt>Rok výroby:</dt>
-                    <dd>{vehicleDetail.manufacturedYear}</dd>
-                  </Row>
-                  <Row>
-                    <dt>Barva:</dt>
-                    <dd>{vehicleDetail.color}</dd>
+                    <Col>
+                      <dt>Model:</dt>
+                      <dd>{`${vehicleDetail.manufacturer} ${vehicleDetail.model}, ${vehicleDetail.manufacturedYear}`}</dd>
+                    </Col>
+                    <Col>
+                      <dt>Barva:</dt>
+                      <dd>{vehicleDetail.color}</dd>
+                    </Col>
                   </Row>
 
-                  {/*todo*/}
+                  {/* todo should be collapsable */}
                   <dt>Dodatečné informace:</dt>
-                  <Row>
-                    <dt>Obecné:</dt>
-                    <dd>{vehicleDetail.horsepowerKW}</dd>
-                    <dd>{vehicleDetail.engineVolumeCM3}</dd>
-                    <dd>{`${vehicleDetail.lengthCM} X ${vehicleDetail.widthCM} X ${vehicleDetail.heightCM}`}</dd>
-                    <dd>{vehicleDetail.loadCapacityKG}</dd>
+                  <Row id="basicVehicleInfo">
+                    <Col>
+                      <dt>Výkon:</dt>
+                      <dd>{`${vehicleDetail.horsepowerKW} kW`}</dd>
 
-                    <dt>Specifické pro typ vozidla - {vehicleDetail.vehicleType}:</dt>
+                      <dt>Objem motoru:</dt>
+                      <dd>{`${vehicleDetail.engineVolumeCM3} cm`}<sup>3</sup></dd>
+                    </Col>
+                    <Col>
+                      <dt>Rozměry (d x š x v):</dt>
+                      <dd>{`${vehicleDetail.lengthCM} x ${vehicleDetail.widthCM} x ${vehicleDetail.heightCM} cm`}</dd>
+
+                      <dt>Nosnost:</dt>
+                      <dd>{`${vehicleDetail.loadCapacityKG} kg`}</dd>
+                    </Col>
+                  </Row>
+
+                  <Row id="specificVehicleInfo">
                     {vehicleDetail.vehicleType === 'Car' && (
-                      <dd>{(vehicleDetail as ICar).numberOfDoors}</dd>
+                      <>
+                        <dt>Počet dveří:</dt>
+                        <dd>{(vehicleDetail as ICar).numberOfDoors}</dd>
+                      </>
                     )}
                     {vehicleDetail.vehicleType === 'Motorcycle' && (
-                      <dd>{(vehicleDetail as IMotorcycle).constraints}</dd>
+                      <>
+                        <dt>Omezení:</dt>
+                        <dd>{(vehicleDetail as IMotorcycle).constraints}</dd>
+                      </>
                     )}
                     {vehicleDetail.vehicleType === 'Bus' && (
                       <>
-                        <dd>{(vehicleDetail as IBus).seatCapacity}</dd>
-                        <dd>{(vehicleDetail as IBus).standingCapacity}</dd>
+                        <dt>Kapacita (sezení + stání):</dt>
+                        <dd>{`${(vehicleDetail as IBus).seatCapacity} + ${(vehicleDetail as IBus).standingCapacity}`}</dd>
                       </>
                     )}
                     {/*{vehicleDetail.vehicleType === 'Truck' && (*/}
                     {/*)}*/}
 
-                    {vehicleDetail.imageBase64 !== null && (
+                    {vehicleDetail.imageBase64 && (
                       <Col xs="8">
                         <dt>Fotka vozidla:</dt>
                         <img

@@ -102,7 +102,6 @@ namespace TransportRegister.Server.Controllers
             if (licensePlates.Count == 0)
             {
                 // Create new record of license plate history
-                //vehicle.LicensePlates.Add(newLicensePlate);
                 vehicle.LicensePlates = [newLicensePlate];
             }
             else

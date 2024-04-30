@@ -28,7 +28,8 @@ export class VehicleEdit extends Component<object | IVehicleDetailProps> {
         throw new Error(`Failed to load VehicleById.`);
       }
       const vehicle = await response.json();
-      vehicle.imageBase64 = "data:image/jpeg;base64," + vehicle.imageBase64;    // todo set proper image extension
+      if (vehicle.imageBase64)
+        vehicle.imageBase64 = "data:image/jpeg;base64," + vehicle.imageBase64;    // todo set proper image extension
 
       let parsedVehicle: IVehicleDetail;
       switch (vehicle.vehicleType) {
