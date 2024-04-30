@@ -75,3 +75,11 @@ dl dt {
     width: 100%;
     max-height: 300px;
 }
+
+
+/*driver register*/
+.birthNumberInput {
+    display: flex;
+}
+
+/*driver register*/
