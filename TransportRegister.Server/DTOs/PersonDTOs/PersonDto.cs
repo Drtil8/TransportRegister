@@ -4,15 +4,6 @@ using System.Text.Json.Serialization;
 
 namespace TransportRegister.Server.DTOs.PersonDTOs
 {
-    public class AddressDto
-    {
-        public string Street { get; set; }    // TODO: tabulka adresy -- krajina, kraj, ulica, mesto, čislo domu, psč -- otestovať
-        public string City { get; set; }
-        public string State { get; set; }
-        public string Country { get; set; }
-        public int HouseNumber { get; set; }
-        public int PostalCode { get; set; }
-    }
     [JsonConverter(typeof(PersonDtoConverter))]
     public class PersonDto
     {
