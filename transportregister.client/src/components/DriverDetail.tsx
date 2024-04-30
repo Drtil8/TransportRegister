@@ -1,82 +1,28 @@
 ﻿
 import { ChangeEvent, Component } from 'react';
 import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col, FormGroup, Input, Label, Form, Button } from 'reactstrap';
-import IDriverDetail from './interfaces/IDriverDetail';
-import IPersonDetail from './interfaces/IPersonDetail';
+import { IPerson, IDriver, IOwner } from './interfaces/IPersonDetail';
 import IDriverFormState from './interfaces/IDriverForm';
-import IVehicleListItem from './interfaces/IVehicleListItem';
-
 
 // TODO fetch the actual driver
-
 interface DriverDetailState {
-
   activeTab: string;
-  driver: IDriverDetail | null;
+  personDetail: IPerson | null;
   form: IDriverFormState;
 }
+
 export class DriverDetail extends Component<object, DriverDetailState> {
-
-  per: IPersonDetail = {
-    id: 20,
-    FirstName: "John",
-    LastName: "Doe",
-    BirthNumber: "123456/7890",
-    Sex_male: true,
-    DateOfBirth: new Date("1990-01-01"),
-    // Add other properties as needed
-  };
-
-  vehiclesList: IVehicleListItem[] = [
-    {
-      id: 1,
-      vin: "ABC123",
-      licensePlate: "XYZ123",
-      vehicleType: "Car",
-      manufacturer: "Toyota",
-      model: "Camry",
-      color: "Blue",
-      manufacturedYear: 2020,
-      ownerId: 123,
-      ownerFullName: "John Doe",
-    },
-    {
-      id: 2,
-      vin: "DEF456",
-      licensePlate: "LMN456",
-      vehicleType: "Truck",
-      manufacturer: "Ford",
-      model: "F-150",
-      color: "Red",
-      manufacturedYear: 2018,
-      ownerId: 456,
-      ownerFullName: "Jane Smith",
-    },
-  ];
-
-  driverDetail: IDriverDetail = {
-    person: this.per,
-    driversLicenseNumber: 'EN123456',
-    badPoints: 3,
-    hasSuspendedLicense: false,
-    lastCrimeCommited: '',
-    drivingSuspendedUntil: '',
-    licenses: [],
-    vehicles: this.vehiclesList,
-  };
-    constructor(props: object) {
+  constructor(props: object) {
     super(props);
-    const person = this.driverDetail.person;
-    const driver = this.driverDetail;
     this.state = {
       activeTab: 'detail',
-      driver: this.driverDetail,
+      personDetail: null,
       form: {
-        firstName: person.FirstName,
-        lastName: person.LastName,
+        firstName: 'person.firstName',
+        lastName: 'person.LastName',
         birthNumber1: 0,
         birthNumber2: 0,
-        sexMale: person.Sex_male,
+        sexMale: true,
         dateOfBirth: "TODO DATE",
         //address: {
         //  street: '',
@@ -88,13 +34,12 @@ export class DriverDetail extends Component<object, DriverDetailState> {
         //},
         image: '',
         //officialId: '',
-        driversLicenseNumber: driver.driversLicenseNumber,
-        badPoints: driver.badPoints,
-        hasSuspendedLicense: driver.hasSuspendedLicense,
-        lastCrimeCommited: driver.lastCrimeCommited,
-        drivingSuspendedUntil: driver.drivingSuspendedUntil,
+        driversLicenseNumber: '0',
+        badPoints: 4,
+        hasSuspendedLicense: false,
+        lastCrimeCommited: '',
+        drivingSuspendedUntil: '',
         licenses: [],
-
         disableInput: true,
       }
     };
@@ -106,19 +51,37 @@ export class DriverDetail extends Component<object, DriverDetailState> {
     }
   }
 
-  async populateProjectDetail() {
-    //const urlSplitted = window.location.pathname.split('/');
-    //const id = urlSplitted[2];
+  componentDidMount() {
+    this.populatePersonData();
+  }
 
-    //const apiUrl = `/api/RiskProject/${id}`;
-    //try {
-    //  const response = await fetch(apiUrl);
-    //  const data: IDriverDetail = await response.json();
-    //  //this.setState({ projectDetail: data });
-    //} catch (error) {
-    //  console.error('Error fetching project detail:', error);
-    //}
-    /*const data = ;*/
+  async populatePersonData() {
+    const urlSplitted = window.location.pathname.split('/');
+    const id = urlSplitted[2];
+
+    try {
+      const response = await fetch(`/api/Persons/${id}`);
+      if (!response.ok) {
+        throw new Error(`Failed to load PersonById.`);
+      }
+      const person = await response.json();
+      let parsedPerson: IPerson;
+      switch (person.personType) {
+        case 'Driver':
+          parsedPerson = person as IDriver;
+          break;
+        case 'Owner':
+          parsedPerson = person as IOwner;
+          break;
+        default:
+          throw new Error(`Unknown person type: ${person.personType}`);
+      }
+      console.log(parsedPerson);    // todo delete
+      this.setState({ personDetail: parsedPerson });
+    }
+    catch (error) {
+      console.error('Error fetching person data:', error);
+    }
   }
 
   handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -132,7 +95,6 @@ export class DriverDetail extends Component<object, DriverDetailState> {
     }));
     console.log(name, ' ', value);
   }
-
 
   handleChangeCheckbox = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
@@ -155,29 +117,23 @@ export class DriverDetail extends Component<object, DriverDetailState> {
     console.log('switching state', this.state.form.disableInput);
   }
 
-
-
-
   render() {
-    const { activeTab } = this.state;
+    const { activeTab, personDetail } = this.state;
     const form = this.state.form;
 
     let infoButtons =
       <div>
-        <Button onClick={this.switchEditState} >Zrušit</Button>
-        <Button >Potvrdit</Button> 
+        <Button onClick={this.switchEditState} color="primary">Zrušit</Button>
+        <Button color="primary">Potvrdit</Button> 
         {/*TODO Put*/}
       </div>
     if (this.state.form.disableInput) {
-      infoButtons = < Button onClick={this.switchEditState} > Editovat</Button>;
+      infoButtons = <Button onClick={this.switchEditState} color="primary">Editovat</Button>;
     }
-
-
 
     const contents = (
       <div className="container">
         <h1>Example driver</h1>
-        <h2>{ }</h2>
         <div className="row">
           <div className="col-9">
             <Nav tabs className="flex-row-reverse">
@@ -200,7 +156,7 @@ export class DriverDetail extends Component<object, DriverDetailState> {
                   <Col>
                     <br></br>
                     <h5>Osobní informace</h5>
-                    <p>{this.driverDetail.person.FirstName}</p>
+                    <p>{`${personDetail?.firstName} ${personDetail?.lastName}`}</p>
                     <Form>
                       <FormGroup floating>
                         <Input id="firstName" name="firstName" placeholder="firstName" type="text" value={form.firstName} onChange={this.handleChange} required disabled={form.disableInput} />

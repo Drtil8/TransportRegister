@@ -22,32 +22,29 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
                     HasSuspendedLicense = driver.HasSuspendedLicense,
                     LastCrimeCommited = driver.LastCrimeCommited,
                     DrivingSuspendedUntil = driver.DrivingSuspendedUntil,
-                    Licenses = driver.Licenses.Select(l => DriversLicenseDtoTransformer.TransformToDto(l))
-
+                    Licenses = driver.Licenses.Select(l => DriversLicenseDtoTransformer.TransformToDto(l)),
                 },
 
                 Owner owner => new OwnerDto
                 {
-                    Vehicles = owner.Vehicles.Select(v => VehicleDtoTransformer.TransformToDto(v))
-
+                    Vehicles = owner.Vehicles.Select(v => VehicleDtoTransformer.TransformToDto(v)),
                 },
                 _ => null
             };
 
-                if (personDto != null)
-                {
-                    personDto.AddressDto = TransformToDto(person.Address);
-                    personDto.PersonId = person.PersonId;
-                    personDto.FirstName = person.FirstName;
-                    personDto.LastName = person.LastName;
-                    personDto.BirthNumber = person.BirthNumber;
-                    personDto.Sex_Male = person.Sex_Male;
-                    personDto.ImageBase64 = person.Image != null ? Convert.ToBase64String(person.Image) : null;
-                    personDto.OfficialId = person.OfficialId;
-
+            if (personDto != null)
+            {
+                personDto.AddressDto = TransformToDto(person.Address);
+                personDto.PersonId = person.PersonId;
+                personDto.FirstName = person.FirstName;
+                personDto.LastName = person.LastName;
+                personDto.BirthNumber = person.BirthNumber;
+                personDto.Sex_Male = person.Sex_Male;
+                personDto.ImageBase64 = person.Image != null ? Convert.ToBase64String(person.Image) : null;
+                personDto.OfficialId = person.OfficialId;
+                personDto.PersonType = person.GetType().Name;
             };
-            return personDto; 
-
+            return personDto;
         }
 
         public static AddressDto TransformToDto(Address adress)
@@ -61,7 +58,6 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
                 HouseNumber = adress.HouseNumber,
                 PostalCode = adress.PostalCode
             };
-
         }
 
         public static Person TransformToEntity(PersonDto dto)
@@ -101,7 +97,5 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
                 PostalCode = dto.PostalCode
             };
         }
-
-
     }
 }
