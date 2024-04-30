@@ -137,7 +137,7 @@ namespace TransportRegister.Server.Repositories.Implementations
                 {
                     Id = ot.OffenceTypeId,
                     Name = ot.Name,
-                    PenaltyPoints= ot.PenaltyPoints,
+                    PenaltyPoints = ot.PenaltyPoints,
                     FineAmount = ot.FineAmount
                 }).ToListAsync();
 
@@ -147,7 +147,7 @@ namespace TransportRegister.Server.Repositories.Implementations
         public async Task<bool> AssignOffenceToOfficialAsync(Offence offence) //(int offenceId)
         {
             var official = (await _context.Officials.Where(of => of.IsValid && of.IsActive)
-                .Select(o => new 
+                .Select(o => new
                 {
                     Official = o,
                     OffencesCount = o.ProcessedOffences.Count(off => !off.IsApproved && off.IsValid)
@@ -160,6 +160,25 @@ namespace TransportRegister.Server.Repositories.Implementations
             }
 
             offence.OfficialId = official.Id;
+
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> AssignPoints(int driverId, int points)
+        {
+            var driver = await _context.Drivers.FindAsync(driverId);
+            if (driver == null)
+            {
+                return false;
+            }
+
+            driver.BadPoints += points;
+            driver.LastCrimeCommited = DateTime.Now; // TODO -> rn sets last crime commited only when points are assigned!! check if its okay
+            if (driver.BadPoints >= 12)
+            {
+                driver.HasSuspendedLicense = true;
+                driver.DrivingSuspendedUntil = DateTime.Now.AddYears(1);
+            }
 
             return await _context.SaveChangesAsync() > 0;
         }
@@ -189,14 +208,29 @@ namespace TransportRegister.Server.Repositories.Implementations
                 OfficerId = activeUser.Id
             };
 
-            if (offenceDto.FineAmount != 0) {
+            if (offenceDto.FineAmount != 0)
+            {
                 offence.Fine = new Fine
                 {
                     Amount = offenceDto.FineAmount,
-                    IsActive = !offenceDto.FinePaid,
-                    PaidOn = offenceDto.FinePaid ? DateOnly.FromDateTime(offence.ReportedOn) : DateOnly.Parse("0001-01-01"),
+                    IsActive = true,
                     DueDate = DateOnly.FromDateTime(DateTime.Today.AddDays(7))
-            };
+                };
+
+                if (offenceDto.FinePaid)
+                {
+                    offence.Fine.PaidOn = DateOnly.FromDateTime(offence.ReportedOn);
+                    offence.Fine.IsActive = false;
+                    offence.IsApproved = true; // Automatically processing offence when it was dealt with on place
+                    if (offence.PenaltyPoints > 0)
+                    {
+                        await AssignPoints(offence.PersonId, offence.PenaltyPoints);
+                    }
+                }
+            }
+            else // TODO -> no penalty should mean not points but maybe i should check the points as well
+            {
+                offence.IsApproved = true; // Automatically processing offence when no fine is assigned
             }
 
             _context.Offences.Add(offence);
@@ -209,23 +243,48 @@ namespace TransportRegister.Server.Repositories.Implementations
             return offence;
         }
 
-        public async Task<bool> ApproveOffenceAsync(int offenceId)
+        public async Task<bool> ApproveOffenceAsync(int offenceId, OffenceDetailDto offenceDto)
         {
-            var offence = await _context.Offences.FindAsync(offenceId);
+            var offence = await _context.Offences.Include(of => of.Fine).Where(of => of.OffenceId == offenceId).FirstOrDefaultAsync();
             if (offence == null)
             {
                 return false;
             }
 
-            //offence.Description = offenceDto.Description;
-            //offence.PenaltyPoints = offenceDto.PenaltyPoints;
-            //offence.Fine.Amount = offenceDto.FineAmount;
-            //offence.Fine.IsActive = !offenceDto.FinePaid; // TODO
-            //offence.Type = offenceDto.Type; // TODO
+            if(offence.Fine != null)
+            {
+                if(offence.Fine.IsActive) // TODO 
+                {
+                    offence.Fine.IsActive = false;
+                    offence.Fine.PaidOn = DateOnly.FromDateTime(DateTime.Now);
+                }
+            }
+
             offence.IsApproved = true;
             offence.IsValid = true;
 
-            return await _context.SaveChangesAsync() > 0;
+            if(await _context.SaveChangesAsync() > 0)
+            {
+                offenceDto.IsApproved = offence.IsApproved;
+                offenceDto.IsValid = offence.IsValid;
+                if(offenceDto.Fine != null)
+                {
+                    offenceDto.Fine.IsPaid = !offence.Fine.IsActive;
+                    offenceDto.Fine.IsActive = offence.Fine.IsActive;
+                    offenceDto.Fine.PaidOn = offence.Fine.PaidOn;
+                }
+            }
+            else
+            {
+                return false;
+            }
+            
+            if(offence.PenaltyPoints > 0)
+            {
+                var res = await AssignPoints(offence.PersonId, offence.PenaltyPoints);
+            }
+
+            return true;
         }
 
         public async Task<bool> DeclineOffenceAsync(int offenceId)
@@ -242,7 +301,7 @@ namespace TransportRegister.Server.Repositories.Implementations
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<int> EditOffenceAsync(int offenceId, OffenceDetailDto offenceDto)
+        public async Task<int> EditOffenceAsync(int offenceId, OffenceDetailDto offenceDto) // TODO
         {
             var offence = await _context.Offences.FindAsync(offenceId);
             if (offence == null)
@@ -257,7 +316,7 @@ namespace TransportRegister.Server.Repositories.Implementations
             return -1;
         }
 
-        public async Task<bool> DeleteOffenceAsync(int offenceId)
+        public async Task<bool> DeleteOffenceAsync(int offenceId) // TODO
         {
             var offence = await _context.Offences.FindAsync(offenceId);
             if (offence == null)
