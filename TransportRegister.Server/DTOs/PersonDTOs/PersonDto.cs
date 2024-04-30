@@ -21,6 +21,7 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
         public bool Sex_Male { get; set; }
         public DateOnly DateOfBirth { get; set; }
         public AddressDto AddressDto { get; set; }
+        public string ImageBase64 { get; set; }
 
         public string OfficialId { get; set; }
         //public ICollection<Offence> CommitedOffences { get; set; }  // TODO: Needs Offence and thefts Dto's

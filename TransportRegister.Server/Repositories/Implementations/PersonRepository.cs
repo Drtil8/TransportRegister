@@ -1,17 +1,24 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TransportRegister.Server.Data;
 using TransportRegister.Server.Models;
-using TransportRegister.Server.Repositories.DriverRepository;
 
 namespace TransportRegister.Server.Repositories.Implementations
 {
-    public class DriverRepository : IDriverRepository
+    public class PersonRepository : IPersonRepository
     {
         private readonly AppDbContext _context;
 
-        public DriverRepository(AppDbContext context)
+        public PersonRepository(AppDbContext context)
         {
             _context = context;
+        }
+
+        public async Task<Person> GetPersonByIdAsync(int personId)
+        {
+            return await _context.Persons
+                //.Include(v => v.CommitedOffences)
+                //.Include(v => v.ReportedThefts)
+                .FirstOrDefaultAsync(v => v.PersonId == personId);
         }
         public async Task<Driver> GetDriverAsync(string licenseNumber)
         {
@@ -19,17 +26,28 @@ namespace TransportRegister.Server.Repositories.Implementations
 
                 .FirstOrDefaultAsync(v => v.DriversLicenseNumber == licenseNumber);
         }
-
-        public async Task<Driver> GetDriverByIdAsync(int driverId)
+        public async Task<Owner> GetOwnerByVINAsync(string VIN_number)
         {
-            return await _context.Drivers
-                .Include(v => v.Licenses)
-                .Include(v => v.CommitedOffences)
-                .Include(v => v.ReportedThefts)
-                .FirstOrDefaultAsync(v => v.PersonId == driverId);
+            return await _context.Owners
+                .Include(o => o.Vehicles)
+                .FirstOrDefaultAsync(o => o.Vehicles.Any(v => v.VIN == VIN_number));
         }
 
-        public async Task SaveDriverAsync(Driver driver)
+        public async Task SetOwnerAsync(Owner owner)
+        {
+            if (owner.PersonId == 0)
+            {
+                _context.Owners.Add(owner);
+            }
+            else
+            {
+                _context.Owners.Update(owner);
+            }
+            await _context.SaveChangesAsync();
+        }
+
+
+        public async Task SetDriverAsync(Driver driver)
         {
             if (driver.PersonId == 0)
             {
@@ -42,28 +60,27 @@ namespace TransportRegister.Server.Repositories.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteDriverAsync(int driverId)
+        public async Task DeletePersonAsync(int personId)
         {
-            Driver driver = await _context.Drivers.FirstOrDefaultAsync(d => d.PersonId == driverId);
-            if (driver != null)
+            Person person = await _context.Persons.FirstOrDefaultAsync(d => d.PersonId == personId);
+            if (person != null)
             {
-                _context.Drivers.Remove(driver);
+                _context.Persons.Remove(person);
                 await _context.SaveChangesAsync();
             }
         }
+
         public async Task<List<Tuple<Driver, int>>> GetDriversAndPoints()
         {
             var driversWithPoints = await _context.Drivers
                 .Select(driver => new { Driver = driver, Points = driver.BadPoints }) // Select drivers and their points
                 .ToListAsync();
 
-            // Convert to DTO ??
             var result = driversWithPoints
                 .Select(item => Tuple.Create(item.Driver, item.Points))
                 .ToList();
 
             return result;
         }
-
     }
 }
