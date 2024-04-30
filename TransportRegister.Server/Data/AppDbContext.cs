@@ -23,6 +23,15 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<Person>(entity =>
+        {
+            entity.ToTable("Persons");
+            entity.HasDiscriminator<string>("PersonType")
+                .HasValue<Person>("Person")
+                .HasValue<Driver>("Driver")
+                .HasValue<Owner>("Owner");
+        });
+
         // Owner
         modelBuilder.Entity<Owner>()
             .HasMany(o => o.Vehicles)
