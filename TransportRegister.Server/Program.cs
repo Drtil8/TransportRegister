@@ -63,6 +63,8 @@ namespace TransportRegister.Server
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             });
 
+            builder.Services.AddQuartzConfiguration();
+
             var app = builder.Build();
 
             // For seed data use cmd: dotnet run seed
@@ -83,6 +85,7 @@ namespace TransportRegister.Server
                     return;
                 }
             }
+
 
             // Set Cors
             app.UseCors(corsBuilder =>
