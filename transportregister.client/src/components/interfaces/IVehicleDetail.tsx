@@ -1,7 +1,7 @@
-﻿interface IVehicleDetail {
+﻿export interface IVehicleDetail {
   vehicleId: number;
-  VIN: string;
-  licensePlate: string;
+  vin: string;
+  currentLicensePlate: string;
   vehicleType: string;
   manufacturer: string;
   model: string;
@@ -17,9 +17,24 @@
 
   // todo probably load whole interface
   ownerId: number;
-  officialFullName: string;
-  officialId: string;
   ownerFullName: string;
+  officialId: string;
+  officialFullName: string;
 }
 
-export default IVehicleDetail;
+export interface ICar extends IVehicleDetail {
+  numberOfDoors: number;
+}
+
+export interface ITruck extends IVehicleDetail {
+  // Truck specific properties can be added here
+}
+
+export interface IMotorcycle extends IVehicleDetail {
+  constraints: string;
+}
+
+export interface IBus extends IVehicleDetail {
+  seatCapacity: number;
+  standingCapacity: number;
+}

@@ -26,6 +26,13 @@ public class AccountController : ControllerBase
             var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
             if (result.Succeeded)
             {
+                var user = await _signInManager.UserManager.FindByEmailAsync(model.Email);
+                if (!user.IsValid)
+                {
+                    // Invalid account cannot login
+                    return Unauthorized();
+                }
+
                 string role = null;
                 if (User.Identity is { IsAuthenticated: true })
                     role = User.FindFirstValue(ClaimTypes.Role);

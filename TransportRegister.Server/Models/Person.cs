@@ -14,7 +14,7 @@ namespace TransportRegister.Server.Models
         public bool Sex_Male { get; set; }
         public DateOnly DateOfBirth { get; set; }
         public Address Address { get; set; }
-        public byte?[] Image { get; set; }
+        public byte[] Image { get; set; }
 
         public string OfficialId { get; set; }
         public Official AddedByOfficial { get; set; }

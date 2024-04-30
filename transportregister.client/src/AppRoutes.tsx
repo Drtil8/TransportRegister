@@ -1,9 +1,9 @@
-﻿import { VehicleList } from "./components/VehicleList";
+﻿import { VehicleList } from "./components/vehicle/VehicleList";
 import Login from './components/Login';
-import VehicleSearch from "./components/VehicleSearch";
+import VehicleSearch from "./components/vehicle/VehicleSearch";
 import DriverSearch from "./components/DriverSearch";
 import DriverCreate from "./components/DriverCreate";
-import VehicleCreate from "./components/VehicleCreate";
+import VehicleCreate from "./components/vehicle/VehicleCreate";
 import OffenceCreate from "./components/offence/OffenceCreate";
 import OffencePending from "./components/offence/OffencePending";
 import TheftCreate from "./components/TheftCreate";
@@ -12,6 +12,7 @@ import DriverDetail from "./components/DriverDetail";
 import OffenceDetail from "./components/offence/OffenceDetail";
 import VehicleDetail from "./components/VehicleDetail";
 import UserList from "./components/admin/UserList";
+import VehicleEdit from "./components/vehicle/VehicleEdit";
 
 const AppRoutes = [
   {
@@ -42,6 +43,11 @@ const AppRoutes = [
   {
     path: '/vehicle/:id',
     element: <VehicleDetail />,
+    isProtected: true
+  },
+  {
+    path: '/vehicle/edit/:id',
+    element: <VehicleEdit />,
     isProtected: true
   },
   {
