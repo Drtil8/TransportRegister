@@ -1,10 +1,9 @@
 ﻿import React, { Component } from 'react';
 import { Col, Row } from 'reactstrap';
-import IDtFetchData from './interfaces/datatables/IDtFetchData';
+import IDtFetchData from '../interfaces/datatables/IDtFetchData';
 import VehicleDatatable from './VehicleDatatable';
 
-// todo change to search later
-export class VehicleList extends Component<object> {
+export class VehicleSearch extends Component<object> {
   fetchDataRef: React.MutableRefObject<IDtFetchData | null> = { current: null };
   constructor(props: object) {
     super(props);
@@ -15,7 +14,7 @@ export class VehicleList extends Component<object> {
       <>
         <Row>
           <Col>
-            <h4>Vozidla</h4>
+            <h4>Vyhledat vozidlo</h4>
           </Col>
           <Col className="d-flex justify-content-end">
             {/*<CreateVehicleModal />*/}
@@ -27,4 +26,4 @@ export class VehicleList extends Component<object> {
   }
 }
 
-export default VehicleList;
+export default VehicleSearch;

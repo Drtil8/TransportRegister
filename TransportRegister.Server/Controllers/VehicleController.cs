@@ -121,7 +121,7 @@ namespace TransportRegister.Server.Controllers
 
             await _vehicleRepository.SaveVehicleAsync(vehicle);
 
-            return Ok("Image uploaded successfully.");
+            return Ok();
         }
 
 
