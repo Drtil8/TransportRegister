@@ -13,12 +13,14 @@ import UserList from "./components/admin/UserList";
 import VehicleSearch from "./components/vehicle/VehicleSearch";
 import VehicleDetail from "./components/vehicle/VehicleDetail";
 import VehicleEdit from "./components/vehicle/VehicleEdit";
+import OffenceAll from "./components/offence/OffenceAll";
 
 const AppRoutes = [
   {
     path: '/',
     element: <VehicleList />,
-    isProtected: true
+    isProtected: true,
+    role: 'admin'
   },
   {
     path: '/login',
@@ -73,6 +75,11 @@ const AppRoutes = [
   {
     path: '/offencePending',
     element: <OffencePending />,
+    isProtected: true
+  },
+  {
+    path: '/offenceAll',
+    element: <OffenceAll />,
     isProtected: true
   },
   {
