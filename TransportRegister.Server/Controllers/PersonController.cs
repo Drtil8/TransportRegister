@@ -118,6 +118,28 @@ namespace TransportRegister.Server.Controllers
 
         }
 
+        [HttpPut("{driverId}/RemoveLicenseSuspension")]
+        public async Task<ActionResult> RemoveLicenseSuspenison(int driverId)
+        {
+            var person = await _personRepository.GetPersonByIdAsync(driverId);
+
+            if (person is not Driver driver)
+            {
+                return BadRequest($"Person {driverId} is not a driver.");
+            }
+            if (driver.HasSuspendedLicense) 
+            {
+                driver.HasSuspendedLicense = false;
+                driver.DrivingSuspendedUntil = null;
+                await _personRepository.SavePersonAsync(driver);
+                return Ok(); 
+            }
+
+            return BadRequest("Driver does not have suspended license.");
+
+
+        }
+
         // POST: api/Persons
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("{driverId}/AddDriversLicense")]

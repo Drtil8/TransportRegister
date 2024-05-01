@@ -133,7 +133,8 @@ namespace TransportRegister.Server.Seeds
                     BirthNumber = "ABCD99999",
                     DriversLicenseNumber ="ABC1234",
                     BadPoints = 5,
-                    HasSuspendedLicense = false,
+                    HasSuspendedLicense = true,
+                    DrivingSuspendedUntil = DateTime.Parse("2025-12-12"),
                     LastCrimeCommited = DateTime.Now,
                     LastPointsDeduction = DateTime.Now,
                     Address = new Address
