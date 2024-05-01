@@ -81,13 +81,14 @@ namespace TransportRegister.Server.Controllers
                 return BadRequest(ModelState);
             }
 
-            // TODO kontrola zda daný Official existují
 
             Vehicle vehicle = VehicleDtoTransformer.TransformToEntity(vehicleDto);
             if (vehicle == null)
             {
                 return BadRequest("Invalid vehicle data.");
             }
+
+            // todo přidat OfficialId k vehicle
 
             vehicle.Owner = await _personRepository.GetPersonByIdAsync(vehicleDto.OwnerId);
             if (vehicle.Owner is null)
@@ -126,33 +127,6 @@ namespace TransportRegister.Server.Controllers
 
             return Ok(updatedDto);
         }
-        
-        
-        [HttpPost("{vehicleId}/UploadImage")]
-        public async Task<IActionResult> UploadImage(int vehicleId, IFormFile file)
-        {
-            if (file == null || file.Length == 0)
-            {
-                return BadRequest("No file uploaded.");
-            }
-
-            var vehicle = await _vehicleRepository.GetVehicleByIdAsync(vehicleId);
-            if (vehicle == null)
-            {
-                return NotFound("Vehicle not found.");
-            }
-            
-            using (var memoryStream = new MemoryStream())
-            {
-                await file.CopyToAsync(memoryStream);
-                vehicle.Image = memoryStream.ToArray();
-            }
-
-            await _vehicleRepository.SaveVehicleAsync(vehicle);
-
-            return Ok();
-        }
-
 
         [HttpDelete("{vehicleId}")]
         public async Task<IActionResult> DeleteVehicle(int vehicleId)
