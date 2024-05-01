@@ -124,11 +124,11 @@ namespace TransportRegister.Server.Controllers
                 return BadRequest("Přestupek se nepodařilo nahlásit.");
             }
 
-            var assigned = await _offenceRepository.AssignOffenceToOfficialAsync(offence);
-            if (!assigned)
-            {
-                return BadRequest("Přestupek se nepodařilo přiřadit k úředníkovi.");
-            }
+            //var assigned = await _offenceRepository.AssignOffenceToOfficialAsync(offence);
+            //if (!assigned)
+            //{
+            //    return BadRequest("Přestupek se nepodařilo přiřadit k úředníkovi.");
+            //}
 
             return Ok(offence.OffenceId);
         }
@@ -194,7 +194,8 @@ namespace TransportRegister.Server.Controllers
         [Authorize(Roles = "Official")]
         public async Task<ActionResult<OffenceDetailDto>> ApproveOffence(int id, OffenceDetailDto offenceDto)
         {
-            var result = await _offenceRepository.ApproveOffenceAsync(id, offenceDto);
+            var activeUser = await _userManager.GetUserAsync(User);
+            var result = await _offenceRepository.ApproveOffenceAsync(id, activeUser.Id, offenceDto);
             if (!result)
             {
                 return BadRequest("Přestupek se nepodařilo schválit.");
@@ -213,7 +214,8 @@ namespace TransportRegister.Server.Controllers
         [Authorize(Roles = "Official")]
         public async Task<IActionResult> DeclineOffence(int offenceId)
         {
-            var result = await _offenceRepository.DeclineOffenceAsync(offenceId);
+            var activeUser = await _userManager.GetUserAsync(User);
+            var result = await _offenceRepository.DeclineOffenceAsync(offenceId, activeUser.Id);
             if (!result)
             {
                 return BadRequest("Přestupek se nepodařilo zamítnout.");

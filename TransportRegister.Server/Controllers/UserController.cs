@@ -43,6 +43,18 @@ namespace TransportRegister.Server.Controllers
 
         }
 
+        [HttpGet("{userId}")]
+        public async Task<ActionResult<UserDetailDto>> GetUser(string userId)
+        {
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound("Uživatel nebyl nalezen!");
+            }
+
+            return Ok(user);
+        }
+
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RegisterUser([FromBody] UserCreateDto userDto)
