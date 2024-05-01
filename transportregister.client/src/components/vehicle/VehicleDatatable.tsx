@@ -20,8 +20,9 @@ interface IAdvancedFeatures {
 }
 
 export const VehicleDatatable: React.FC<{
-  fetchDataRef: React.MutableRefObject<IDtFetchData | null>
-}> = ({ fetchDataRef }) => {
+  fetchDataRef: React.MutableRefObject<IDtFetchData | null>,
+  autoFetch: boolean,
+}> = ({ fetchDataRef, autoFetch }) => {
   const navigate = useNavigate();
 
   // Data and fetching state
@@ -39,11 +40,19 @@ export const VehicleDatatable: React.FC<{
     pageIndex: 0,
     pageSize: 10,
   });
-  const [enableAdvancedFeatures, setEnableAdvancedFeatures] = useState<IAdvancedFeatures>({
+
+  const disableFeaturesObj: IAdvancedFeatures = {
     enableSorting: false,
     enablePagination: false,
     enableTopToolbar: false,
-  });
+  };
+  const enableFeaturesObj: IAdvancedFeatures = {
+    enableSorting: true,
+    enablePagination: true,
+    enableTopToolbar: true,
+  };
+  const [enableAdvancedFeatures, setEnableAdvancedFeatures] = useState<IAdvancedFeatures>(
+    autoFetch ? enableFeaturesObj : disableFeaturesObj);
 
   const fetchData = async () => {
     if (!data.length) {
@@ -71,11 +80,7 @@ export const VehicleDatatable: React.FC<{
       const json: IDtResult<IVehicleListItem> = await response.json();
       if (json.data.length === 1)
         navigate(`/vehicle/${json.data[0].id}`);
-      setEnableAdvancedFeatures({
-        enableSorting: true,
-        enablePagination: true,
-        enableTopToolbar: true,
-      });
+      setEnableAdvancedFeatures(enableFeaturesObj);
 
       setData(json.data);
       setRowCount(json.totalRowCount);
@@ -96,19 +101,13 @@ export const VehicleDatatable: React.FC<{
   fetchDataRef.current = fetchData;
 
   useEffect(() => {
-    if (enableAdvancedFeatures.enableSorting)
+    if (autoFetch || enableAdvancedFeatures.enableSorting)
       fetchDataRef.current?.();
   }, [
     pagination.pageIndex,
     pagination.pageSize,
     sorting,
   ]);
-
-  //useEffect(() => {
-  //  fetchDataRef.current?.();
-  //}, [
-  //  enableAdvancedFeatures,
-  //]);
 
   const columns = useMemo<MRT_ColumnDef<IVehicleListItem>[]>(
     () => [

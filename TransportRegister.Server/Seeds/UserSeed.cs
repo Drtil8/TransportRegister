@@ -64,7 +64,7 @@ public static class UserSeed
             {
                 Id = officialId,
                 FirstName = "Petr",
-                LastName = "�ech",
+                LastName = "Čech",
                 UserName = officialEmail,
                 Email = officialEmail,
                 PhoneNumber = officialTelephone,
@@ -91,7 +91,7 @@ public static class UserSeed
             {
                 Id = officialId2,
                 FirstName = "Pavel",
-                LastName = "Nedv�d",
+                LastName = "Nedvěd",
                 UserName = officialEmail2,
                 Email = officialEmail2,
                 PhoneNumber = officialTelephone2,

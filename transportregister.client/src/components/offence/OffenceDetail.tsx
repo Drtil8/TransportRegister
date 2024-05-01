@@ -11,6 +11,7 @@ import SaveIcon from '@mui/icons-material/Save';
 interface IOffenceDetailProps {
   offenceDetail: IOffenceDetail | null;
   offenceStateText: string;
+  offenceStateColor: string;
   showButtons: boolean;
   editMode: boolean;
   editPenaltyPoints: number;
@@ -28,7 +29,8 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
     super(props);
     this.state = {
       offenceDetail: null,
-      offenceStateText: "Kontrolován",
+      offenceStateText: "Rozpracován",
+      offenceStateColor: "no",
       showButtons: false,
       editMode: false,
       editFineAmount: 0,
@@ -38,13 +40,15 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
     this.handleApprove = this.handleApprove.bind(this);
     this.handleEditButton = this.handleEditButton.bind(this);
     this.handleSaveButton = this.handleSaveButton.bind(this);
-    this.handlePayFine = this.handlePayFine.bind(this);
+    this.handleEmptyInput = this.handleEmptyInput.bind(this);
   }
 
   async handleSaveButton() {
-    // todo -> show new values
-    this.setState({ offenceDetail: { ...this.state.offenceDetail, penaltyPoints: this.state.editPenaltyPoints } });
-    //this.setState({ offenceDetail: { ...this.state.offenceDetail, fine: { ...this.state.offenceDetail.fine, amount: this.state.editFineAmount } });
+    this.setState({ offenceDetail: { ...this.state.offenceDetail!, penaltyPoints: this.state.editPenaltyPoints } });
+
+    if (this.state.offenceDetail?.fine !== null) {
+      this.setState({ offenceDetail: { ...this.state.offenceDetail!, fine: { ...this.state.offenceDetail!.fine!, amount: this.state.editFineAmount } } });
+    }
 
     try {
       const response = await fetch(`/api/Offence/${this.state.offenceDetail?.offenceId}`, {
@@ -74,25 +78,17 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
     document.getElementById("saveButton")?.classList.remove("hidden");
   }
 
-  async handlePayFine() { // TODO -> modal
-    // todo -> show new values
-    try {
-      const response = await fetch(`/api/Offence/${this.state.offenceDetail?.offenceId}/PayFine`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+  handleEmptyInput(e: any) {
+    if (e.target.value === "") {
+      e.target.value = 0;
+      if (e.target.name === "offenceDetailPenaltyPoints") {
+        this.setState({ editPenaltyPoints: 0 });
+      }
+      else {
+        this.setState({ editFineAmount: 0 });
       }
     }
-    catch (error) {
-      console.error('Error:', error);
-    }
   }
-
 
   async handleDecline() { // TODO -> modal
     console.log("Decline");
@@ -108,7 +104,7 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       else {
-        this.setState({ showButtons: false, offenceStateText: "Neschválen" });
+        this.setState({ showButtons: false, offenceStateText: "Neschválen", offenceStateColor: "no" });
 
       }
     }
@@ -117,11 +113,8 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
     }
   }
 
-  async handleApprove() { // TODO -> modal
-    // todo editable input in <dd> -> gpt
-    // todo map to backend
+  async handleApprove() {
     try {
-      // fetch - todo
       const response = await fetch(`/api/Offence/${this.state.offenceDetail?.offenceId}/Approve`, {
         method: 'PUT',
         headers: {
@@ -135,9 +128,8 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
       }
       else {
         const data = await response.json();
-        this.setState({offenceDetail: data})
-        this.setState({ offenceStateText: "Schválen" });
-        this.setState({ showButtons: false });
+        this.setState({ offenceDetail: data })
+        this.setState({ showButtons: false, offenceStateText: "Schválen", offenceStateColor: "yes" });
       }
     }
     catch (error) {
@@ -152,7 +144,6 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
   }
 
   async populateOffenceData() {
-    // TODO
     const urlSplitted = window.location.pathname.split('/');
     const id = urlSplitted[2];
     const apiUrl = `/api/Offence/${id}`;
@@ -167,12 +158,10 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
       const data: IOffenceDetail = await response.json();
       this.setState({ offenceDetail: data });
       if (data.isApproved && data.isValid) {
-        this.setState({ offenceStateText: "Schválen" });
+        this.setState({ offenceStateText: "Schválen", offenceStateColor: "yes" });
       }
       else if (!data.isApproved && data.isValid) {
-        this.setState({ offenceStateText: "Rozpracován" });
-        // TODO -> think about this logic -> if official goes to vacation other official cannot process his offences
-
+        this.setState({ offenceStateText: "Rozpracován", offenceStateColor: "workedOn" });
         if (this.context?.isOfficial) { // TODO -> here any official can process the offence
           this.setState({ showButtons: true });
         }
@@ -182,7 +171,7 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
         //}
       }
       else {
-        this.setState({ offenceStateText: "Neschválen" });
+        this.setState({ offenceStateText: "Neschválen", offenceStateColor: "no" });
       }
       this.setState({ editPenaltyPoints: data.penaltyPoints });
       this.setState({ editFineAmount: data.fine?.amount ? data.fine.amount : 0 });
@@ -193,7 +182,7 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
   }
 
   render() {
-    const { offenceDetail, offenceStateText, editMode } = this.state;
+    const { offenceDetail, offenceStateText, offenceStateColor, editMode } = this.state;
     const { editPenaltyPoints, editFineAmount } = this.state;
 
     const contetnt = !offenceDetail ?
@@ -207,24 +196,24 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
           <Col>
             <Row>
               <Col>
-                <h4>Přestupek - P.{offenceDetail.offenceId} - {offenceStateText}</h4>
+                <h4>Přestupek - P.{offenceDetail.offenceId} - <b className={offenceStateColor}>{offenceStateText}</b></h4>
               </Col>
               {this.state.showButtons && (
-                <Col>
+                <Col className="rightSide">
                   <Row>
                     {/*TODO ->errors in dev mode in browser console*/}
                     <Col id="editButton">
                       {/*<Tooltip title="Upravit přestupek">*/}
-                        <IconButton color="primary" size="large" onClick={this.handleEditButton}>
-                          <EditIcon fontSize="inherit" />
-                        </IconButton>
+                      <IconButton color="primary" size="large" className="pt-0 pe-0" onClick={this.handleEditButton}>
+                        <EditIcon fontSize="inherit" />
+                      </IconButton>
                       {/*</Tooltip>*/}
                     </Col>
                     <Col className="hidden" id="saveButton">
                       {/*<Tooltip title="Uložit úpravy">*/}
-                        <IconButton color="primary" size="large" onClick={this.handleSaveButton}>
-                          <SaveIcon />
-                        </IconButton>
+                      <IconButton color="primary" size="large" className="pt-0 pe-0" onClick={this.handleSaveButton}>
+                        <SaveIcon />
+                      </IconButton>
                       {/*</Tooltip>*/}
                     </Col>
                   </Row>
@@ -255,11 +244,10 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
                   <Col>
                     <dt>Trestné body:</dt>
                     {editMode ? (
-                      <Input type="number" id="offenceDetailPenaltyPoints" name="offenceDetailPenaltyPoints" value={editPenaltyPoints} onChange={(e) => this.setState({ editPenaltyPoints: parseInt(e.target.value) })}></Input>
+                      <Input type="number" id="offenceDetailPenaltyPoints" name="offenceDetailPenaltyPoints" value={editPenaltyPoints} onChange={(e) => this.setState({ editPenaltyPoints: parseInt(e.target.value) })} max={12} min={0} onBlur={this.handleEmptyInput}></Input>
                     )
                       :
                       (
-
                         <dd>{offenceDetail.penaltyPoints}</dd>
                       )}
                   </Col>
@@ -301,18 +289,13 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
                       <Col>
                         <dt>Výše pokuty:</dt>
                         {editMode ? (
-                          <Input type="number" id="offenceDetailFineAmount" name="offenceDetailFineAmount" value={editFineAmount} onChange={(e) => this.setState({ editFineAmount: parseInt(e.target.value) })}></Input>
+                          <Input type="number" id="offenceDetailFineAmount" name="offenceDetailFineAmount" value={editFineAmount} onChange={(e) => this.setState({ editFineAmount: parseInt(e.target.value) })} min={0} onBlur={this.handleEmptyInput}></Input>
                         )
                           :
                           (
                             <dd>{offenceDetail.fine.amount} Kč</dd>
                           )}
                       </Col>
-                      {/*{offenceDetail.fine.isPaid === false && (*/}
-                      {/*  <Col>*/}
-                      {/*    <Button color="primary" onClick={this.handlePayFine}> Potvrdit zaplacení </Button>*/}
-                      {/*  </Col>*/}
-                      {/*)}*/}
                     </Row>
                   </div>
                 )}
@@ -372,7 +355,7 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
             {this.state.showButtons && (
               <Row className="mt-4">
                 <hr />
-                <Col className="d-flex justify-content-end pe-0">
+                <Col className="rightSide pe-0">
                   <Button color="success" className="me-2" onClick={this.handleApprove}>Schválit</Button>
                   <Button color="danger" className="me-0" onClick={this.handleDecline}>Zamítnout</Button>
                 </Col>

@@ -3,6 +3,9 @@ import { ChangeEvent, Component } from 'react';
 import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col, FormGroup, Input, Label, Form, Button } from 'reactstrap';
 import { IPerson, IDriver, IOwner } from './interfaces/IPersonDetail';
 import IDriverFormState from './interfaces/IDriverForm';
+import IVehicleListItem from './interfaces/IVehicleListItem';
+import { Link } from 'react-router-dom';
+import DetailIcon from '@mui/icons-material/VisibilityOutlined';
 
 // TODO fetch the actual driver
 interface DriverDetailState {
@@ -120,6 +123,7 @@ export class DriverDetail extends Component<object, DriverDetailState> {
   render() {
     const { activeTab, personDetail } = this.state;
     const form = this.state.form;
+    const vehicles = this.driverDetail.vehicles;
 
     let infoButtons =
       <div>
@@ -255,6 +259,43 @@ export class DriverDetail extends Component<object, DriverDetailState> {
                 <Row>
                   <Col>
                     <h5>Vozidla řidiče (vlastník)</h5>
+                    <Table>
+                      <thead>
+                        <tr>
+                          {/*<th>ID</th>*/}
+                          <th>VIN</th>
+                          <th>SPZ</th>
+                          <th>Typ</th>
+                          <th>Výrobce</th>
+                          <th>Model</th>
+                          <th>Barva</th>
+                          <th>Rok výroby</th>
+                          {/*<th>Owner ID</th>*/}
+                          <th>Majitel</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {vehicles.map((vehicle: IVehicleListItem) => (
+                          <tr key={vehicle.id}>
+                            {/*<td>{vehicle.id}</td>*/}
+                            <td>{vehicle.vin}</td>
+                            <td>{vehicle.licensePlate}</td>
+                            <td>{vehicle.vehicleType}</td>
+                            <td>{vehicle.manufacturer}</td>
+                            <td>{vehicle.model}</td>
+                            <td>{vehicle.color}</td>
+                            <td>{vehicle.manufacturedYear}</td>
+                            {/*<td>{vehicle.ownerId}</td>*/}
+                            <td>{vehicle.ownerFullName}</td>
+                            <td>
+                              <Link to={`/vehicle/${vehicle.id}`}>
+                                <DetailIcon />
+                              </Link>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </Table>
                   </Col>
                 </Row>
               </TabPane>
@@ -272,31 +313,3 @@ export class DriverDetail extends Component<object, DriverDetailState> {
 }
 
 export default DriverDetail;
-
-
-//import { Component } from 'react';
-//import { Col, Row } from 'reactstrap';
-//export class DriverDetail extends Component<object> {
-//  constructor(props: object) {
-//    super(props);
-//  }
-
-//  render() {
-//    return (
-//      <div>
-//        <Row>
-//          <Col>
-//            <h4>Detail řidiče</h4>
-//          </Col>
-//        </Row>
-//        <Row>
-//          <Col>
-//            View/form pro registraci
-//          </Col>
-//        </Row>
-//      </div>
-//    );
-//  }
-//}
-
-//export default DriverDetail;

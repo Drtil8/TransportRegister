@@ -71,6 +71,27 @@ dl dt {
     color: red;
 }
 
+.invalid-item td {
+    color: red !important;
+}
+
+.valid-item td {
+    color: green !important;
+}
+
+.workedOn-item td {
+    color: cornflowerblue !important;
+}
+
+.workedOn {
+    color: cornflowerblue;
+}
+
+.rightSide {
+    display: flex !important;
+    justify-content: flex-end !important;
+}
+
 .vehicleImage {
     width: 100%;
     max-height: 300px;
@@ -83,3 +104,7 @@ dl dt {
 }
 
 /*driver register*/
+
+.input-number:invalid {
+    border-color: red; /* Change border color to indicate invalid input */
+}
