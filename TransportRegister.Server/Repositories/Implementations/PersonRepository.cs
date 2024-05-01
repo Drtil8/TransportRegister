@@ -21,8 +21,6 @@ namespace TransportRegister.Server.Repositories.Implementations
                 return null;
             }
 
-            var type = person.GetType();
-
             if (person.GetType() == typeof(Driver))
             {
                 return await _context.Drivers
@@ -32,7 +30,8 @@ namespace TransportRegister.Server.Repositories.Implementations
             else if (person.GetType() == typeof(Owner))
             {
                 return await _context.Owners
-                    .Include(v => v.Vehicles)
+                    .Include(owner => owner.Vehicles)
+                        .ThenInclude(vehicle => vehicle.LicensePlates)
                     .FirstOrDefaultAsync(v => v.PersonId == personId);
             }
             else return null;

@@ -8,7 +8,6 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
     public class PersonDtoTransformer
     {
         public static PersonDto TransformToDto(Person person)
-
         {
             if (person == null)
                 return null;
@@ -24,7 +23,6 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
                     DrivingSuspendedUntil = driver.DrivingSuspendedUntil,
                     Licenses = driver.Licenses.Select(l => DriversLicenseDtoTransformer.TransformToDto(l)),
                 },
-
                 Owner owner => new OwnerDto
                 {
                     Vehicles = owner.Vehicles.Select(v =>
@@ -41,8 +39,6 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
                             Model = v.Model,
                             Color = v.Color,
                             ManufacturedYear = v.ManufacturedYear,
-                            OwnerId = v.OwnerId,
-                            OwnerFullName = v.Owner.FirstName + " " + v.Owner.LastName,
                         }
                     ),
                 },
@@ -89,7 +85,6 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
                     LastName = driverDto.LastName,
                     BirthNumber = driverDto.BirthNumber,
                 },
-
                 OwnerDto ownerDto => new Owner
                 {
                     Address = TransformToEntity(ownerDto.AddressDto),
