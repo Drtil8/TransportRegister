@@ -58,12 +58,12 @@ const AppRoutes = [
     isProtected: true
   },
   {
-    path: '/vehicleSearch',
+    path: '/vehicle/search',
     element: <VehicleSearch />,
     isProtected: true
   },
   {
-    path: '/vehicleCreate',
+    path: '/vehicle/create',
     element: <VehicleCreate />,
     isProtected: true
   },

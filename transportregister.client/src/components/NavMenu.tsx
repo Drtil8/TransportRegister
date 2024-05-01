@@ -98,8 +98,8 @@ export class NavMenu extends Component<object, NavMenuState> {
                   </DropdownToggle>
                   <DropdownMenu>
                     <DropdownItem header>Vozidla</DropdownItem>
-                    <DropdownItem tag={Link} to="/vehicleSearch">Vyhledat</DropdownItem>
-                    <DropdownItem tag={Link} to="/vehicleCreate">-Úředník - Registrovat</DropdownItem>
+                    <DropdownItem tag={Link} to="/vehicle/search">Vyhledat</DropdownItem>
+                    <DropdownItem tag={Link} to="/vehicle/create">-Úředník - Registrovat</DropdownItem>
                     <DropdownItem>?Zobrazit včechny</DropdownItem>
                   </DropdownMenu>
                 </Dropdown>
