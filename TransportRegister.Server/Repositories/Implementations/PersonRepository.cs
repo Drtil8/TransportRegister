@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TransportRegister.Server.Data;
 using TransportRegister.Server.Models;
+using TransportRegister.Server.DTOs.DriversLicenseDTOs;
 
 namespace TransportRegister.Server.Repositories.Implementations
 {
@@ -78,12 +79,6 @@ namespace TransportRegister.Server.Repositories.Implementations
                 .FirstOrDefaultAsync(o => o.Vehicles.Any(v => v.VIN == VIN_number));
         }
 
-        public async Task SetOwnerAsync(Person owner)
-        {
-            
-        }
-
-
         public async Task SetDriverAsync(Person driver)
         {
             if (driver.PersonId == 0)
@@ -106,6 +101,27 @@ namespace TransportRegister.Server.Repositories.Implementations
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task AddDriversLicense(int driverId, DriversLicenseCreateDto license)
+        {
+            Driver driver = await _context.Drivers
+                .Include(v => v.Licenses)
+                .FirstOrDefaultAsync(d => d.PersonId == driverId);
+            if (driver != null)
+            {
+                DriversLicense new_license = new DriversLicense
+                {
+                    DriversLicenseId = default,
+                    IssuedOn = license.IssuedOn,
+                    Description = license.Description,
+                    VehicleType = (VehicleType)Enum.Parse(typeof(VehicleType), license.VehicleType),
+                    DriverId = driverId,
+                };
+
+                driver.Licenses.Add(new_license);
+                await _context.SaveChangesAsync();
+            }
+        }
+
         public async Task SavePersonAsync(Person person)
         {
             if (person.PersonId == default)

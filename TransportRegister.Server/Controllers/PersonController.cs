@@ -12,6 +12,7 @@ using TransportRegister.Server.DTOs.TheftDTOs;
 using TransportRegister.Server.DTOs.OffenceDTOs;
 using Microsoft.IdentityModel.Tokens;
 using TransportRegister.Server.Data;
+using TransportRegister.Server.DTOs.DriversLicenseDTOs;
 
 namespace TransportRegister.Server.Controllers
 {
@@ -104,41 +105,45 @@ namespace TransportRegister.Server.Controllers
         // PUT: api/Persons/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<ActionResult> PutPerson(int id, string role)
+        public async Task<ActionResult> PutPerson(int id, PersonUpdateDto person)
         {
-            var person = await _personRepository.GetPersonByIdAsync(id);
-            if (person is null)
+            if (id != person.PersonId)
             {
                 return BadRequest();
             }
-
-            //switch (role)
-            //{
-            //    case "Driver":
-            //        await _personRepository.SetDriverAsync(person);
-            //        break;
-            //    case "Owner":
-            //        await _personRepository.SetOwnerAsync(person);
-            //        break;
-            //    default:
-            //        return BadRequest();
-            //}
-
-
+            
+            //await _personRepository.SavePersonAsync(PersonDtoTransformer.TransformPersonUpdateToEntity(person));
+           
             return Ok();
+
         }
 
         // POST: api/Persons
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPost]
-        //public Task<ActionResult<Person>> PostPerson(Person person)
-        //{
-        //    //_context.Persons.Add(person);
-        //    //await _context.SaveChangesAsync();
+        [HttpPost("{driverId}/AddDriversLicense")]
+        public async Task<IActionResult>PostDriversLicense(int driverId, DriversLicenseCreateDto license)
+        {
+            if (!ModelState.IsValid)    /// what about bad vehicle type?
+            {
+                return BadRequest(ModelState);
+            }
 
-        //    //return CreatedAtAction("GetPerson", new { id = person.PersonId }, person);
-        //    return NoContent();
-        //}
+            var driver = await _personRepository.GetPersonByIdAsync(driverId);
+
+            if (driver is not Driver)
+            {
+                return BadRequest($"Person {driverId} is not a driver.");
+            }
+            if (!Enum.IsDefined(typeof(VehicleType), license.VehicleType))
+            {
+                return BadRequest($"Invalid vehicle type: {license.VehicleType}");
+            }
+
+            await _personRepository.AddDriversLicense(driverId, license);
+            return Ok();
+
+
+        }
 
         [HttpPost("{personId}/UploadImage")]
         public async Task<IActionResult> UploadImage(int personId, IFormFile file)

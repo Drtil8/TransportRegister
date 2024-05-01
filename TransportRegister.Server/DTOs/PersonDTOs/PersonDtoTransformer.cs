@@ -75,20 +75,21 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
             };
         }
 
-        public static Person TransformToEntity(PersonDto dto)
+        public static Person TransformPersonUpdateToEntity(PersonUpdateDto dto)
         {
-            return dto switch
-            {
-                DriverDto driverDto => new Driver
-                {
-                    Address = TransformToEntity(driverDto.AddressDto),
-                    PersonId = driverDto.PersonId,
-                    FirstName = driverDto.FirstName,
-                    LastName = driverDto.LastName,
-                    BirthNumber = driverDto.BirthNumber,
-                },
-                _ => null
+            return new Person {
+                Address = TransformToEntity(dto.AddressDto),
+                PersonId = dto.PersonId,
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                BirthNumber = dto.BirthNumber,
+                Sex_Male = dto.Sex_Male,
+                DateOfBirth = dto.DateOfBirth,
+                OfficialId = dto.OfficialId,
+                Image = dto.ImageBase64 != null ? Convert.FromBase64String(dto.ImageBase64) : null,
             };
+            
+            
         }
 
         public static Address TransformToEntity(AddressDto dto)
