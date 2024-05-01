@@ -25,16 +25,26 @@ namespace TransportRegister.Server.Repositories.Implementations
             {
                 return await _context.Drivers
                     .Include(v => v.Licenses)
+                    .Include(v => v.CommitedOffences)
+                        .ThenInclude(offence => offence.Fine)
+                    .Include(v => v.ReportedThefts)
+                        .ThenInclude(t => t.StolenVehicle)
+                            .ThenInclude(vehicle => vehicle.LicensePlates)
                     .FirstOrDefaultAsync(v => v.PersonId == personId);
             }
             else if (person.GetType() == typeof(Owner))
             {
                 return await _context.Owners
+                    .Include(v => v.CommitedOffences)
+                        .ThenInclude(offence => offence.Fine)
+                    .Include(v => v.ReportedThefts)
+                        .ThenInclude(t => t.StolenVehicle)
+                            .ThenInclude(vehicle => vehicle.LicensePlates)
                     .Include(owner => owner.Vehicles)
                         .ThenInclude(vehicle => vehicle.LicensePlates)
                     .FirstOrDefaultAsync(v => v.PersonId == personId);
             }
-            else return null;
+            else return person;
         }
         public async Task<Driver> GetDriverAsync(string licenseNumber)
         {

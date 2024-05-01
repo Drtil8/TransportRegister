@@ -3,6 +3,7 @@ using System.Linq;
 using TransportRegister.Server.DTOs.DriversLicenseDTOs;
 using TransportRegister.Server.DTOs.VehicleDTOs;
 using TransportRegister.Server.DTOs.OffenceDTOs;
+using TransportRegister.Server.DTOs.TheftDTOs;
 using TransportRegister.Server.Models;
 namespace TransportRegister.Server.DTOs.PersonDTOs
 {
@@ -57,8 +58,26 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
                 personDto.ImageBase64 = person.Image != null ? Convert.ToBase64String(person.Image) : null;
                 personDto.OfficialId = person.OfficialId;
                 personDto.PersonType = person.GetType().Name;
-                personDto.CommitedOffences = person.CommitedOffences.Select(o => new OffenceListItemDto
-);
+
+                personDto.CommitedOffences = person.CommitedOffences.Select(o => new OffenceListSimpleDto
+                {
+                    OffenceId = o.OffenceId,
+                    ReportedOn = o.ReportedOn,
+                    Description = o.Description,
+                    PenaltyPoints = o.PenaltyPoints,
+                    FineAmount = o.Fine is not null ? o.Fine.Amount : default,
+                });
+                personDto.ReportedThefts = person.ReportedThefts.Select(t => new TheftListItemDto
+                {
+                    TheftId = t.TheftId,
+                    ReportedOn = t.ReportedOn,
+                    VehicleId = t.VehicleId,
+                    VIN = t.StolenVehicle.VIN,
+                    LicensePlate = t.StolenVehicle.LicensePlates.FirstOrDefault().ToString(),
+                    StolenOn = t.StolenOn,
+                    FoundOn = t.FoundOn,
+                    IsFound = t.FoundOn != null,
+                });
             };
             return personDto;
         }

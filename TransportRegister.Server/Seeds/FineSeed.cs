@@ -15,9 +15,28 @@ namespace TransportRegister.Server.Seeds
                     OffenceId = 1,
                     Amount= 5000,
                     IsActive = true, // Not yet paid
-                    DueDate = DateOnly.Parse("2024-05-20"),
+                    DueDate = DateOnly.Parse("2024-04-20"),
                     //PaidOn = DateOnly.Parse("2024-04-11"),
-                }
+                },
+                new()
+                {
+                    //FineId = 1,
+                    OffenceId = 2,
+                    Amount= 5000,
+                    IsActive = true, // Not yet paid
+                    DueDate = DateOnly.Parse("2021-05-20"),
+                    //PaidOn = DateOnly.Parse("2024-04-11"),
+                },
+                new()
+                {
+                    //FineId = 1,
+                    OffenceId = 3,
+                    Amount= 5000,
+                    IsActive = true, // Not yet paid
+                    DueDate = DateOnly.Parse("2022-06-20"),
+                    //PaidOn = DateOnly.Parse("2024-04-11"),
+                },
+
             };
             foreach (var fine in finesToSeed)
             {
