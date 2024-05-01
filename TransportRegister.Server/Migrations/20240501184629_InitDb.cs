@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TransportRegister.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class InitDatabase : Migration
+    public partial class InitDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -196,13 +196,8 @@ namespace TransportRegister.Server.Migrations
                     Address_HouseNumber = table.Column<int>(type: "int", nullable: true),
                     Address_PostalCode = table.Column<int>(type: "int", nullable: true),
                     Image = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    OfficialId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    PersonType = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
-                    DriversLicenseNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BadPoints = table.Column<int>(type: "int", nullable: true),
-                    HasSuspendedLicense = table.Column<bool>(type: "bit", nullable: true),
-                    LastCrimeCommited = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DrivingSuspendedUntil = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    PersonType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OfficialId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -215,22 +210,23 @@ namespace TransportRegister.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DriversLicenses",
+                name: "Drivers",
                 columns: table => new
                 {
-                    DriversLicenseId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    IssuedOn = table.Column<DateOnly>(type: "date", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    VehicleType = table.Column<int>(type: "int", nullable: false),
-                    DriverId = table.Column<int>(type: "int", nullable: false)
+                    PersonId = table.Column<int>(type: "int", nullable: false),
+                    DriversLicenseNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BadPoints = table.Column<int>(type: "int", nullable: false),
+                    HasSuspendedLicense = table.Column<bool>(type: "bit", nullable: false),
+                    LastCrimeCommited = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastPointsDeduction = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DrivingSuspendedUntil = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DriversLicenses", x => x.DriversLicenseId);
+                    table.PrimaryKey("PK_Drivers", x => x.PersonId);
                     table.ForeignKey(
-                        name: "FK_DriversLicenses_Persons_DriverId",
-                        column: x => x.DriverId,
+                        name: "FK_Drivers_Persons_PersonId",
+                        column: x => x.PersonId,
                         principalTable: "Persons",
                         principalColumn: "PersonId",
                         onDelete: ReferentialAction.Cascade);
@@ -276,6 +272,28 @@ namespace TransportRegister.Server.Migrations
                         column: x => x.OfficialId,
                         principalTable: "Users",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DriversLicenses",
+                columns: table => new
+                {
+                    DriversLicenseId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IssuedOn = table.Column<DateOnly>(type: "date", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    VehicleType = table.Column<int>(type: "int", nullable: false),
+                    DriverId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DriversLicenses", x => x.DriversLicenseId);
+                    table.ForeignKey(
+                        name: "FK_DriversLicenses_Drivers_DriverId",
+                        column: x => x.DriverId,
+                        principalTable: "Drivers",
+                        principalColumn: "PersonId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -577,6 +595,9 @@ namespace TransportRegister.Server.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Drivers");
 
             migrationBuilder.DropTable(
                 name: "Offences");

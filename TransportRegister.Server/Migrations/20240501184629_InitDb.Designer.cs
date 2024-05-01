@@ -12,8 +12,8 @@ using TransportRegister.Server.Data;
 namespace TransportRegister.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240430220210_AddLastPointsDeduction")]
-    partial class AddLastPointsDeduction
+    [Migration("20240501184629_InitDb")]
+    partial class InitDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -344,9 +344,7 @@ namespace TransportRegister.Server.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PersonType")
-                        .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Sex_Male")
                         .HasColumnType("bit");
@@ -357,9 +355,7 @@ namespace TransportRegister.Server.Migrations
 
                     b.ToTable("Persons", (string)null);
 
-                    b.HasDiscriminator<string>("PersonType").HasValue("Person");
-
-                    b.UseTphMappingStrategy();
+                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("TransportRegister.Server.Models.Theft", b =>
@@ -590,14 +586,7 @@ namespace TransportRegister.Server.Migrations
                     b.Property<DateTime?>("LastPointsDeduction")
                         .HasColumnType("datetime2");
 
-                    b.HasDiscriminator().HasValue("Driver");
-                });
-
-            modelBuilder.Entity("TransportRegister.Server.Models.Owner", b =>
-                {
-                    b.HasBaseType("TransportRegister.Server.Models.Person");
-
-                    b.HasDiscriminator().HasValue("Owner");
+                    b.ToTable("Drivers", (string)null);
                 });
 
             modelBuilder.Entity("TransportRegister.Server.Models.Officer", b =>
@@ -901,7 +890,7 @@ namespace TransportRegister.Server.Migrations
                         .WithMany("AddedVehicles")
                         .HasForeignKey("OfficialId");
 
-                    b.HasOne("TransportRegister.Server.Models.Owner", "Owner")
+                    b.HasOne("TransportRegister.Server.Models.Person", "Owner")
                         .WithMany("Vehicles")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -910,6 +899,15 @@ namespace TransportRegister.Server.Migrations
                     b.Navigation("AddedByOfficial");
 
                     b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("TransportRegister.Server.Models.Driver", b =>
+                {
+                    b.HasOne("TransportRegister.Server.Models.Person", null)
+                        .WithOne()
+                        .HasForeignKey("TransportRegister.Server.Models.Driver", "PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("TransportRegister.Server.Models.Offence", b =>
@@ -922,6 +920,8 @@ namespace TransportRegister.Server.Migrations
                     b.Navigation("CommitedOffences");
 
                     b.Navigation("ReportedThefts");
+
+                    b.Navigation("Vehicles");
                 });
 
             modelBuilder.Entity("TransportRegister.Server.Models.Vehicle", b =>
@@ -936,11 +936,6 @@ namespace TransportRegister.Server.Migrations
             modelBuilder.Entity("TransportRegister.Server.Models.Driver", b =>
                 {
                     b.Navigation("Licenses");
-                });
-
-            modelBuilder.Entity("TransportRegister.Server.Models.Owner", b =>
-                {
-                    b.Navigation("Vehicles");
                 });
 
             modelBuilder.Entity("TransportRegister.Server.Models.Officer", b =>
