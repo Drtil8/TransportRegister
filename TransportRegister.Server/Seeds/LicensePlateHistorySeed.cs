@@ -33,6 +33,54 @@ namespace TransportRegister.Server.Seeds
                     LicensePlate = "1D2 3456",
                     ChangedOn = DateTime.Parse("2023-12-01"),
                 },
+                new LicensePlateHistory()
+                {
+                    VehicleId = 5,
+                    LicensePlate = "1E2 3456",
+                    ChangedOn = DateTime.Parse("2022-12-01"),
+                },
+                new LicensePlateHistory()
+                {
+                    VehicleId = 6,
+                    LicensePlate = "1F2 3456",
+                    ChangedOn = DateTime.Parse("2023-11-01"),
+                },
+                new LicensePlateHistory()
+                {
+                    VehicleId = 7,
+                    LicensePlate = "1G2 3456",
+                    ChangedOn = DateTime.Parse("2013-02-01"),
+                },
+                new LicensePlateHistory()
+                {
+                    VehicleId = 8,
+                    LicensePlate = "1H2 3456",
+                    ChangedOn = DateTime.Parse("2020-10-01"),
+                },
+                new LicensePlateHistory()
+                {
+                    VehicleId = 9,
+                    LicensePlate = "1I2 3456",
+                    ChangedOn = DateTime.Parse("2023-10-01"),
+                },
+                new LicensePlateHistory()
+                {
+                    VehicleId = 10,
+                    LicensePlate = "1J2 3456",
+                    ChangedOn = DateTime.Parse("2015-10-06"),
+                },
+                new LicensePlateHistory()
+                {
+                    VehicleId = 11,
+                    LicensePlate = "K2 3456",
+                    ChangedOn = DateTime.Parse("2013-02-01"),
+                },
+                new LicensePlateHistory()
+                {
+                    VehicleId = 12,
+                    LicensePlate = "1L2 3456",
+                    ChangedOn = DateTime.Parse("2014-04-04"),
+                },
             };
             foreach (var licensePlate in platesToSeed)
             {
