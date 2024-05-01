@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TransportRegister.Server.Data;
+using TransportRegister.Server.DTOs.DatatableDTOs;
 using TransportRegister.Server.DTOs.FineDTOs;
 using TransportRegister.Server.DTOs.OffenceDTOs;
+using TransportRegister.Server.DTOs.PersonDTOs;
 using TransportRegister.Server.DTOs.VehicleDTOs;
 using TransportRegister.Server.Models;
 
@@ -11,66 +13,179 @@ namespace TransportRegister.Server.Repositories.Implementations
     {
         private readonly AppDbContext _context = context;
 
-        public async Task<IEnumerable<OffenceListItemDto>> GetUnresolvedOfficialsOffencesAsync(string officialId)
+        //public async Task<IEnumerable<OffenceListItemDto>> GetUnresolvedOfficialsOffencesAsync(string officialId)
+        //{
+        //    var offences = await _context.Offences
+        //        .Where(of => of.OfficialId == officialId && !of.IsApproved && of.IsValid)
+        //        .Include(of => of.OffenceOnVehicle)
+        //        .Include(of => of.OffenceOnVehicle.LicensePlates)
+        //        .Select(of => new OffenceListItemDto
+        //        {
+        //            OffenceId = of.OffenceId,
+        //            //OffenceType = of.OffenceType, // TODO
+        //            ReportedOn = of.ReportedOn,
+        //            //VIN = of.OffenceOnVehicle.VIN,
+        //            LicensePlate = of.OffenceOnVehicle.LicensePlates.OrderByDescending(lp => lp.ChangedOn).Select(lp => lp.LicensePlate).FirstOrDefault(),
+        //            IsPaid = !of.Fine.IsActive,
+        //            Amount = of.Fine.Amount
+        //        }).ToListAsync();
+
+        //    return offences;
+        //}
+
+        //public async Task<IEnumerable<OffenceListItemDto>> GetPersonsOffencesAsync(int personId)
+        //{
+        //    // TODO
+        //    var offences = await _context.Offences
+        //        .Where(of => of.PersonId == personId && of.IsApproved && of.IsValid)
+        //        .Include(of => of.OffenceOnVehicle)
+        //        .Include(of => of.OffenceOnVehicle.LicensePlates)
+        //        .Select(of => new OffenceListItemDto
+        //        {
+        //            OffenceId = of.OffenceId,
+        //            //OffenceType = of.OffenceType, // TODO
+        //            ReportedOn = of.ReportedOn,
+        //            //VIN = of.OffenceOnVehicle.VIN,
+        //            LicensePlate = of.OffenceOnVehicle.LicensePlates.OrderByDescending(lp => lp.ChangedOn).Select(lp => lp.LicensePlate).FirstOrDefault(),
+        //            IsPaid = !of.Fine.IsActive,
+        //            Amount = of.Fine.Amount
+        //        }).ToListAsync();
+
+        //    return offences;
+        //}
+
+        //public async Task<IEnumerable<OffenceListItemDto>> GetVehiclesOffencesAsync(int vehicleId)
+        //{
+        //    // TODO 
+        //    var offences = await _context.Offences
+        //        .Where(of => of.VehicleId == vehicleId && of.IsApproved && of.IsValid)
+        //        .Include(of => of.OffenceOnVehicle)
+        //        .Include(of => of.OffenceOnVehicle.LicensePlates)
+        //        .Select(of => new OffenceListItemDto
+        //        {
+        //            OffenceId = of.OffenceId,
+        //            //OffenceType = of.OffenceType, // TODO
+        //            ReportedOn = of.ReportedOn,
+        //            //VIN = of.OffenceOnVehicle.VIN,
+        //            LicensePlate = of.OffenceOnVehicle.LicensePlates.OrderByDescending(lp => lp.ChangedOn).Select(lp => lp.LicensePlate).FirstOrDefault(),
+        //            IsPaid = !of.Fine.IsActive,
+        //            Amount = of.Fine.Amount
+        //        }).ToListAsync();
+
+        //    return offences;
+        //}
+
+        public IQueryable<OffenceListItemDto> QueryAllOffences()
         {
-            var offences = await _context.Offences
-                .Where(of => of.OfficialId == officialId && !of.IsApproved && of.IsValid)
-                .Include(of => of.OffenceOnVehicle)
-                .Include(of => of.OffenceOnVehicle.LicensePlates)
+            return _context.Offences
+                .AsNoTracking()
+                .Include(of => of.OffenceType)
+                .Include(of => of.CommitedBy)
                 .Select(of => new OffenceListItemDto
                 {
                     OffenceId = of.OffenceId,
-                    //OffenceType = of.OffenceType, // TODO
                     ReportedOn = of.ReportedOn,
-                    //VIN = of.OffenceOnVehicle.VIN,
-                    LicensePlate = of.OffenceOnVehicle.LicensePlates.OrderByDescending(lp => lp.ChangedOn).Select(lp => lp.LicensePlate).FirstOrDefault(),
-                    IsPaid = !of.Fine.IsActive,
-                    Amount = of.Fine.Amount
-                }).ToListAsync();
-
-            return offences;
+                    OffenceType = of.OffenceType.Name,
+                    IsValid = of.IsValid,
+                    IsApproved = of.IsApproved,
+                    PenaltyPoints = of.PenaltyPoints,
+                    Person = new PersonSimpleDto
+                    {
+                        PersonId = of.PersonId,
+                        FullName = of.CommitedBy.FirstName + " " + of.CommitedBy.LastName,
+                        BirthNumber = of.CommitedBy.BirthNumber
+                    },
+                    Vehicle = of.VehicleId == null ? null :
+                    new VehicleSimpleDto
+                    {
+                        VehicleId = of.OffenceOnVehicle.VehicleId,
+                        VIN = of.OffenceOnVehicle.VIN,
+                        LicensePlate = of.OffenceOnVehicle.LicensePlates.OrderByDescending(lp => lp.ChangedOn).Select(lp => lp.LicensePlate).FirstOrDefault(),
+                        Manufacturer = of.OffenceOnVehicle.Manufacturer,
+                        Model = of.OffenceOnVehicle.Model,
+                    }
+                });
         }
 
-        public async Task<IEnumerable<OffenceListItemDto>> GetPersonsOffencesAsync(int personId)
+        public IQueryable<OffenceListItemDto> QueryUnresolvedOffences()
         {
-            // TODO
-            var offences = await _context.Offences
-                .Where(of => of.PersonId == personId && of.IsApproved && of.IsValid)
-                .Include(of => of.OffenceOnVehicle)
-                .Include(of => of.OffenceOnVehicle.LicensePlates)
+            return _context.Offences
+                .AsNoTracking()
+                .Include(of => of.OffenceType)
+                .Include(of => of.CommitedBy)
+                .Where(of => !of.IsApproved && of.IsValid)
                 .Select(of => new OffenceListItemDto
                 {
                     OffenceId = of.OffenceId,
-                    //OffenceType = of.OffenceType, // TODO
                     ReportedOn = of.ReportedOn,
-                    //VIN = of.OffenceOnVehicle.VIN,
-                    LicensePlate = of.OffenceOnVehicle.LicensePlates.OrderByDescending(lp => lp.ChangedOn).Select(lp => lp.LicensePlate).FirstOrDefault(),
-                    IsPaid = !of.Fine.IsActive,
-                    Amount = of.Fine.Amount
-                }).ToListAsync();
-
-            return offences;
+                    OffenceType = of.OffenceType.Name,
+                    IsValid = of.IsValid,
+                    IsApproved = of.IsApproved,
+                    PenaltyPoints = of.PenaltyPoints,
+                    Person = new PersonSimpleDto
+                    {
+                        PersonId = of.PersonId,
+                        FullName = of.CommitedBy.FirstName + " " + of.CommitedBy.LastName,
+                        BirthNumber = of.CommitedBy.BirthNumber
+                    },
+                    Vehicle = of.VehicleId == null ? null : 
+                    new VehicleSimpleDto
+                    {
+                        VehicleId = of.OffenceOnVehicle.VehicleId,
+                        VIN = of.OffenceOnVehicle.VIN,
+                        LicensePlate = of.OffenceOnVehicle.LicensePlates.OrderByDescending(lp => lp.ChangedOn).Select(lp => lp.LicensePlate).FirstOrDefault(),
+                        Manufacturer = of.OffenceOnVehicle.Manufacturer,
+                        Model = of.OffenceOnVehicle.Model,
+                    }
+                });
         }
 
-        public async Task<IEnumerable<OffenceListItemDto>> GetVehiclesOffencesAsync(int vehicleId)
+        public IQueryable<OffenceListItemDto> QueryOffences(bool unresolved)
         {
-            // TODO 
-            var offences = await _context.Offences
-                .Where(of => of.VehicleId == vehicleId && of.IsApproved && of.IsValid)
-                .Include(of => of.OffenceOnVehicle)
-                .Include(of => of.OffenceOnVehicle.LicensePlates)
-                .Select(of => new OffenceListItemDto
-                {
-                    OffenceId = of.OffenceId,
-                    //OffenceType = of.OffenceType, // TODO
-                    ReportedOn = of.ReportedOn,
-                    //VIN = of.OffenceOnVehicle.VIN,
-                    LicensePlate = of.OffenceOnVehicle.LicensePlates.OrderByDescending(lp => lp.ChangedOn).Select(lp => lp.LicensePlate).FirstOrDefault(),
-                    IsPaid = !of.Fine.IsActive,
-                    Amount = of.Fine.Amount
-                }).ToListAsync();
+            var query = context.Offences
+                .AsNoTracking()
+                .Include(of => of.OffenceType)
+                .Include(of => of.CommitedBy);
 
-            return offences;
+            if (unresolved)
+            {
+                query.Where(of => !of.IsApproved && of.IsValid);
+            }
+
+            return query.Select(of => new OffenceListItemDto
+            {
+                OffenceId = of.OffenceId,
+                ReportedOn = of.ReportedOn,
+                OffenceType = of.OffenceType.Name,
+                IsValid = of.IsValid,
+                IsApproved = of.IsApproved,
+                PenaltyPoints = of.PenaltyPoints,
+                Person = new PersonSimpleDto
+                {
+                    PersonId = of.PersonId,
+                    FullName = of.CommitedBy.FirstName + " " + of.CommitedBy.LastName,
+                    BirthNumber = of.CommitedBy.BirthNumber
+                },
+                Vehicle = of.VehicleId == null ? null :
+                    new VehicleSimpleDto
+                    {
+                        VehicleId = of.OffenceOnVehicle.VehicleId,
+                        VIN = of.OffenceOnVehicle.VIN,
+                        LicensePlate = of.OffenceOnVehicle.LicensePlates.OrderByDescending(lp => lp.ChangedOn).Select(lp => lp.LicensePlate).FirstOrDefault(),
+                        Manufacturer = of.OffenceOnVehicle.Manufacturer,
+                        Model = of.OffenceOnVehicle.Model,
+                    }
+            });
+        }
+
+        public IQueryable<OffenceListItemDto> ApplyFilterQueryOffences(IQueryable<OffenceListItemDto> query, DtParamsDto dtParams)
+        {
+            //foreach(var filter in dtParams.Filters)
+            //{
+
+            //}
+
+            return query;
         }
 
         public async Task<OffenceDetailDto> GetOffenceByIdAsync(int offenceId, User user)
