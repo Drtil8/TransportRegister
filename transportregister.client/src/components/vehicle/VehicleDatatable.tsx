@@ -13,6 +13,12 @@ import IVehicleListItem from '../interfaces/IVehicleListItem';
 import IDtParams from '../interfaces/datatables/IDtParams';
 import DetailIcon from '@mui/icons-material/VisibilityOutlined';
 
+interface IAdvancedFeatures {
+  enableSorting: boolean;
+  enablePagination: boolean;
+  enableTopToolbar: boolean;
+}
+
 export const VehicleDatatable: React.FC<{
   fetchDataRef: React.MutableRefObject<IDtFetchData | null>
 }> = ({ fetchDataRef }) => {
@@ -32,6 +38,11 @@ export const VehicleDatatable: React.FC<{
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
     pageSize: 10,
+  });
+  const [enableAdvancedFeatures, setEnableAdvancedFeatures] = useState<IAdvancedFeatures>({
+    enableSorting: false,
+    enablePagination: false,
+    enableTopToolbar: false,
   });
 
   const fetchData = async () => {
@@ -58,7 +69,14 @@ export const VehicleDatatable: React.FC<{
         body: JSON.stringify(dtParams)
       });
       const json: IDtResult<IVehicleListItem> = await response.json();
-      //console.log(json.data);     // todo fix invalid array format with c# JsonConvertors
+      if (json.data.length === 1)
+        navigate(`/vehicle/${json.data[0].id}`);
+      setEnableAdvancedFeatures({
+        enableSorting: true,
+        enablePagination: true,
+        enableTopToolbar: true,
+      });
+
       setData(json.data);
       setRowCount(json.totalRowCount);
     }
@@ -77,14 +95,19 @@ export const VehicleDatatable: React.FC<{
   };
   fetchDataRef.current = fetchData;
 
+  useEffect(() => {
+    if (enableAdvancedFeatures.enableSorting)
+      fetchDataRef.current?.();
+  }, [
+    pagination.pageIndex,
+    pagination.pageSize,
+    sorting,
+  ]);
+
   //useEffect(() => {
   //  fetchDataRef.current?.();
   //}, [
-  //  columnFilters,
-  //  globalFilter,
-  //  pagination.pageIndex,
-  //  pagination.pageSize,
-  //  sorting,
+  //  enableAdvancedFeatures,
   //]);
 
   const columns = useMemo<MRT_ColumnDef<IVehicleListItem>[]>(
@@ -112,7 +135,7 @@ export const VehicleDatatable: React.FC<{
         accessorKey: 'vehicleType',
         header: 'Typ vozidla',
         filterVariant: 'select',
-        filterSelectOptions: ['Car', 'Motorcycle', 'Truck', 'Bus'],
+        filterSelectOptions: ['Car', 'Motorcycle', 'Truck', 'Bus'],   // todo fix sorting and filtering
       },
       {
         id: 'manufacturer',
@@ -142,6 +165,7 @@ export const VehicleDatatable: React.FC<{
     []
   );
 
+  // todo rework
   // todo probably should perform on component mount
   useEffect(() => {
     const actionTableHeader = document.querySelector('th:last-child') as HTMLElement;
@@ -176,11 +200,9 @@ export const VehicleDatatable: React.FC<{
       showProgressBars: isRefetching,
       sorting,
     },
-    enableSorting: false,   // todo create state to enable sorting dynamically
-    enablePagination: false,
-    enableTopToolbar: false,
+    ...enableAdvancedFeatures,
     enableRowActions: true,       // Display row actions
-    renderRowActions: ({ row }) => (// todo why not href instead of onClick
+    renderRowActions: ({ row }) => (
       <Box sx={{ display: 'flex', gap: '1rem' }}>
         <Tooltip title="Zobrazit detail vozidla">
           <IconButton onClick={() => navigate(`/vehicle/${row.original.id}`)}>
