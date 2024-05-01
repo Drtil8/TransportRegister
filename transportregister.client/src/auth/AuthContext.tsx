@@ -85,7 +85,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       navigate('/');
     }
     else {
-      throw new Error('Login failed');
+      throw new Error(await response.text());
     }
     setIsLoading(false);
   };

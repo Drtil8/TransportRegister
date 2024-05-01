@@ -12,6 +12,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [loginError, setLoginError] = useState(false);
+  const [error, setError] = useState('');
 
   const auth = useAuth();
   const navigate = useNavigate();
@@ -28,8 +29,9 @@ const Login = () => {
       setLoginError(false);
       await auth.login(email, password, rememberMe);
     }
-    catch (error) {
+    catch (error: any) {
       setLoginError(true); // Set login error state
+      setError(error.message); // Set error message
     }
   };
 
@@ -54,7 +56,7 @@ const Login = () => {
               {loginError && (
                 <div className="alert alert-danger mt-3" role="alert">
                   <div className="text-center text-danger">
-                    Přihlášení se nezdařilo, nesprávné přihlašovací údaje.
+                    {error.replace(/"/g, '')}
                   </div>
                 </div>
               )}

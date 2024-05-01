@@ -2,7 +2,7 @@
 import { Col, Row } from 'reactstrap';
 import OffenceDatatable from './OffenceDatatable';
 import IDtFetchData from '../interfaces/datatables/IDtFetchData';
-export class OffencePending extends Component<object> {
+export class OffenceAll extends Component<object> {
   constructor(props: object) {
     super(props);
   }
@@ -13,15 +13,15 @@ export class OffencePending extends Component<object> {
       <div>
         <Row className="mb-3">
           <Col>
-            <h4>Rozpracované přestupky</h4>
+            <h4>Všechny přestupky</h4>
           </Col>
         </Row>
         <Row>
-          <OffenceDatatable fetchUrl="/api/Offence/Unresolved" fetchDataRef={this.fetchDataRef}></OffenceDatatable>
+          <OffenceDatatable fetchUrl={"/api/Offences"} fetchDataRef={this.fetchDataRef} />
         </Row>
       </div>
     );
   }
 }
 
-export default OffencePending;
+export default OffenceAll;

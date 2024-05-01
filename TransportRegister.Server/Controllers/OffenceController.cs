@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Permissions;
 using TransportRegister.Server.Data;
+using TransportRegister.Server.DTOs.DatatableDTOs;
 using TransportRegister.Server.DTOs.OffenceDTOs;
 using TransportRegister.Server.DTOs.VehicleDTOs;
 using TransportRegister.Server.Models;
@@ -29,18 +30,18 @@ namespace TransportRegister.Server.Controllers
         ////////////////// GET METHODS //////////////////
 
         // GET: api/Offence/5/UnresolvedOffences
-        [HttpGet("{officialId}/UnresolvedOffences")]
-        public async Task<ActionResult<IEnumerable<Offence>>> GetUnresolvedOffences(string officialId)
-        {
-            var offences = await _offenceRepository.GetUnresolvedOfficialsOffencesAsync(officialId);
+        //[HttpGet("{officialId}/UnresolvedOffences")]
+        //public async Task<ActionResult<IEnumerable<Offence>>> GetUnresolvedOffences(string officialId)
+        //{
+        //    var offences = await _offenceRepository.GetUnresolvedOfficialsOffencesAsync(officialId);
 
-            if (offences == null)
-            {
-                return NotFound("Nenalezeny žádné přestupky.");
-            }
+        //    if (offences == null)
+        //    {
+        //        return NotFound("Nenalezeny žádné přestupky.");
+        //    }
 
-            return Ok(offences);
-        }
+        //    return Ok(offences);
+        //}
 
         // GET: api/Offence/5
         // url = api/Offence/5
@@ -73,6 +74,41 @@ namespace TransportRegister.Server.Controllers
         }
 
         ////////////////// POST METHODS //////////////////
+
+        [HttpPost("/api/Offence/Unresolved")]
+        [Produces("application/json")]
+        //[Authorize(Roles = "Official")]
+        public async Task<IActionResult> GetUnresolvedOffences([FromBody] DtParamsDto dtParams)
+        {
+            var query = _offenceRepository.QueryUnresolvedOffences();
+            //var query = _offenceRepository.QueryOffences(true);
+            query = _offenceRepository.ApplyFilterQueryOffences(query, dtParams);
+            int totalRowCount = await query.CountAsync();
+            var offences = await query.Skip(dtParams.Start).Take(dtParams.Size).ToListAsync();
+
+            return new JsonResult(new DtResultDto<OffenceListItemDto>
+            {
+                Data = offences,
+                TotalRowCount = totalRowCount
+            });
+        }
+
+        [HttpPost("/api/Offences")]
+        [Produces("application/json")]
+        public async Task<IActionResult> GetOffences([FromBody] DtParamsDto dtParams)
+        {
+            var query = _offenceRepository.QueryAllOffences();
+            //var query = _offenceRepository.QueryOffences(false);
+            query = _offenceRepository.ApplyFilterQueryOffences(query, dtParams);
+            int totalRowCount = await query.CountAsync();
+            var offences = await query.Skip(dtParams.Start).Take(dtParams.Size).ToListAsync();
+
+            return new JsonResult(new DtResultDto<OffenceListItemDto>
+            {
+                Data = offences,
+                TotalRowCount = totalRowCount
+            });
+        }
 
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         // url = api/Offence/ReportOffence
@@ -186,27 +222,27 @@ namespace TransportRegister.Server.Controllers
             return Ok("Přestupek byl úspěšně zamítnut.");
         }
 
-        [HttpPut("{offenceId}/PayFine")]
-        [Authorize(Roles = "Official")]
-        public async Task<IActionResult> PayFine(int offenceId)
-        {
-            var offence = await _context.Offences.Where(of => of.OffenceId == offenceId).Include(of => of.Fine).FirstOrDefaultAsync();
-            if (offence == null)
-            {
-                return NotFound("Přestupek nebyl nalezen.");
-            }
+        //[HttpPut("{offenceId}/PayFine")]
+        //[Authorize(Roles = "Official")]
+        //public async Task<IActionResult> PayFine(int offenceId)
+        //{
+        //    var offence = await _context.Offences.Where(of => of.OffenceId == offenceId).Include(of => of.Fine).FirstOrDefaultAsync();
+        //    if (offence == null)
+        //    {
+        //        return NotFound("Přestupek nebyl nalezen.");
+        //    }
 
-            if (offence.Fine == null)
-            {
-                return BadRequest("Přestupek nemá žádnou pokutu.");
-            }
+        //    if (offence.Fine == null)
+        //    {
+        //        return BadRequest("Přestupek nemá žádnou pokutu.");
+        //    }
 
-            offence.Fine.IsActive = false;
-            offence.Fine.PaidOn = DateOnly.FromDateTime(DateTime.Now);
+        //    offence.Fine.IsActive = false;
+        //    offence.Fine.PaidOn = DateOnly.FromDateTime(DateTime.Now);
 
-            await _context.SaveChangesAsync();
-            return Ok("Pokuta byla úspěšně zaplacena.");
-        }
+        //    await _context.SaveChangesAsync();
+        //    return Ok("Pokuta byla úspěšně zaplacena.");
+        //}
 
         ////////////////// DELETE METHODS //////////////////
 

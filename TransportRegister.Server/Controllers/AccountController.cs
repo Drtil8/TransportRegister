@@ -30,7 +30,7 @@ public class AccountController : ControllerBase
                 if (!user.IsValid)
                 {
                     // Invalid account cannot login
-                    return Unauthorized();
+                    return Unauthorized("Váš úèet byl zablokován!");
                 }
 
                 string role = null;
@@ -40,7 +40,7 @@ public class AccountController : ControllerBase
             }
             else
             {
-                return Unauthorized();
+                return Unauthorized("Pøihlášení se nezdaøilo, nesprávné pøihlašovací údaje.");
             }
         }
         return BadRequest(ModelState);

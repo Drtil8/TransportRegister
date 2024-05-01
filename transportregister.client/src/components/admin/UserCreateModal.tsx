@@ -2,10 +2,11 @@
 import { Form, Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, FormGroup, Label, Input, Col } from 'reactstrap';
 
 interface CreateUserModalProps {
-  //fetchDataRef: React.MutableRefObject<any>; // TODO
+  fetchDataRef: React.MutableRefObject<any>; // TODO
+  //fetchData: () => void;
 }
 
-const UserCreateModal: React.FC<CreateUserModalProps> = () => {
+const UserCreateModal: React.FC<CreateUserModalProps> = ({fetchDataRef}) => {
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
 
@@ -41,8 +42,7 @@ const UserCreateModal: React.FC<CreateUserModalProps> = () => {
       });
 
       if (response.ok) {
-        //const fetchData = fetchDataRef.current;
-        //fetchData();
+        fetchDataRef.current?.(); // Fetch data again
         toggle();
       }
       else {

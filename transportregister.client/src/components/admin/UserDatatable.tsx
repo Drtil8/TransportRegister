@@ -1,6 +1,5 @@
 ﻿import { useEffect, useMemo, useState } from 'react';
 import IUserListItem from "../interfaces/IUserListItem";
-import { useNavigate } from 'react-router-dom';
 import {
   MaterialReactTable, useMaterialReactTable,
   type MRT_ColumnDef, type MRT_ColumnFiltersState,
@@ -35,6 +34,27 @@ export const UserDatatable: React.FC<{
 
   const toggleDeleteModal = () => {
     setIsDeleteModalOpen(!isDeleteModalOpen);
+  }
+
+  const restoreUser = async (userId: string) => {
+    try {
+      const response = await fetch(`/api/User/${userId}/Restore`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response.ok) {
+        fetchDataRef.current?.();
+      }
+      else {
+        setIsError(true);
+      }
+    }
+    catch (error) {
+      setIsError(true);
+      console.error(error);
+    }
   }
 
   // Table state
@@ -164,7 +184,7 @@ export const UserDatatable: React.FC<{
           :
           (
             <Tooltip title="Obnovit uživatele">
-              <IconButton color="success">
+              <IconButton color="success" onClick={() => restoreUser(row.original.id) }>
                 <RestoreIcon />
               </IconButton>
             </Tooltip>
@@ -172,6 +192,9 @@ export const UserDatatable: React.FC<{
         {/*TODO vacation icon*/}
       </Box>
     ),
+    muiTableBodyRowProps: (table) => ({
+      className: (table.row.original.isValid) ? '' : "invalid-item",
+    }),
   });
 
   return (
