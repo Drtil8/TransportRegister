@@ -11,6 +11,7 @@ using TransportRegister.Server.Repositories.Implementations;
 using TransportRegister.Server.DTOs.TheftDTOs;
 using TransportRegister.Server.DTOs.OffenceDTOs;
 using Microsoft.IdentityModel.Tokens;
+using TransportRegister.Server.Data;
 
 namespace TransportRegister.Server.Controllers
 {
@@ -19,10 +20,12 @@ namespace TransportRegister.Server.Controllers
     public class PersonsController : ControllerBase
     {
         private readonly IPersonRepository _personRepository;
+        private readonly AppDbContext _context;
 
-        public PersonsController(IPersonRepository personRepository)
+        public PersonsController(IPersonRepository personRepository, AppDbContext context)
         {
             _personRepository = personRepository;
+            _context = context;
         }
 
         // GET: all persons with driver and owner dto data
@@ -39,6 +42,20 @@ namespace TransportRegister.Server.Controllers
             }
             var personDto = PersonDtoTransformer.TransformToDto(person);
             return personDto;
+        }
+
+        [HttpGet("{personId}/SetToDriver")]
+        public async Task<IActionResult> SetPersonToDriver(int personId)
+        {
+            var person = await _context.Persons.FindAsync(personId);
+            if (person == null)
+            {
+                return NotFound();
+            }
+
+            await _personRepository.SetDriverAsync(person);
+
+            return Ok();
         }
 
         [HttpGet("{id}/ReportedThefts")]

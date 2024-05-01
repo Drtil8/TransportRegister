@@ -8,7 +8,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
 {
     public DbSet<Vehicle> Vehicles { get; set; }
     public DbSet<Person> Persons { get; set; }
-    public DbSet<Owner> Owners { get; set; }
+    //public DbSet<Owner> Owners { get; set; }
     public DbSet<Driver> Drivers { get; set; }
     public DbSet<DriversLicense> DriversLicenses { get; set; }
     public DbSet<Fine> Fines { get; set; }
@@ -23,17 +23,19 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<Person>(entity =>
-        {
-            entity.ToTable("Persons");
-            entity.HasDiscriminator<string>("PersonType")
-                .HasValue<Person>("Person")
-                .HasValue<Driver>("Driver")
-                .HasValue<Owner>("Owner");
-        });
+        //modelBuilder.Entity<Person>(entity =>
+        //{
+        //    entity.ToTable("Persons");
+        //    entity.HasDiscriminator<string>("PersonType")
+        //        .HasValue<Person>("Person")
+        //        .HasValue<Driver>("Driver");
+        //        //.HasValue<Owner>("Owner");
+        //});
+        modelBuilder.Entity<Person>().ToTable("Persons");
+        modelBuilder.Entity<Driver>().ToTable("Drivers");
 
         // Owner
-        modelBuilder.Entity<Owner>()
+        modelBuilder.Entity<Person>()
             .HasMany(o => o.Vehicles)
             .WithOne(v => v.Owner)
             .HasForeignKey(v => v.OwnerId);

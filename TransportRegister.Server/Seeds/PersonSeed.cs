@@ -8,7 +8,7 @@ namespace TransportRegister.Server.Seeds
     {
         public static void Seed(AppDbContext context)
         {
-             var ownersToSeed = new Owner[]
+             var ownersToSeed = new Person[]
             {
                 new()
                 {
@@ -248,11 +248,12 @@ namespace TransportRegister.Server.Seeds
 
             foreach (var owner in ownersToSeed)
             {
-                if (!context.Owners.Any(o => o.PersonId == owner.PersonId))
+                if (!context.Persons.Any(o => o.PersonId == owner.PersonId))
                 {
-                    context.Owners.Add(owner);
+                    context.Persons.Add(owner);
                 }
             }
+            context.SaveChanges();
 
             foreach (var driver in driversToSeed)
             {

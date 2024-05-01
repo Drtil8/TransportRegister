@@ -46,7 +46,10 @@ namespace TransportRegister.Server.Repositories.Implementations
 
         public async Task<Person> GetPersonByIdAsync(int personId)
         {
-            var person = await _context.Persons.FirstOrDefaultAsync(v => v.PersonId == personId);
+            var person = await _context.Persons
+                            .Include(owner => owner.Vehicles)
+                            .ThenInclude(vehicle => vehicle.LicensePlates)
+                            .FirstOrDefaultAsync(v => v.PersonId == personId);
             if (person is null)
             {
                 return null;
@@ -56,11 +59,6 @@ namespace TransportRegister.Server.Repositories.Implementations
             {
                 return await _context.Drivers
                     .Include(v => v.Licenses)
-                    .FirstOrDefaultAsync(v => v.PersonId == personId);
-            }
-            else if (person.GetType() == typeof(Owner))
-            {
-                return await _context.Owners
                     .Include(owner => owner.Vehicles)
                         .ThenInclude(vehicle => vehicle.LicensePlates)
                     .FirstOrDefaultAsync(v => v.PersonId == personId);
@@ -73,27 +71,16 @@ namespace TransportRegister.Server.Repositories.Implementations
 
                 .FirstOrDefaultAsync(v => v.DriversLicenseNumber == licenseNumber);
         }
-        public async Task<Owner> GetOwnerByVINAsync(string VIN_number)
+        public async Task<Person> GetOwnerByVINAsync(string VIN_number)
         {
-            return await _context.Owners
+            return await _context.Persons
                 .Include(o => o.Vehicles)
                 .FirstOrDefaultAsync(o => o.Vehicles.Any(v => v.VIN == VIN_number));
         }
 
         public async Task SetOwnerAsync(Person owner)
         {
-            if( owner is Person person)
-            {
-                if (owner.PersonId == 0)
-                {
-                    _context.Owners.Add(person as Owner);
-                }
-                else
-                {
-                    _context.Owners.Update(person as Owner);
-                }
-            }
-            await _context.SaveChangesAsync();
+            
         }
 
 
@@ -105,7 +92,7 @@ namespace TransportRegister.Server.Repositories.Implementations
             }
             else
             {
-                _context.Drivers.Update(driver as Driver);
+                //driver.PersonType = "Driver";
             }
             await _context.SaveChangesAsync();
         }

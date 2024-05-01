@@ -13,13 +13,6 @@ namespace TransportRegister.Server.Seeds
                 new()
                 {
                     VehicleType = VehicleType.C,
-                    DriverId = 6,
-                    Description = "Řidičský průkaz na náklaďák",
-                    IssuedOn = DateOnly.Parse("2024-05-11"),
-                },
-                new()
-                {
-                    VehicleType = VehicleType.C,
                     DriverId = 7,
                     Description = "Řidičský průkaz na náklaďák",
                     IssuedOn = DateOnly.Parse("2024-04-01"),
@@ -56,13 +49,6 @@ namespace TransportRegister.Server.Seeds
                 },
               
                 // Cars
-                new()
-                {
-                    VehicleType = VehicleType.B,
-                    DriverId = 6,
-                    Description = "Řidičský průkaz na auto",
-                    IssuedOn = DateOnly.Parse("2020-04-11"),
-                },
                 new()
                 {
                     VehicleType = VehicleType.B,
