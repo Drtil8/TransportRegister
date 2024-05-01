@@ -1,5 +1,5 @@
 ﻿import { Component, ContextType } from 'react';
-import { Collapse, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Navbar, NavbarBrand, NavbarToggler } from 'reactstrap';
+import { Collapse, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, NavLink, NavItem, Navbar, NavbarBrand, NavbarToggler } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import AuthContext from '../auth/AuthContext';
 
@@ -77,7 +77,29 @@ export class NavMenu extends Component<object, NavMenuState> {
         <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" container light>
           <NavbarBrand className="me-5" tag={Link} to="/">RVŘP</NavbarBrand>
           <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
-          {this.context.isLoggedIn && (
+          {(this.context.isLoggedIn && this.context.isAdmin) &&
+            (
+              <Collapse className="d-sm-inline-flex navbarDropdownBar" isOpen={!this.state.collapsed} navbar>
+                <ul className="navbar-nav">
+                  <NavItem>
+                    <NavLink tag={Link} to="/users">Uživatelé</NavLink>
+                  </NavItem>
+                </ul>
+
+                <ul className="navbar-nav ms-auto">
+                  <Dropdown isOpen={this.state.userDropOpen} toggle={this.toggleUserDropdown}>
+                    <DropdownToggle nav caret>
+                      Přihlášen jako: {this.context.email}
+                    </DropdownToggle>
+                    <DropdownMenu>
+                      <DropdownItem tag={Link} onClick={this.context.logout}>Odhlásit se</DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
+                </ul>
+              </Collapse>
+            )}
+          {(this.context.isLoggedIn && !this.context.isAdmin) && 
+            (
             <Collapse className="d-sm-inline-flex navbarDropdownBar" isOpen={!this.state.collapsed} navbar>
               <ul className="navbar-nav">
                 <Dropdown isOpen={this.state.driverDropOpen} toggle={this.toggleDriverDropdown} >
@@ -110,10 +132,10 @@ export class NavMenu extends Component<object, NavMenuState> {
                   </DropdownToggle>
                   <DropdownMenu>
                     <DropdownItem header>Přestupky</DropdownItem>
-                    <DropdownItem tag={Link} to="/offenceCreate">-Policista - registrovat</DropdownItem>
-                    <DropdownItem tag={Link} to="/offencePending">-Úředník - Zobrazit nevyřešené (své)</DropdownItem>
-                    <DropdownItem>?Vyhledat (asi ne, spíš sobrazit u řidiče TODO)</DropdownItem>
-                    <DropdownItem>?Zobrazit včechny</DropdownItem>
+                    <DropdownItem tag={Link} to="/offenceCreate">-Policista - registrovat - zrušit</DropdownItem>
+                    <DropdownItem tag={Link} to="/offencePending">Zobrazit nevyřešené</DropdownItem>
+                    <DropdownItem tag={Link} to="/offenceAll">Zobrazit včechny</DropdownItem>
+                    {/*<DropdownItem>?Vyhledat (asi ne, spíš sobrazit u řidiče TODO)</DropdownItem>*/}
                   </DropdownMenu>
                 </Dropdown>
 
