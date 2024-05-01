@@ -1,23 +1,27 @@
-import { ReactNode } from 'react';
+﻿import { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from './useAuth';
 
 interface ProtectedRouteProps {
-    children: ReactNode;
+  children: ReactNode;
 }
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-    const auth = useAuth();
+  const auth = useAuth();
 
-    if (auth.isLoading) {
-        return <div>Loading...</div>;
-    }
+  if (auth.isLoading) {
+    return <div>Loading...</div>;
+  }
 
-    if (!auth.isLoggedIn) {
-        return <Navigate to="/login" replace />;
-    }
+  if (!auth.isLoggedIn) {
+    return <Navigate to="/login" replace />;
+  }
 
-    return <>{children}</>;
+  //if (auth.isAdmin) {
+  //  return <Navigate to="/users" replace />;
+  //}
+
+  return <>{children}</>;
 };
 
 
