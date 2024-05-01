@@ -2,6 +2,7 @@
 using System.Linq;
 using TransportRegister.Server.DTOs.DriversLicenseDTOs;
 using TransportRegister.Server.DTOs.VehicleDTOs;
+using TransportRegister.Server.DTOs.OffenceDTOs;
 using TransportRegister.Server.Models;
 namespace TransportRegister.Server.DTOs.PersonDTOs
 {
@@ -56,6 +57,8 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
                 personDto.ImageBase64 = person.Image != null ? Convert.ToBase64String(person.Image) : null;
                 personDto.OfficialId = person.OfficialId;
                 personDto.PersonType = person.GetType().Name;
+                personDto.CommitedOffences = person.CommitedOffences.Select(o => new OffenceListItemDto
+);
             };
             return personDto;
         }

@@ -10,6 +10,7 @@ namespace TransportRegister.Server.Repositories
         Task SetOwnerAsync(Person owner);
         Task SetDriverAsync(Person driver);
         Task DeletePersonAsync(int personId);
+        Task SavePersonAsync(Person person);
         Task<List<Tuple<Driver, int>>> GetDriversAndPoints();
     }
 }

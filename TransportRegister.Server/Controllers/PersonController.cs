@@ -7,6 +7,7 @@ using TransportRegister.Server.DTOs.VehicleDTOs;
 using TransportRegister.Server.Models;
 using TransportRegister.Server.Repositories;
 using TransportRegister.Server.DTOs.PersonDTOs;
+using TransportRegister.Server.Repositories.Implementations;
 
 namespace TransportRegister.Server.Controllers
 {
@@ -75,6 +76,31 @@ namespace TransportRegister.Server.Controllers
         //    //return CreatedAtAction("GetPerson", new { id = person.PersonId }, person);
         //    return NoContent();
         //}
+
+        [HttpPost("{personId}/UploadImage")]
+        public async Task<IActionResult> UploadImage(int personId, IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("No file uploaded.");
+            }
+
+            var person = await _personRepository.GetPersonByIdAsync(personId);
+            if (person == null)
+            {
+                return NotFound("Person not found.");
+            }
+
+            using (var memoryStream = new MemoryStream())
+            {
+                await file.CopyToAsync(memoryStream);
+                person.Image = memoryStream.ToArray();
+            }
+
+            await _personRepository.SavePersonAsync(person);
+
+            return Ok();
+        }
 
         // DELETE: api/Persons/5
         [HttpDelete("{id}")]
