@@ -14,6 +14,8 @@ import VehicleSearch from "./components/vehicle/VehicleSearch";
 import VehicleDetail from "./components/vehicle/VehicleDetail";
 import VehicleEdit from "./components/vehicle/VehicleEdit";
 import OffenceAll from "./components/offence/OffenceAll";
+import { UserDetail } from "./components/user/UserDetail";
+import { MyAccount } from "./components/user/MyAccount";
 
 const AppRoutes = [
   {
@@ -100,6 +102,16 @@ const AppRoutes = [
   {
     path: '/users',
     element: <UserList />,
+    isProtected: true
+  },
+  {
+    path: '/user/:id',
+    element: <UserDetail />,
+    isProtected: true
+  },
+  {
+    path: '/myAccount',
+    element: <MyAccount />,
     isProtected: true
   }
 ];
