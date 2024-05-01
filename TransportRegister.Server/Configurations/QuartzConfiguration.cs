@@ -52,6 +52,11 @@ namespace TransportRegister.Server.Configurations
                     driver.BadPoints = Math.Max(0, driver.BadPoints - 4);
                     driver.LastPointsDeduction = DateTime.Now;
                 }
+                if (driver.DrivingSuspendedUntil < DateTime.Now && driver.BadPoints < 12)
+                {
+                    // Cancel suspension
+                    driver.DrivingSuspendedUntil = null;
+                }
             }
 
             await dbContext.SaveChangesAsync();

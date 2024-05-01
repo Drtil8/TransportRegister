@@ -1,6 +1,6 @@
-﻿import { ChangeEvent, Component } from 'react';
+﻿import { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Alert, Button, Col, Form, FormGroup, Input, Label, Row, } from 'reactstrap';
+import { Alert, Button, Col, Row, } from 'reactstrap';
 import { IBus, ICar, IMotorcycle, ITruck, IVehicleDetail } from '../interfaces/IVehicleDetail';
 
 interface IVehicleDetailProps {
@@ -56,44 +56,6 @@ export class VehicleEdit extends Component<object | IVehicleDetailProps> {
     }
   }
 
-  async uploadVehicleFile(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    const { vehicleDetail } = this.state as IVehicleDetailProps;
-    let formData = new FormData(document.getElementById("vehicleFileUpload") as HTMLFormElement);
-    formData.append("vehicleId", String(vehicleDetail?.vehicleId));
-    try {
-      const response = await fetch(`/api/Vehicle/${vehicleDetail?.vehicleId}/UploadImage`, {
-        method: 'POST',
-        body: formData
-      });
-
-      if (response.ok) {
-        alert('Image uploaded successfully');
-      }
-      else {
-        console.error("File not found or not of type File");
-      }
-    }
-    catch (error) {
-      console.error('Failed to upload image: ' + error);
-    }
-  }
-
-  handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files && event.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const { vehicleDetail } = this.state as IVehicleDetailProps;
-      const imageBase64 = reader.result as string;
-      const updatedVehicleDetail = { ...vehicleDetail, imageBase64 };
-      this.setState({ vehicleDetail: updatedVehicleDetail });
-    };
-    reader.readAsDataURL(file);
-  };
-
   render() {
     const { vehicleDetail } = this.state as IVehicleDetailProps;
     const content = !vehicleDetail ?
@@ -114,47 +76,7 @@ export class VehicleEdit extends Component<object | IVehicleDetailProps> {
             </Col>
           </Row>
 
-          {vehicleDetail.imageBase64 && (
-            <Row>
-              <Col xs="8">
-                <dt>Fotka vozidla:</dt>
-                <img
-                  src={`${vehicleDetail.imageBase64}`}
-                  alt="Vozidlo"
-                  className="vehicleImage" />
-              </Col>
-            </Row>
-          )}
-
-          <Form id="vehicleFileUpload"
-            method="post"
-            onSubmit={(e) => this.uploadVehicleFile(e)}
-            encType="multipart/form-data">
-            <FormGroup>
-              <Label for="vehicleImage">
-                Fotka vozidla
-              </Label>
-              <Input
-                id="vehicleImage"
-                name="file"
-                type="file"
-                accept="image/*"
-                onChange={this.handleImageChange} />
-            </FormGroup>
-            {/*todo add galery somewhere*/}
-            {/*<FormGroup>*/}
-            {/*  <Label for="vehicleGallery">*/}
-            {/*    Galerie vozidla*/}
-            {/*  </Label>*/}
-            {/*  <Input*/}
-            {/*    id="vehicleGallery"*/}
-            {/*    name="file"*/}
-            {/*    type="file"*/}
-            {/*    accept="image/*"*/}
-            {/*    multiple />*/}
-            {/*</FormGroup>*/}
-            <Button type="submit" color="primary">Uložit</Button>
-          </Form>
+          {/*<VehicleForm fetchedData={vehicleDetail} />*/}
         </>
       );
 
