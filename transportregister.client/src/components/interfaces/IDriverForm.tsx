@@ -5,7 +5,7 @@ interface IDriverFormState {
   lastName: string;
   birthNumber1: number; // before slash
   birthNumber2: number; // after slash
-  sexMale: boolean;
+  sex_Male: boolean;
   dateOfBirth: string;
   //address: {
   //  street: string;
