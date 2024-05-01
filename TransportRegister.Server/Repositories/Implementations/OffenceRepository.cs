@@ -4,6 +4,7 @@ using TransportRegister.Server.DTOs.DatatableDTOs;
 using TransportRegister.Server.DTOs.FineDTOs;
 using TransportRegister.Server.DTOs.OffenceDTOs;
 using TransportRegister.Server.DTOs.PersonDTOs;
+using TransportRegister.Server.DTOs.UserDTOs;
 using TransportRegister.Server.DTOs.VehicleDTOs;
 using TransportRegister.Server.Models;
 
@@ -207,9 +208,9 @@ namespace TransportRegister.Server.Repositories.Implementations
                     Description = of.Description,
                     Vehicle = of.VehicleId == null ?
                     null :
-                    new VehicleListItemDto // TODO -> doesnt have to be specified, can be null
+                    new VehicleSimpleDto // TODO -> doesnt have to be specified, can be null
                     {
-                        Id = of.OffenceOnVehicle.VehicleId,
+                        VehicleId = of.OffenceOnVehicle.VehicleId,
                         Manufacturer = of.OffenceOnVehicle.Manufacturer,
                         Model = of.OffenceOnVehicle.Model,
                         VIN = of.OffenceOnVehicle.VIN,
@@ -217,6 +218,22 @@ namespace TransportRegister.Server.Repositories.Implementations
                     },
                     PenaltyPoints = of.PenaltyPoints,
                     IsResponsibleOfficial = of.OfficialId == user.Id,
+                    Person = new PersonSimpleDto
+                    {
+                        PersonId = of.PersonId,
+                        FullName = of.CommitedBy.FirstName + " " + of.CommitedBy.LastName,
+                        BirthNumber = of.CommitedBy.BirthNumber
+                    },
+                    Officer = new UserSimpleDto
+                    {
+                        Id = of.OfficerId,
+                        FullName = of.ReportedByOfficer.FirstName + " " + of.ReportedByOfficer.LastName
+                    },
+                    Official = of.OfficialId == null ? null : new UserSimpleDto
+                    {
+                        Id = of.OfficialId,
+                        FullName = of.ProcessedByOfficial.FirstName + " " + of.ProcessedByOfficial.LastName
+                    }
                     // TODO -> person dto
                 }).FirstOrDefaultAsync();
 
@@ -259,25 +276,25 @@ namespace TransportRegister.Server.Repositories.Implementations
             return offenceTypes;
         }
 
-        public async Task<bool> AssignOffenceToOfficialAsync(Offence offence) //(int offenceId)
-        {
-            var official = (await _context.Officials.Where(of => of.IsValid && of.IsActive)
-                .Select(o => new
-                {
-                    Official = o,
-                    OffencesCount = o.ProcessedOffences.Count(off => !off.IsApproved && off.IsValid)
-                }).OrderBy(x => x.OffencesCount).FirstOrDefaultAsync())?.Official;
+        //public async Task<bool> AssignOffenceToOfficialAsync(Offence offence) //(int offenceId)
+        //{
+        //    var official = (await _context.Officials.Where(of => of.IsValid && of.IsActive)
+        //        .Select(o => new
+        //        {
+        //            Official = o,
+        //            OffencesCount = o.ProcessedOffences.Count(off => !off.IsApproved && off.IsValid)
+        //        }).OrderBy(x => x.OffencesCount).FirstOrDefaultAsync())?.Official;
 
-            if (official == null)
-            {
-                // TODO -> assign to some default official or to official who is on vacation
-                return false;
-            }
+        //    if (official == null)
+        //    {
+        //        // TODO -> assign to some default official or to official who is on vacation
+        //        return false;
+        //    }
 
-            offence.OfficialId = official.Id;
+        //    offence.OfficialId = official.Id;
 
-            return await _context.SaveChangesAsync() > 0;
-        }
+        //    return await _context.SaveChangesAsync() > 0;
+        //}
 
         public async Task<bool> AssignPoints(int driverId, int points)
         {
@@ -358,7 +375,7 @@ namespace TransportRegister.Server.Repositories.Implementations
             return offence;
         }
 
-        public async Task<bool> ApproveOffenceAsync(int offenceId, OffenceDetailDto offenceDto)
+        public async Task<bool> ApproveOffenceAsync(int offenceId, string officialId, OffenceDetailDto offenceDto)
         {
             var offence = await _context.Offences.Include(of => of.Fine).Where(of => of.OffenceId == offenceId).FirstOrDefaultAsync();
             if (offence == null)
@@ -377,6 +394,7 @@ namespace TransportRegister.Server.Repositories.Implementations
 
             offence.IsApproved = true;
             offence.IsValid = true;
+            offence.OfficialId = officialId;
 
             if(await _context.SaveChangesAsync() > 0)
             {
@@ -402,7 +420,7 @@ namespace TransportRegister.Server.Repositories.Implementations
             return true;
         }
 
-        public async Task<bool> DeclineOffenceAsync(int offenceId)
+        public async Task<bool> DeclineOffenceAsync(int offenceId, string officialId)
         {
             var offence = await _context.Offences.FindAsync(offenceId);
             if (offence == null)
@@ -412,6 +430,7 @@ namespace TransportRegister.Server.Repositories.Implementations
 
             offence.IsApproved = false;
             offence.IsValid = false;
+            offence.OfficialId = officialId;
 
             return await _context.SaveChangesAsync() > 0;
         }

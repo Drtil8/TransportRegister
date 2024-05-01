@@ -14,10 +14,10 @@ namespace TransportRegister.Server.Repositories
         IQueryable<OffenceListItemDto> QueryOffences(bool unresolved);
         IQueryable<OffenceListItemDto> ApplyFilterQueryOffences(IQueryable<OffenceListItemDto> query, DtParamsDto dtParams);
         Task<OffenceDetailDto> GetOffenceByIdAsync(int offenceId, User user);
-        Task<bool> AssignOffenceToOfficialAsync(Offence offence); //(int offenceId);
+        //Task<bool> AssignOffenceToOfficialAsync(Offence offence); //(int offenceId);
         Task<Offence> ReportOffenceAsync(OffenceCreateDto offenceDto, User activeUser);
-        Task<bool> ApproveOffenceAsync(int offenceId, OffenceDetailDto offenceDto);
-        Task<bool> DeclineOffenceAsync(int offenceId);
+        Task<bool> ApproveOffenceAsync(int offenceId, string officialId, OffenceDetailDto offenceDto);
+        Task<bool> DeclineOffenceAsync(int offenceId, string officialId);
         Task<int> EditOffenceAsync(int offenceId, OffenceDetailDto offenceDto); // TODO -> change dto?
         Task<bool> DeleteOffenceAsync(int offenceId);
         Task<IEnumerable<OffenceTypeDto>> GetOffenceTypesAsync();
