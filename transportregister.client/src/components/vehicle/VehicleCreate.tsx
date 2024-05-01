@@ -6,19 +6,8 @@ export class VehicleCreate extends Component<object> {
   }
   handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const formData = {
-      vin: (document.getElementById("vin") as HTMLInputElement).value,
-      manufacturer: (document.getElementById("manufacturer") as HTMLInputElement).value,
-      model: (document.getElementById("model") as HTMLInputElement).value,
-      horsepowerKW: (document.getElementById("horsepowerKW") as HTMLInputElement).value,
-      engineVolumeCM3: (document.getElementById("engineVolumeCM3") as HTMLInputElement).value,
-      manufacturedYear: (document.getElementById("manufacturedYear") as HTMLInputElement).value,
-      color: (document.getElementById("color") as HTMLInputElement).value,
-      lengthCM: (document.getElementById("lengthCM") as HTMLInputElement).value,
-      widthCM: (document.getElementById("widthCM") as HTMLInputElement).value,
-      heightCM: (document.getElementById("heightCM") as HTMLInputElement).value,
-      loadCapacityKG: (document.getElementById("loadCapacityKG") as HTMLInputElement).value
-    };
+
+    let formData = new FormData(document.getElementById("") as HTMLFormElement);
 
     // Call your API endpoint with formData
     console.log(formData);
@@ -36,7 +25,7 @@ export class VehicleCreate extends Component<object> {
           </Col>
         </Row>
         <Row>
-          <Form className="container vehicelRegForm" onSubmit={(e) => this.handleSubmit(e)}>
+          <Form className="container vehicleRegForm" onSubmit={(e) => this.handleSubmit(e)}>
             <FormGroup>
               <Label for="vin">VIN:</Label>
               <Input type="text" id="vin" required />

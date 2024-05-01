@@ -1,4 +1,5 @@
 ﻿import { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { Alert, Button, Col, Row } from 'reactstrap';
 import { IBus, ICar, IMotorcycle, ITruck, IVehicleDetail } from '../interfaces/IVehicleDetail';
 
@@ -76,7 +77,7 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
               <h4>Detail {localizedVehicleTypeMap[vehicleDetail.vehicleType]}</h4>
             </Col>
             <Col className="d-flex justify-content-end">
-              <Button color="success" href={`/vehicle/edit/${vehicleDetail.vehicleId}`}>
+              <Button tag={Link} to={`/vehicle/edit/${vehicleDetail.vehicleId}`} color="primary">
                 Upravit vozidlo
               </Button>
             </Col>

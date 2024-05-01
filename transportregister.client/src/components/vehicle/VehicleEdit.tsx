@@ -1,4 +1,5 @@
 ﻿import { ChangeEvent, Component } from 'react';
+import { Link } from 'react-router-dom';
 import { Alert, Button, Col, Form, FormGroup, Input, Label, Row, } from 'reactstrap';
 import { IBus, ICar, IMotorcycle, ITruck, IVehicleDetail } from '../interfaces/IVehicleDetail';
 
@@ -107,7 +108,7 @@ export class VehicleEdit extends Component<object | IVehicleDetailProps> {
               <h4>Úprava vozidla</h4>
             </Col>
             <Col className="d-flex justify-content-end">
-              <Button color="success" href={`/vehicle/${vehicleDetail.vehicleId}`}>
+              <Button tag={Link} to={`/vehicle/${vehicleDetail.vehicleId}`} color="primary">
                 Přejít na detail
               </Button>
             </Col>
