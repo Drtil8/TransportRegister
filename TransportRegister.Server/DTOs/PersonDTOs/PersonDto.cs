@@ -20,8 +20,8 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
         public string PersonType { get; set; }
 
         public string OfficialId { get; set; }
-        public IEnumerable<OffenceListSimpleDto> CommitedOffences { get; set; }
-        public IEnumerable<TheftListItemDto> ReportedThefts { get; set; }
+        //public IEnumerable<OffenceListSimpleDto> CommitedOffences { get; set; }
+        //public IEnumerable<TheftListItemDto> ReportedThefts { get; set; }
         public IEnumerable<VehicleListItemDto> Vehicles { get; set; }
     }
 

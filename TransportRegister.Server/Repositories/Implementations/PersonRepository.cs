@@ -13,6 +13,37 @@ namespace TransportRegister.Server.Repositories.Implementations
             _context = context;
         }
 
+        public async Task<List<Theft>> GetPersonReportedTheftsByIdAsync(int personId)
+        {
+            var person = await _context.Persons.FirstOrDefaultAsync(v => v.PersonId == personId);
+            if (person is null)
+            {
+                return null;
+            }
+
+            return await _context.Thefts
+                .Include(t => t.StolenVehicle)
+                    .ThenInclude(vehicle => vehicle.LicensePlates)
+                .Where(t => t.ReportingPersonId == personId)
+                .ToListAsync();
+        }
+        public async Task<List<Offence>> GetPersonCommitedOffencesByIdAsync(int personId)
+        {
+            var person = await _context.Persons.FirstOrDefaultAsync(v => v.PersonId == personId);
+            if (person is null)
+            {
+                return null;
+            }
+
+            return await _context.Offences
+                .Include(o => o.Fine)
+                .Include(o => o.OffenceType)
+                .Where(o => o.PersonId == personId)
+                .ToListAsync();
+        }
+
+
+
         public async Task<Person> GetPersonByIdAsync(int personId)
         {
             var person = await _context.Persons.FirstOrDefaultAsync(v => v.PersonId == personId);
@@ -25,21 +56,11 @@ namespace TransportRegister.Server.Repositories.Implementations
             {
                 return await _context.Drivers
                     .Include(v => v.Licenses)
-                    .Include(v => v.CommitedOffences)
-                        .ThenInclude(offence => offence.Fine)
-                    .Include(v => v.ReportedThefts)
-                        .ThenInclude(t => t.StolenVehicle)
-                            .ThenInclude(vehicle => vehicle.LicensePlates)
                     .FirstOrDefaultAsync(v => v.PersonId == personId);
             }
             else if (person.GetType() == typeof(Owner))
             {
                 return await _context.Owners
-                    .Include(v => v.CommitedOffences)
-                        .ThenInclude(offence => offence.Fine)
-                    .Include(v => v.ReportedThefts)
-                        .ThenInclude(t => t.StolenVehicle)
-                            .ThenInclude(vehicle => vehicle.LicensePlates)
                     .Include(owner => owner.Vehicles)
                         .ThenInclude(vehicle => vehicle.LicensePlates)
                     .FirstOrDefaultAsync(v => v.PersonId == personId);
@@ -61,13 +82,16 @@ namespace TransportRegister.Server.Repositories.Implementations
 
         public async Task SetOwnerAsync(Person owner)
         {
-            if (owner.PersonId == 0)
+            if( owner is Person person)
             {
-                _context.Owners.Add(owner as Owner);
-            }
-            else
-            {
-                _context.Owners.Update(owner as Owner);
+                if (owner.PersonId == 0)
+                {
+                    _context.Owners.Add(person as Owner);
+                }
+                else
+                {
+                    _context.Owners.Update(person as Owner);
+                }
             }
             await _context.SaveChangesAsync();
         }

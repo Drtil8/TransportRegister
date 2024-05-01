@@ -8,6 +8,9 @@ using TransportRegister.Server.Models;
 using TransportRegister.Server.Repositories;
 using TransportRegister.Server.DTOs.PersonDTOs;
 using TransportRegister.Server.Repositories.Implementations;
+using TransportRegister.Server.DTOs.TheftDTOs;
+using TransportRegister.Server.DTOs.OffenceDTOs;
+using Microsoft.IdentityModel.Tokens;
 
 namespace TransportRegister.Server.Controllers
 {
@@ -38,6 +41,49 @@ namespace TransportRegister.Server.Controllers
             return personDto;
         }
 
+        [HttpGet("{id}/ReportedThefts")]
+        public async Task<ActionResult<TheftListItemDto>> GetReportedThefts(int id)
+        {
+            var theftsList = await _personRepository.GetPersonReportedTheftsByIdAsync(id);
+
+            if (theftsList is null)
+            {
+                return NotFound();
+            }
+            var theftListDto = theftsList.Select(t => new TheftListItemDto
+            {
+                TheftId = t.TheftId,
+                ReportedOn = t.ReportedOn,
+                VehicleId = t.VehicleId,
+                VIN = t.StolenVehicle.VIN,
+                LicensePlate = t.StolenVehicle.LicensePlates.FirstOrDefault().LicensePlate,
+                StolenOn = t.StolenOn,
+                FoundOn = t.FoundOn,
+                IsFound = t.FoundOn != null,
+            });
+            return Ok(theftListDto);
+        }
+
+        [HttpGet("{id}/CommitedOffences")]
+        public async Task<ActionResult<TheftListItemDto>> GetCommitedOffences(int id)
+        {
+            var offencesList = await _personRepository.GetPersonCommitedOffencesByIdAsync(id);
+
+            if (offencesList == null)
+            {
+                return NotFound();
+            }
+            var offencesListDto = offencesList.Select(o => new OffenceListSimpleDto
+            {
+                OffenceId = o.OffenceId,
+                ReportedOn = o.ReportedOn,
+                Description = o.Description,
+                PenaltyPoints = o.PenaltyPoints,
+                FineAmount = o.Fine is not null ? o.Fine.Amount : default,
+            });
+            return Ok(offencesListDto);
+        }
+
         // PUT: api/Persons/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -50,7 +96,7 @@ namespace TransportRegister.Server.Controllers
             }
 
             //switch (role)
-            //    {
+            //{
             //    case "Driver":
             //        await _personRepository.SetDriverAsync(person);
             //        break;
@@ -59,10 +105,10 @@ namespace TransportRegister.Server.Controllers
             //        break;
             //    default:
             //        return BadRequest();
-            //    }
+            //}
 
 
-                return Ok();
+            return Ok();
         }
 
         // POST: api/Persons

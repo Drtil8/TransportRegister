@@ -8,7 +8,7 @@ namespace TransportRegister.Server.Seeds
     {
         public static void Seed(AppDbContext context)
         {
-            var ownersToSeed = new Owner[]
+             var ownersToSeed = new Owner[]
             {
                 new()
                 {
