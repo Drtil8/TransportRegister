@@ -30,6 +30,13 @@ namespace TransportRegister.Server.Controllers
         }
 
         // GET: all persons with driver and owner dto data
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<dynamic>>> GetAllPersons()
+        {
+            var persons = await _personRepository.GetAllPersons();
+
+            return Ok(persons);
+        }
 
         // GET: api/Persons/5
         [HttpGet("{id}")]

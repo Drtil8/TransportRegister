@@ -1,4 +1,5 @@
 ﻿using TransportRegister.Server.DTOs.DriversLicenseDTOs;
+using TransportRegister.Server.DTOs.PersonDTOs;
 using TransportRegister.Server.Models;
 namespace TransportRegister.Server.Repositories
 {
@@ -6,6 +7,7 @@ namespace TransportRegister.Server.Repositories
     {
 
         Task<Person> GetPersonByIdAsync(int personId);
+        Task<Tuple<List<PersonSimpleListDto>, List<DriverSimpleListDto>>> GetAllPersons();
         Task<Driver> GetDriverAsync(string licenseNumber);
         Task<Person> GetOwnerByVINAsync(string VIN_number);
         Task SetDriverAsync(Person driver);

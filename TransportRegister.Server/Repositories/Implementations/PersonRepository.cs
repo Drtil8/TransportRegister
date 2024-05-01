@@ -2,6 +2,9 @@
 using TransportRegister.Server.Data;
 using TransportRegister.Server.Models;
 using TransportRegister.Server.DTOs.DriversLicenseDTOs;
+using TransportRegister.Server.DTOs.PersonDTOs;
+using System;
+using TransportRegister.Server.DTOs.VehicleDTOs;
 
 namespace TransportRegister.Server.Repositories.Implementations
 {
@@ -43,6 +46,52 @@ namespace TransportRegister.Server.Repositories.Implementations
                 .ToListAsync();
         }
 
+        public async Task<Tuple<List<PersonSimpleListDto>,List<DriverSimpleListDto>>> GetAllPersons()
+        {
+            var query = from person in _context.Persons
+                        join driver in _context.Drivers
+                        on person.PersonId equals driver.PersonId into driverJoin
+                        from driverData in driverJoin.DefaultIfEmpty()
+                        select new
+                        {
+                            Person = person,
+                            Driver = driverData,
+                            DriverLicenses = driverData != null ? driverData.Licenses : null,
+                        };
+
+            var personDtos = new List<PersonSimpleListDto>();
+            var driverDtos = new List<DriverSimpleListDto>();
+
+            foreach (var tuple in await query.ToListAsync())
+            {
+                if (tuple.Driver != null)
+                {
+                    var driverDto = new DriverSimpleListDto
+                    {
+                        DriversLicenseNumber = tuple.Driver.DriversLicenseNumber,
+                        PersonId = tuple.Person.PersonId,
+                        FirstName = tuple.Person.FirstName,
+                        LastName = tuple.Person.LastName,
+                        BirthNumber = tuple.Person.BirthNumber,
+                    };
+                    driverDtos.Add(driverDto);
+                }
+                else 
+                {
+                    var personDto = new PersonSimpleListDto
+                    {
+                        PersonId = tuple.Person.PersonId,
+                        FirstName = tuple.Person.FirstName,
+                        LastName = tuple.Person.LastName,
+                        BirthNumber = tuple.Person.BirthNumber,
+                    // Add other common properties here
+                    };
+                    personDtos.Add(personDto); 
+                }
+
+            }
+            return Tuple.Create(personDtos, driverDtos);
+        }
 
 
         public async Task<Person> GetPersonByIdAsync(int personId)
