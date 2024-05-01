@@ -1,19 +1,19 @@
 ﻿import IAddress from "./IAddress";
 import IDriversLicense from "./IDriversLicense";
-import { IVehicleDetail } from "./IVehicleDetail";
+import IVehicleListItem from "./IVehicleListItem";
 
 export interface IPerson {
   personId: number;
   firstName: string;
   lastName: string;
   birthNumber: string;
-  sexMale: boolean;
+  sex_Male: boolean;
   dateOfBirth: Date;
   address: IAddress;
   imageBase64: string;
   officialId: string;
   personType: string;
-  vehicles: IVehicleDetail[];
+  vehicles: IVehicleListItem[];
 }
 
 export interface IDriver extends IPerson {
