@@ -27,7 +27,24 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
 
                 Owner owner => new OwnerDto
                 {
-                    Vehicles = owner.Vehicles.Select(v => VehicleDtoTransformer.TransformToDto(v)),
+                    Vehicles = owner.Vehicles.Select(v =>
+                        new VehicleListItemDto
+                        {
+                            Id = v.VehicleId,
+                            VIN = v.VIN,
+                            VehicleType = v.GetType().Name,
+                            LicensePlate = v.LicensePlates
+                                .OrderByDescending(lp => lp.ChangedOn)
+                                .Select(lp => lp.LicensePlate)
+                                .FirstOrDefault(),
+                            Manufacturer = v.Manufacturer,
+                            Model = v.Model,
+                            Color = v.Color,
+                            ManufacturedYear = v.ManufacturedYear,
+                            OwnerId = v.OwnerId,
+                            OwnerFullName = v.Owner.FirstName + " " + v.Owner.LastName,
+                        }
+                    ),
                 },
                 _ => null
             };
