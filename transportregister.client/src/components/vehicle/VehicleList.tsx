@@ -1,7 +1,8 @@
 ﻿import React, { Component } from 'react';
-import { Col, Row } from 'reactstrap';
+import { Button, Col, Row } from 'reactstrap';
 import IDtFetchData from '../interfaces/datatables/IDtFetchData';
 import VehicleDatatable from './VehicleDatatable';
+import { Link } from 'react-router-dom';
 
 // todo change to search later
 export class VehicleList extends Component<object> {
@@ -18,10 +19,12 @@ export class VehicleList extends Component<object> {
             <h4>Vozidla</h4>
           </Col>
           <Col className="d-flex justify-content-end">
-            {/*<CreateVehicleModal />*/}
+            <Button tag={Link} to='/vehicle/create' color="success">
+              + Vytvořit vozidlo
+            </Button>
           </Col>
         </Row>
-        <VehicleDatatable fetchDataRef={this.fetchDataRef} />
+        <VehicleDatatable fetchDataRef={this.fetchDataRef} autoFetch={true} />
       </>
     );
   }
