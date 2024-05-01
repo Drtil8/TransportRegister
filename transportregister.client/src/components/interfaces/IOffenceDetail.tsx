@@ -1,5 +1,7 @@
 ﻿import IFineDetail from "./IFineDetail";
-import IVehicleListItem from "./IVehicleListItem";
+import IPersonSimple from "./IPersonSimple";
+import IUserSimple from "./IUserSimple";
+import IVehicleSimple from "./IVehicleSimple";
 
 interface IOffenceDetail {
   offenceId: number;
@@ -9,7 +11,10 @@ interface IOffenceDetail {
   isValid: boolean;
   isApproved: boolean;
   description: string;
-  vehicle: IVehicleListItem | null; // todo
+  vehicle: IVehicleSimple | null; // todo
+  person: IPersonSimple;
+  officer: IUserSimple;
+  official: IUserSimple | null;
   penaltyPoints: number;
   fine: IFineDetail | null;
   //photos: string[]; // todo

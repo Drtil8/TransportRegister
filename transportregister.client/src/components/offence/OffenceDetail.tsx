@@ -4,9 +4,11 @@ import IOffenceDetail from '../interfaces/IOffenceDetail';
 import { formatDate, formatDateTime } from '../../common/DateFormatter';
 //import LocationPicker from '../location/LocationPicker';
 import AuthContext from '../../auth/AuthContext';
-import EditIcon from '@mui/icons-material/Edit';
 import { IconButton } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
+import DetailIcon from '@mui/icons-material/VisibilityOutlined';
+import { Link } from 'react-router-dom';
 
 interface IOffenceDetailProps {
   offenceDetail: IOffenceDetail | null;
@@ -228,16 +230,6 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
                 </Row>
                 <Row>
                   <Col>
-                    <dt>Nahlášen</dt>
-                    <dd>{formatDateTime(offenceDetail.reportedOn)}</dd>
-                  </Col>
-                  <Col>
-                    <dt>Místo činu:</dt>
-                    <dd>adresa</dd>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
                     <dt>Typ přestupku:</dt>
                     <dd>{offenceDetail.type}</dd>
                   </Col>
@@ -250,6 +242,34 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
                       (
                         <dd>{offenceDetail.penaltyPoints}</dd>
                       )}
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <dt>Nahlášen</dt>
+                    <dd>{formatDateTime(offenceDetail.reportedOn)}</dd>
+                  </Col>
+                  <Col>
+                    <dt>
+                      Nahlásil:
+                    </dt>
+                    <dd>
+                      <Link to={`/user/${offenceDetail.officer.id}`}>
+                        {offenceDetail.officer.fullName}
+                      </Link>
+                    </dd>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <dt>Místo činu:</dt>
+                    <dd>adresa</dd>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <dt>Fotky z místa činu:</dt>
+                    <dd>TODO - galerie</dd>
                   </Col>
                 </Row>
                 {offenceDetail.fine !== null && (
@@ -304,31 +324,49 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
             <Row>
               <hr />
               <Col>
-                <h4>Osoba</h4>
                 <Row>
                   <Col>
-                    <dt>Jméno</dt>
-                    <dd>TODO</dd>
+                    <h4>Osoba</h4>
                   </Col>
                   <Col>
-                    <dt>Příjmení</dt>
-                    <dd>TODO</dd>
+                    <Link to={`/driver/${offenceDetail.person.personId}`}>
+                      <DetailIcon />
+                    </Link>
                   </Col>
                 </Row>
                 <Row>
+                  <Col>
+                    <dt>Celé jméno</dt>
+                    <dd>{offenceDetail.person.fullName}</dd>
+                  </Col>
                   <Col>
                     <dt>Rodné číslo</dt>
-                    <dd>TODO</dd>
-                  </Col>
-                  <Col>
-                    <dt>todo</dt>
-                    <dd>TODO</dd>
+                    <dd>{offenceDetail.person.birthNumber}</dd>
                   </Col>
                 </Row>
+                {/*<Row>*/}
+                {/*  <Col>*/}
+                {/*    <dt>todo</dt>*/}
+                {/*    <dd>TODO</dd>*/}
+                {/*  </Col>*/}
+                {/*  <Col>*/}
+                {/*    <dt>todo</dt>*/}
+                {/*    <dd>TODO</dd>*/}
+                {/*  </Col>*/}
+                {/*</Row>*/}
               </Col>
               {offenceDetail.vehicle && (
                 <Col>
-                  <h4>Vozidlo</h4>
+                  <Row>
+                    <Col>
+                      <h4>Vozidlo</h4>
+                    </Col>
+                    <Col>
+                      <Link to={`/vehicle/${offenceDetail.vehicle.vehicleId}`}>
+                        <DetailIcon />
+                      </Link>
+                    </Col>
+                  </Row>
                   <Row>
                     <Col>
                       <dt>VIN</dt>
@@ -352,7 +390,7 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
                 </Col>
               )}
             </Row>
-            {this.state.showButtons && (
+            {this.state.showButtons ? (
               <Row className="mt-4">
                 <hr />
                 <Col className="rightSide pe-0">
@@ -360,11 +398,20 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
                   <Button color="danger" className="me-0" onClick={this.handleDecline}>Zamítnout</Button>
                 </Col>
               </Row>
-            )}
+            )
+              :
+              (
+                <Row className="mt-4">
+                  <hr />
+                  <Col className="pe-0">
+                    <dt className="mb-1">Zpracoval:</dt>
+                    <Link to={`/user/${offenceDetail.official?.id}`}>
+                      <dd>{offenceDetail.official?.fullName}</dd>
+                    </Link>
+                  </Col>
+                </Row>
+              )}
           </Col>
-          {/*<Col>*/}
-          {/*  panel operací*/}
-          {/*</Col>*/}
         </Row>
       );
 
