@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace TransportRegister.Server.DTOs.PersonDTOs
 {
-    [JsonConverter(typeof(PersonDtoConverter))]
+    //[JsonConverter(typeof(PersonDtoConverter))]
     public class PersonDto
     {
         public int PersonId { get; set; }
@@ -36,8 +36,8 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
         public IEnumerable<DriversLicenseDto> Licenses { get; set; } // Licenses DTo
     }
 
-    public class OwnerDto : PersonDto
-    {
-    }
+    //public class OwnerDto : PersonDto
+    //{
+    //}
 }
 

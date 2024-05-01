@@ -14,6 +14,11 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
             if (person == null)
                 return null;
 
+
+            //if(person is Driver)
+            //{
+
+            //}
             PersonDto personDto = person switch
             {
                 Driver driver => new DriverDto
@@ -24,25 +29,6 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
                     LastCrimeCommited = driver.LastCrimeCommited,
                     DrivingSuspendedUntil = driver.DrivingSuspendedUntil,
                     Licenses = driver.Licenses.Select(l => DriversLicenseDtoTransformer.TransformToDto(l)),
-                },
-                Owner owner => new OwnerDto
-                {
-                    Vehicles = owner.Vehicles.Select(v =>
-                        new VehicleListItemDto
-                        {
-                            Id = v.VehicleId,
-                            VIN = v.VIN,
-                            VehicleType = v.GetType().Name,
-                            LicensePlate = v.LicensePlates
-                                .OrderByDescending(lp => lp.ChangedOn)
-                                .Select(lp => lp.LicensePlate)
-                                .FirstOrDefault(),
-                            Manufacturer = v.Manufacturer,
-                            Model = v.Model,
-                            Color = v.Color,
-                            ManufacturedYear = v.ManufacturedYear,
-                        }
-                    ),
                 },
                 _ => null
             };
@@ -58,6 +44,22 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
                 personDto.ImageBase64 = person.Image != null ? Convert.ToBase64String(person.Image) : null;
                 personDto.OfficialId = person.OfficialId;
                 personDto.PersonType = person.GetType().Name;
+                personDto.Vehicles = person.Vehicles
+                    .Select(v =>
+                    new VehicleListItemDto
+                    {
+                        Id = v.VehicleId,
+                        VIN = v.VIN,
+                        VehicleType = v.GetType().Name,
+                        LicensePlate = v.LicensePlates
+                                        .OrderByDescending(lp => lp.ChangedOn)
+                                        .Select(lp => lp.LicensePlate)
+                                        .FirstOrDefault(),
+                        Manufacturer = v.Manufacturer,
+                        Model = v.Model,
+                        Color = v.Color,
+                        ManufacturedYear = v.ManufacturedYear,
+                    });
             };
             return personDto;
         }
@@ -86,14 +88,6 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
                     FirstName = driverDto.FirstName,
                     LastName = driverDto.LastName,
                     BirthNumber = driverDto.BirthNumber,
-                },
-                OwnerDto ownerDto => new Owner
-                {
-                    Address = TransformToEntity(ownerDto.AddressDto),
-                    PersonId = ownerDto.PersonId,
-                    FirstName = ownerDto.FirstName,
-                    LastName = ownerDto.LastName,
-                    BirthNumber = ownerDto.BirthNumber,
                 },
                 _ => null
             };
