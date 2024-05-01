@@ -89,7 +89,7 @@ namespace TransportRegister.Server.Controllers
                 return BadRequest("Invalid vehicle data.");
             }
 
-            vehicle.Owner = await _personRepository.GetOwnerByVINAsync(vehicle.VIN);
+            vehicle.Owner = await _personRepository.GetPersonByIdAsync(vehicleDto.OwnerId);
             if (vehicle.Owner is null)
                 return BadRequest("Owner not found.");
 

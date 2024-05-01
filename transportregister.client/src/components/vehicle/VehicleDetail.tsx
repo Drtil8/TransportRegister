@@ -88,23 +88,31 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
               <Row>
                 <dl>
                   <Row>
+                    {vehicleDetail.imageBase64 && (
+                      <Col xs="6">
+                        <img
+                          src={`${vehicleDetail.imageBase64}`}
+                          alt="Vozidlo"
+                          className="vehicleImage" />
+                      </Col>
+                    )}
                     <Col>
-                      <dt>VIN:</dt>
-                      <dd>{vehicleDetail.vin}</dd>
-                    </Col>
-                    <Col>
-                      <dt>SPZ:</dt>
-                      <dd>{vehicleDetail.currentLicensePlate}</dd>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <dt>Model:</dt>
-                      <dd>{`${vehicleDetail.manufacturer} ${vehicleDetail.model}, ${vehicleDetail.manufacturedYear}`}</dd>
-                    </Col>
-                    <Col>
-                      <dt>Barva:</dt>
-                      <dd>{vehicleDetail.color}</dd>
+                      <Row className="mb-3">
+                        <dt>VIN:</dt>
+                        <dd>{vehicleDetail.vin}</dd>
+                      </Row>
+                      <Row className="mb-3">
+                        <dt>SPZ:</dt>
+                        <dd>{vehicleDetail.currentLicensePlate}</dd>
+                      </Row>
+                      <Row className="mb-3">
+                        <dt>Model:</dt>
+                        <dd>{`${vehicleDetail.manufacturer} ${vehicleDetail.model}, ${vehicleDetail.manufacturedYear}`}</dd>
+                      </Row>
+                      <Row className="mb-3">
+                        <dt>Barva:</dt>
+                        <dd>{vehicleDetail.color}</dd>
+                      </Row>
                     </Col>
                   </Row>
 
@@ -148,16 +156,6 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
                     )}
                     {/*{vehicleDetail.vehicleType === 'Truck' && (*/}
                     {/*)}*/}
-
-                    {vehicleDetail.imageBase64 && (
-                      <Col xs="8">
-                        <dt>Fotka vozidla:</dt>
-                        <img
-                          src={`${vehicleDetail.imageBase64}`}
-                          alt="Vozidlo"
-                          className="vehicleImage" />
-                      </Col>
-                    )}
                   </Row>
                 </dl>
               </Row>

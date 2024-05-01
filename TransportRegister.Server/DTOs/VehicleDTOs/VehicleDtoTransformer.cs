@@ -87,9 +87,23 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
                 vehicle.Width_CM = dto.WidthCM;
                 vehicle.Height_CM = dto.HeightCM;
                 vehicle.LoadCapacity_KG = dto.LoadCapacityKG;
-                vehicle.Image = !string.IsNullOrEmpty(dto.ImageBase64) ? Convert.FromBase64String(dto.ImageBase64) : null;
                 vehicle.OwnerId = dto.OwnerId;
                 vehicle.OfficialId = dto.OfficialId;
+                if (!string.IsNullOrEmpty(dto.ImageBase64))
+                {
+                    try
+                    {
+                        vehicle.Image = Convert.FromBase64String(dto.ImageBase64);
+                    }
+                    catch (Exception)
+                    {
+                        vehicle.Image = null;
+                    }
+                }
+                else
+                {
+                    vehicle.Image = null;
+                }
             }
             return vehicle;
         }

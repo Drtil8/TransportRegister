@@ -82,8 +82,8 @@ export class VehicleEdit extends Component<object | IVehicleDetailProps> {
 
   handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files && event.target.files[0];
-    if (!file) return;
-
+    if (!file)
+      return;
     const reader = new FileReader();
     reader.onloadend = () => {
       const { vehicleDetail } = this.state as IVehicleDetailProps;
