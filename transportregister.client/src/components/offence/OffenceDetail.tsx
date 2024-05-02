@@ -269,12 +269,14 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
                     <dd>adresa</dd>
                   </Col>
                 </Row>
-                <Row>
-                  <Col>
-                    <dt>Fotky z místa činu:</dt>
-                    <ImageGallery images={offenceDetail.offencePhotos64}></ImageGallery>
-                  </Col>
-                </Row>
+                {offenceDetail.offencePhotos64 && offenceDetail.offencePhotos64.length > 0 && (
+                  <Row>
+                    <Col>
+                      <dt>Fotky z místa činu:</dt>
+                      <ImageGallery images={offenceDetail.offencePhotos64}></ImageGallery>
+                    </Col>
+                  </Row>
+                )}
                 {offenceDetail.fine !== null && (
                   <div>
                     <hr />
@@ -408,9 +410,13 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
                   <hr />
                   <Col className="pe-0">
                     <dt className="mb-1">Zpracoval:</dt>
-                    <Link to={`/user/${offenceDetail.official?.id}`}>
-                      <dd>{offenceDetail.official?.fullName}</dd>
-                    </Link>
+                    {offenceDetail.official ?
+                      <Link to={`/user/${offenceDetail.official?.id}`}>
+                        <dd>{offenceDetail.official?.fullName}</dd>
+                      </Link>
+                      :
+                      <dd>Systém</dd>
+                    }
                   </Col>
                 </Row>
               )}

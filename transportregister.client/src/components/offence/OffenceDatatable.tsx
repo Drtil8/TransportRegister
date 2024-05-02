@@ -19,7 +19,6 @@ import { useNavigate } from 'react-router-dom';
 export const OffenceDatatable: React.FC<{
   fetchUrl: string,
   fetchDataRef: React.MutableRefObject<IDtFetchData | null>,
-  // TODO ->prop for showing if its valid/approved or not -> boolean
 }> = ({ fetchUrl, fetchDataRef }) => {
   const authContext = useContext(AuthContext);
   const navigate = useNavigate();
@@ -161,7 +160,7 @@ export const OffenceDatatable: React.FC<{
     renderRowActions: ({ row }) =>
     (
       <Box sx={{ display: 'flex', gap: '1rem' }}>
-        <Tooltip title="Zobrazit detail projektu">
+        <Tooltip title="Zobrazit detail přestupku">
           <IconButton onClick={() => goTo(row.original.offenceId)}>
             <DetailIcon />
           </IconButton>
