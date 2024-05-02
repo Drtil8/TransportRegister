@@ -26,7 +26,7 @@ const DriverCreateModal: React.FC<DriverCreateModalProps> = ({ person }) => {
     }
 
     try {
-      const urlString: string= "/api/DriverCreate/" + person.personId;
+      const urlString: string = "/api/Persons/" + person.personId + "/SetToDriver";
       const response = await fetch(urlString, {
         method: "POST",
         headers: {
@@ -34,13 +34,16 @@ const DriverCreateModal: React.FC<DriverCreateModalProps> = ({ person }) => {
         },
         body: JSON.stringify({
           personId: person.personId,
-          licenses: formData.licensesStrings,
           driversLicenseNumber: formData.driversLicenseNumber,
+          licenses: formData.licensesStrings,
         }),
       });
 
       if (!response.ok) {
         console.error("Něco se nepovedlo.");
+      }
+      else {
+        console.log('ok');
       }
     }
     catch (error) {
