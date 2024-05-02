@@ -77,6 +77,7 @@ namespace TransportRegister.Server.Controllers
             return Ok(vehicleDto);
         }
 
+        [Authorize(Roles = "Official")]
         [HttpPost("SaveVehicle")]
         public async Task<ActionResult<VehicleDetailDto>> SaveVehicle([FromBody] VehicleDetailDto vehicleDto)
         {
