@@ -88,7 +88,9 @@ namespace TransportRegister.Server.Controllers
             person.OfficialId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             await _personRepository.AddDriverAsync(person.PersonId, license);
 
-            return await PostDriversLicense(personId, licenseTypes);
+            var driver = _personRepository.GetDriverAsync(license).Result;
+
+            return await PostDriversLicense(driver.PersonId, licenseTypes);
 
  
         }
