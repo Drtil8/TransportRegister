@@ -40,11 +40,6 @@ const AppRoutes = [
     isProtected: true
   },
   {
-    path: '/vehicle/edit/:id',
-    element: <VehicleEdit />,
-    isProtected: true
-  },
-  {
     path: '/vehicle/:id',
     element: <VehicleDetail />,
     isProtected: true
@@ -62,11 +57,6 @@ const AppRoutes = [
   {
     path: '/vehicle/create',
     element: <VehicleCreate />,
-    isProtected: true
-  },
-  {
-    path: '/offenceCreate',
-    element: <OffenceCreate />,
     isProtected: true
   },
   {

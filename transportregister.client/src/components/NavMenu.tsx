@@ -98,73 +98,70 @@ export class NavMenu extends Component<object, NavMenuState> {
                 </ul>
               </Collapse>
             )}
-          {(this.context.isLoggedIn && !this.context.isAdmin) && 
+          {(this.context.isLoggedIn && !this.context.isAdmin) &&
             (
-            <Collapse className="d-sm-inline-flex navbarDropdownBar" isOpen={!this.state.collapsed} navbar>
-              <ul className="navbar-nav">
-                <Dropdown isOpen={this.state.driverDropOpen} toggle={this.toggleDriverDropdown} >
-                  <DropdownToggle nav caret>
-                    Řidiči
-                  </DropdownToggle>
-                  <DropdownMenu>
-                    <DropdownItem header>Řidiči</DropdownItem>
-                    <DropdownItem tag={Link} to="/driverSearch">Vyhledat</DropdownItem>
-                    <DropdownItem tag={Link} to="/driverCreate">Zaregistrovat</DropdownItem>
-                    <DropdownItem>?Zobrazit včechny</DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
+              <Collapse className="d-sm-inline-flex navbarDropdownBar" isOpen={!this.state.collapsed} navbar>
+                <ul className="navbar-nav">
+                  <Dropdown isOpen={this.state.driverDropOpen} toggle={this.toggleDriverDropdown} >
+                    <DropdownToggle nav caret>
+                      Řidiči
+                    </DropdownToggle>
+                    <DropdownMenu>
+                      <DropdownItem header>Řidiči</DropdownItem>
+                      <DropdownItem tag={Link} to="/driverSearch">Vyhledat</DropdownItem>
+                      {/*<DropdownItem>?Zobrazit včechny</DropdownItem>*/}
+                    </DropdownMenu>
+                  </Dropdown>
 
-                <Dropdown isOpen={this.state.vehicleDropOpen} toggle={this.toggleVehicleDropdown}>
-                  <DropdownToggle nav caret>
-                    Vozidla
-                  </DropdownToggle>
-                  <DropdownMenu>
-                    <DropdownItem header>Vozidla</DropdownItem>
-                    <DropdownItem tag={Link} to="/vehicle/search">Vyhledat</DropdownItem>
-                    <DropdownItem tag={Link} to="/vehicle/create">-Úředník - Registrovat</DropdownItem>
-                    <DropdownItem>?Zobrazit včechny</DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
+                  <Dropdown isOpen={this.state.vehicleDropOpen} toggle={this.toggleVehicleDropdown}>
+                    <DropdownToggle nav caret>
+                      Vozidla
+                    </DropdownToggle>
+                    <DropdownMenu>
+                      <DropdownItem header>Vozidla</DropdownItem>
+                      <DropdownItem tag={Link} to="/vehicle/search">Vyhledat</DropdownItem>
+                      <DropdownItem tag={Link} to="/">Zobrazit včechny</DropdownItem>
+                      {this.context.isOfficial && (
+                        <DropdownItem tag={Link} to="/vehicle/create">Registrovat vozidlo</DropdownItem>
+                      )}
+                    </DropdownMenu>
+                  </Dropdown>
 
-                <Dropdown isOpen={this.state.offenceDropOpen} toggle={this.toggleOffenceDropdown}>
-                  <DropdownToggle nav caret>
-                    Přestupky
-                  </DropdownToggle>
-                  <DropdownMenu>
-                    <DropdownItem header>Přestupky</DropdownItem>
-                    <DropdownItem tag={Link} to="/offenceCreate">-Policista - registrovat - zrušit</DropdownItem>
-                    <DropdownItem tag={Link} to="/offencePending">Zobrazit nevyřešené</DropdownItem>
-                    <DropdownItem tag={Link} to="/offenceAll">Zobrazit včechny</DropdownItem>
-                    {/*<DropdownItem>?Vyhledat (asi ne, spíš sobrazit u řidiče TODO)</DropdownItem>*/}
-                  </DropdownMenu>
-                </Dropdown>
+                  <Dropdown isOpen={this.state.offenceDropOpen} toggle={this.toggleOffenceDropdown}>
+                    <DropdownToggle nav caret>
+                      Přestupky
+                    </DropdownToggle>
+                    <DropdownMenu>
+                      <DropdownItem header>Přestupky</DropdownItem>
+                      <DropdownItem tag={Link} to="/offencePending">Zobrazit nevyřešené</DropdownItem>
+                      <DropdownItem tag={Link} to="/offenceAll">Zobrazit včechny</DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
 
-                <Dropdown isOpen={this.state.theftDropOpen} toggle={this.toggleTheftDropdown}>
-                  <DropdownToggle nav caret>
-                    Kradená vozidla
-                  </DropdownToggle>
-                  <DropdownMenu>
-                    <DropdownItem header>Kradená vozidla</DropdownItem>
-                    <DropdownItem tag={Link} to="/theftsActive">Aktuální krádeže</DropdownItem>
-                    <DropdownItem tag={Link} to="/thefts">Všechny krádeže</DropdownItem>
-                    {/*<DropdownItem>?Vyhledat</DropdownItem>*/}
-                    {/*<DropdownItem>?Listina/zobrazit vše (v zadání ano, ale má smysl?)</DropdownItem>*/}
-                  </DropdownMenu>
-                </Dropdown>
-              </ul>
+                  <Dropdown isOpen={this.state.theftDropOpen} toggle={this.toggleTheftDropdown}>
+                    <DropdownToggle nav caret>
+                      Kradená vozidla
+                    </DropdownToggle>
+                    <DropdownMenu>
+                      <DropdownItem header>Kradená vozidla</DropdownItem>
+                      <DropdownItem tag={Link} to="/theftsActive">Aktuální krádeže</DropdownItem>
+                      <DropdownItem tag={Link} to="/thefts">Všechny krádeže</DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
+                </ul>
 
-              <ul className="navbar-nav ms-auto">
-                <Dropdown isOpen={this.state.userDropOpen} toggle={this.toggleUserDropdown}>
-                  <DropdownToggle nav caret>
-                    Přihlášen jako: {this.context.email}
-                  </DropdownToggle>
-                  <DropdownMenu>
-                    <DropdownItem tag={Link} onClick={this.context.logout}>Odhlásit se</DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
-              </ul>
-            </Collapse>
-          )}
+                <ul className="navbar-nav ms-auto">
+                  <Dropdown isOpen={this.state.userDropOpen} toggle={this.toggleUserDropdown}>
+                    <DropdownToggle nav caret>
+                      Přihlášen jako: {this.context.email}
+                    </DropdownToggle>
+                    <DropdownMenu>
+                      <DropdownItem tag={Link} onClick={this.context.logout}>Odhlásit se</DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
+                </ul>
+              </Collapse>
+            )}
         </Navbar>
       </header>
     );
