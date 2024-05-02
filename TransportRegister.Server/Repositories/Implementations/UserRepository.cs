@@ -13,20 +13,32 @@ namespace TransportRegister.Server.Repositories.Implementations
         private readonly UserManager<User> _userManager = userManager;
 
         public async Task<UserDetailDto> GetUserByIdAsync(string userId)
-        {
-            //var user = await _context.Users
-            //    .FirstOrDefaultAsync(u => u.PersonId == userId);
+        { 
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Id == userId);
 
-            //return user == null ? null : new UserDetailDto
-            //{
-            //    UserId = user.PersonId,
-            //    Email = user.Email,
-            //    FirstName = user.FirstName,
-            //    LastName = user.LastName,
-            //    PhoneNumber = user.PhoneNumber,
-            //    Role = user.Role
-            //};
-            return null; // TODO
+            if (user == null)
+            {
+                return null;
+            }
+
+            var userDto = new UserDetailDto
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Role = UserRepository.GetUserRole(user.UserType),
+                IsValid = user.IsValid
+            };
+
+            if (user is Officer officer)
+            {
+                userDto.PersonalId = officer.PersonalId;
+                userDto.Rank = officer.Rank;
+            }
+
+            return userDto;
         }
 
         public async Task<UserDetailDto> GetUserByEmailAsync(string email)

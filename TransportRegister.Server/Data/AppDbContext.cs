@@ -8,7 +8,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
 {
     public DbSet<Vehicle> Vehicles { get; set; }
     public DbSet<Person> Persons { get; set; }
-    public DbSet<Owner> Owners { get; set; }
+    //public DbSet<Owner> Owners { get; set; }
     public DbSet<Driver> Drivers { get; set; }
     public DbSet<DriversLicense> DriversLicenses { get; set; }
     public DbSet<Fine> Fines { get; set; }
@@ -18,22 +18,18 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
     public DbSet<Official> Officials { get; set; }
     public DbSet<Officer> Officers { get; set; }
     public DbSet<OffenceType> OffenceTypes { get; set; }
+    public DbSet<OffencePhoto> OffencePhotos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<Person>(entity =>
-        {
-            entity.ToTable("Persons");
-            entity.HasDiscriminator<string>("PersonType")
-                .HasValue<Person>("Person")
-                .HasValue<Driver>("Driver")
-                .HasValue<Owner>("Owner");
-        });
+        // Person
+        modelBuilder.Entity<Person>().ToTable("Persons");
+        modelBuilder.Entity<Driver>().ToTable("Drivers");
 
         // Owner
-        modelBuilder.Entity<Owner>()
+        modelBuilder.Entity<Person>()
             .HasMany(o => o.Vehicles)
             .WithOne(v => v.Owner)
             .HasForeignKey(v => v.OwnerId);
@@ -132,6 +128,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
             .HasMany(t => t.ReportedThefts)
             .WithOne(p => p.ReportedByPerson)
             .HasForeignKey(i => i.ReportingPersonId);
+
+        //modelBuilder.Entity<Offence>()
+        //    .HasMany(Offence => Offence.Photos)
+        //    .WithOne(OffencePhoto => OffencePhoto.Offence)
+        //    .HasForeignKey(OffencePhoto => OffencePhoto.OffenceId);
 
         // Offence
         //modelBuilder.Entity<Offence>()

@@ -145,10 +145,10 @@ export class NavMenu extends Component<object, NavMenuState> {
                   </DropdownToggle>
                   <DropdownMenu>
                     <DropdownItem header>Kradená vozidla</DropdownItem>
-                    <DropdownItem tag={Link} to="/theftCreate">Evidovat krádež</DropdownItem>
-                    <DropdownItem tag={Link} to="/theftFound">-Policista - nahlásit nález</DropdownItem>
-                    <DropdownItem>?Vyhledat</DropdownItem>
-                    <DropdownItem>?Listina/zobrazit vše (v zadání ano, ale má smysl?)</DropdownItem>
+                    <DropdownItem tag={Link} to="/theftsActive">Aktuální krádeže</DropdownItem>
+                    <DropdownItem tag={Link} to="/thefts">Všechny krádeže</DropdownItem>
+                    {/*<DropdownItem>?Vyhledat</DropdownItem>*/}
+                    {/*<DropdownItem>?Listina/zobrazit vše (v zadání ano, ale má smysl?)</DropdownItem>*/}
                   </DropdownMenu>
                 </Dropdown>
               </ul>

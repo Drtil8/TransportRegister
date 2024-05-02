@@ -61,6 +61,12 @@ namespace TransportRegister.Server.Seeds
                     Name = "Nedání přednosti v jízdě",
                     PenaltyPoints = 4,
                     FineAmount = 2500
+                },
+                new()
+                {
+                    Name = "Parkování",
+                    PenaltyPoints = 0,
+                    FineAmount = 500
                 }
             };
 

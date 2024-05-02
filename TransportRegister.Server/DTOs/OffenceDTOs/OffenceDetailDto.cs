@@ -1,4 +1,6 @@
 ﻿using TransportRegister.Server.DTOs.FineDTOs;
+using TransportRegister.Server.DTOs.PersonDTOs;
+using TransportRegister.Server.DTOs.UserDTOs;
 using TransportRegister.Server.DTOs.VehicleDTOs;
 
 namespace TransportRegister.Server.DTOs.OffenceDTOs
@@ -16,12 +18,13 @@ namespace TransportRegister.Server.DTOs.OffenceDTOs
         public bool IsValid { get; set; }
         public bool IsApproved { get; set; }
         public string Description { get; set; }
-        public VehicleListItemDto Vehicle { get; set; } // TODO -> mby do smaller dto when vehicle is just used for display
-        //TODO -> add personDto
-        // TODO -> officerDto
-        // TODO -> officialDto ??
+        public VehicleSimpleDto Vehicle { get; set; }
+        public PersonSimpleDto Person { get; set; }
+        public UserSimpleDto Officer { get; set; }
+        public UserSimpleDto Official { get; set; }
         public int PenaltyPoints { get; set; }
         public FineDetailDto Fine { get; set; }
         public bool IsResponsibleOfficial { get; set; }
+        public ICollection<string> OffencePhotos64 { get; set; } = new List<string>();
     }
 }

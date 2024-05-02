@@ -1,8 +1,8 @@
-﻿import IPersonDetail from "./IPersonDetail";
+﻿//import { IPersonDetail } from "./IPersonDetail";
 import IVehicleListItem from "./IVehicleListItem";
 
 interface IDriverDetail {
-  person: IPersonDetail;
+  person: any;
   driversLicenseNumber: string;
   badPoints: number;
   hasSuspendedLicense: boolean;

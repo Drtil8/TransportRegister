@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TransportRegister.Server.Models
 {
-    public abstract class Person
+    public class Person
     {
         public int PersonId { get; set; }
         [Required]
@@ -15,11 +15,13 @@ namespace TransportRegister.Server.Models
         public DateOnly DateOfBirth { get; set; }
         public Address Address { get; set; }
         public byte[] Image { get; set; }
+        public string PersonType { get; set; }
 
         public string OfficialId { get; set; }
         public Official AddedByOfficial { get; set; }
         public ICollection<Offence> CommitedOffences { get; set; }
         public ICollection<Theft> ReportedThefts { get; set; }
+        public ICollection<Vehicle> Vehicles { get; set; }
 
     }
 
@@ -34,10 +36,5 @@ namespace TransportRegister.Server.Models
         public DateTime? DrivingSuspendedUntil { get; set; }
 
         public ICollection<DriversLicense> Licenses { get; set; }
-    }
-
-    public class Owner : Person
-    {
-        public ICollection<Vehicle> Vehicles { get; set; }
     }
 }

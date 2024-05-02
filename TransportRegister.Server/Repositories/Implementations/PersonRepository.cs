@@ -1,6 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TransportRegister.Server.Data;
 using TransportRegister.Server.Models;
+using TransportRegister.Server.DTOs.DriversLicenseDTOs;
+using TransportRegister.Server.DTOs.PersonDTOs;
+using System;
+using TransportRegister.Server.DTOs.VehicleDTOs;
+using TransportRegister.Server.DTOs.DatatableDTOs;
+using System.Security.Permissions;
 
 namespace TransportRegister.Server.Repositories.Implementations
 {
@@ -13,9 +19,89 @@ namespace TransportRegister.Server.Repositories.Implementations
             _context = context;
         }
 
-        public async Task<Person> GetPersonByIdAsync(int personId)
+        public async Task<List<Theft>> GetPersonReportedTheftsByIdAsync(int personId)
         {
             var person = await _context.Persons.FirstOrDefaultAsync(v => v.PersonId == personId);
+            if (person is null)
+            {
+                return null;
+            }
+
+            return await _context.Thefts
+                .Include(t => t.StolenVehicle)
+                    .ThenInclude(vehicle => vehicle.LicensePlates)
+                .Where(t => t.ReportingPersonId == personId)
+                .ToListAsync();
+        }
+        public async Task<List<Offence>> GetPersonCommitedOffencesByIdAsync(int personId)
+        {
+            var person = await _context.Persons.FirstOrDefaultAsync(v => v.PersonId == personId);
+            if (person is null)
+            {
+                return null;
+            }
+
+            return await _context.Offences
+                .Include(o => o.Fine)
+                .Include(o => o.OffenceType)
+                .Where(o => o.PersonId == personId)
+                .ToListAsync();
+        }
+
+        public async Task<Tuple<List<PersonSimpleListDto>,List<DriverSimpleListDto>>> GetAllPersons()
+        {
+            var query = from person in _context.Persons
+                        join driver in _context.Drivers
+                        on person.PersonId equals driver.PersonId into driverJoin
+                        from driverData in driverJoin.DefaultIfEmpty()
+                        select new
+                        {
+                            Person = person,
+                            Driver = driverData,
+                            DriverLicenses = driverData != null ? driverData.Licenses : null,
+                        };
+
+            var personDtos = new List<PersonSimpleListDto>();
+            var driverDtos = new List<DriverSimpleListDto>();
+
+            foreach (var tuple in await query.ToListAsync())
+            {
+                if (tuple.Driver != null)
+                {
+                    var driverDto = new DriverSimpleListDto
+                    {
+                        DriversLicenseNumber = tuple.Driver.DriversLicenseNumber,
+                        PersonId = tuple.Person.PersonId,
+                        FirstName = tuple.Person.FirstName,
+                        LastName = tuple.Person.LastName,
+                        BirthNumber = tuple.Person.BirthNumber,
+                    };
+                    driverDtos.Add(driverDto);
+                }
+                else 
+                {
+                    var personDto = new PersonSimpleListDto
+                    {
+                        PersonId = tuple.Person.PersonId,
+                        FirstName = tuple.Person.FirstName,
+                        LastName = tuple.Person.LastName,
+                        BirthNumber = tuple.Person.BirthNumber,
+                    // Add other common properties here
+                    };
+                    personDtos.Add(personDto); 
+                }
+
+            }
+            return Tuple.Create(personDtos, driverDtos);
+        }
+
+
+        public async Task<Person> GetPersonByIdAsync(int personId)
+        {
+            var person = await _context.Persons
+                            .Include(owner => owner.Vehicles)
+                            .ThenInclude(vehicle => vehicle.LicensePlates)
+                            .FirstOrDefaultAsync(v => v.PersonId == personId);
             if (person is null)
             {
                 return null;
@@ -25,16 +111,11 @@ namespace TransportRegister.Server.Repositories.Implementations
             {
                 return await _context.Drivers
                     .Include(v => v.Licenses)
-                    .FirstOrDefaultAsync(v => v.PersonId == personId);
-            }
-            else if (person.GetType() == typeof(Owner))
-            {
-                return await _context.Owners
                     .Include(owner => owner.Vehicles)
                         .ThenInclude(vehicle => vehicle.LicensePlates)
                     .FirstOrDefaultAsync(v => v.PersonId == personId);
             }
-            else return null;
+            else return person;
         }
         public async Task<Driver> GetDriverAsync(string licenseNumber)
         {
@@ -42,26 +123,34 @@ namespace TransportRegister.Server.Repositories.Implementations
 
                 .FirstOrDefaultAsync(v => v.DriversLicenseNumber == licenseNumber);
         }
-        public async Task<Owner> GetOwnerByVINAsync(string VIN_number)
+        public async Task<Person> GetOwnerByVINAsync(string VIN_number)
         {
-            return await _context.Owners
+            return await _context.Persons
                 .Include(o => o.Vehicles)
                 .FirstOrDefaultAsync(o => o.Vehicles.Any(v => v.VIN == VIN_number));
         }
 
-        public async Task SetOwnerAsync(Person owner)
+        public async Task<Person> GetPersonByBirthNumberAsync(string birthNumber)
         {
-            if (owner.PersonId == 0)
+            var person = await _context.Persons
+                                       .Include(owner => owner.Vehicles)
+                                       .ThenInclude(vehicle => vehicle.LicensePlates)
+                                       .FirstOrDefaultAsync(v => v.BirthNumber == birthNumber);
+            if (person is null)
             {
-                _context.Owners.Add(owner as Owner);
+                return null;
             }
-            else
-            {
-                _context.Owners.Update(owner as Owner);
-            }
-            await _context.SaveChangesAsync();
-        }
 
+            if (person.GetType() == typeof(Driver))
+            {
+                return await _context.Drivers
+                    .Include(v => v.Licenses)
+                    .Include(owner => owner.Vehicles)
+                        .ThenInclude(vehicle => vehicle.LicensePlates)
+                    .FirstOrDefaultAsync(v => v.BirthNumber == birthNumber);
+            }
+            else return person;
+        }
 
         public async Task SetDriverAsync(Person driver)
         {
@@ -71,7 +160,7 @@ namespace TransportRegister.Server.Repositories.Implementations
             }
             else
             {
-                _context.Drivers.Update(driver as Driver);
+                //driver.PersonType = "Driver";
             }
             await _context.SaveChangesAsync();
         }
@@ -84,6 +173,52 @@ namespace TransportRegister.Server.Repositories.Implementations
                 _context.Persons.Remove(person);
                 await _context.SaveChangesAsync();
             }
+        }
+        public async Task AddDriversLicense(int driverId, DriversLicenseCreateDto license)
+        {
+            Driver driver = await _context.Drivers
+                .Include(v => v.Licenses)
+                .FirstOrDefaultAsync(d => d.PersonId == driverId);
+            if (driver != null)
+            {
+                DriversLicense new_license = new DriversLicense
+                {
+                    DriversLicenseId = default,
+                    IssuedOn = license.IssuedOn,
+                    Description = license.Description,
+                    VehicleType = (VehicleType)Enum.Parse(typeof(VehicleType), license.VehicleType),
+                    DriverId = driverId,
+                };
+
+                driver.Licenses.Add(new_license);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task SavePersonAsync(Person person)
+        {
+            if (person.PersonId == default)
+            {
+                _context.Persons.Add(person);
+            }
+            else
+            {
+                _context.Persons.Update(person);
+            }
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task SaveDriverAsync(Driver driver)
+        {
+            if (driver.PersonId == default)
+            {
+                _context.Drivers.Add(driver);
+            }
+            else
+            {
+                _context.Drivers.Update(driver);
+            }
+            await _context.SaveChangesAsync();
         }
 
         public async Task<List<Tuple<Driver, int>>> GetDriversAndPoints()
@@ -98,5 +233,104 @@ namespace TransportRegister.Server.Repositories.Implementations
 
             return result;
         }
+
+
+        // Person search
+
+        private static IQueryable<PersonSimpleListDto> ApplySortingPersonSearch(
+    IQueryable<PersonSimpleListDto> query, DtParamsDto dtParams)
+        {
+            if (dtParams.Sorting.Any())
+            {
+                Sorting sorting = dtParams.Sorting.First();
+                return query.OrderByDescending(v => v.PersonId);
+            }
+            else
+            {
+                return query.OrderByDescending(v => v.PersonId);
+            }
+        }
+
+        private static IQueryable<PersonSimpleListDto> ApplyFilterPersonSearch(
+            IQueryable<PersonSimpleListDto> query, DtParamsDto dtParams)
+        {
+            foreach (var filter in dtParams.Filters)
+            {
+                // todo string properties can be filtered by Contains or StartsWith
+                query = filter.PropertyName switch
+                {
+                    nameof(PersonSimpleListDto.PersonId) =>
+                        query.Where(v => v.PersonId.ToString().StartsWith(filter.Value)), // numeric property
+                    nameof(PersonSimpleListDto.FirstName) =>
+                        query.Where(v => v.FirstName.StartsWith(filter.Value)),
+                    nameof(PersonSimpleListDto.LastName) =>
+                        query.Where(v => v.LastName.StartsWith(filter.Value)),
+                    nameof(PersonSimpleListDto.BirthNumber) =>
+                        query.Where(v => v.BirthNumber.StartsWith(filter.Value)),
+                    _ => query      // Default case - do not apply any filter    // Default case - do not apply any filter
+                };
+            }
+            return query;
+        }
+
+        // Driver Search
+        private static IQueryable<DriverSimpleListDto> ApplySortingDriverSearch(
+        IQueryable<DriverSimpleListDto> query, DtParamsDto dtParams)
+        {
+            if (dtParams.Sorting.Any())
+            {
+                Sorting sorting = dtParams.Sorting.First();
+                return query.OrderByDescending(v => v.PersonId);
+            }
+            else
+            {
+                return query.OrderByDescending(v => v.PersonId);
+            }
+        }
+
+        private static IQueryable<DriverSimpleListDto> ApplyFilterDriverSearch(
+            IQueryable<DriverSimpleListDto> query, DtParamsDto dtParams)
+        {
+            foreach (var filter in dtParams.Filters)
+            {
+                // todo string properties can be filtered by Contains or StartsWith
+                query = filter.PropertyName switch
+                {
+                    nameof(DriverSimpleListDto.PersonId) =>
+                        query.Where(v => v.PersonId.ToString().StartsWith(filter.Value)), // numeric property
+                    nameof(DriverSimpleListDto.DriversLicenseNumber) =>
+                        query.Where(v => v.DriversLicenseNumber.StartsWith(filter.Value)),
+                    nameof(DriverSimpleListDto.FirstName) =>
+                        query.Where(v => v.FirstName.StartsWith(filter.Value)),
+                    nameof(DriverSimpleListDto.LastName) =>
+                        query.Where(v => v.LastName.StartsWith(filter.Value)),
+                    nameof(DriverSimpleListDto.BirthNumber) =>
+                        query.Where(v => v.BirthNumber.StartsWith(filter.Value)),
+                    _ => query      // Default case - do not apply any filter
+                };
+            }
+            return query;
+        }
+
+
+        public (IQueryable<PersonSimpleListDto>, IQueryable<DriverSimpleListDto>) QueryPersonAndDriverSearch(DtParamsDto dtParams)
+        {
+            var query = GetAllPersons();
+            var personsQuery = query.Result.Item1.AsQueryable();
+            var driversQuery = query.Result.Item2.AsQueryable(); // Assuming you have a method to get all drivers
+
+            // Apply filters and sorting to persons
+            var filteredPersons = ApplyFilterPersonSearch(personsQuery, dtParams);
+            var sortedPersons = ApplySortingPersonSearch(filteredPersons, dtParams);
+
+            // Apply filters and sorting to drivers
+            var filteredDrivers = ApplyFilterDriverSearch(driversQuery, dtParams); // Implement ApplyFilterDriverSearch method
+            var sortedDrivers = ApplySortingDriverSearch(filteredDrivers, dtParams); // Implement ApplySortingDriverSearch method
+
+            return (sortedPersons, sortedDrivers);
+        }
+
+
+
     }
 }

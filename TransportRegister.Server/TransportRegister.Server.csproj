@@ -36,7 +36,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\OffenceDTOs\" />
+    <Folder Include="Migrations\" />
+    <Folder Include="Seeds\Images\Offences\" />
   </ItemGroup>
 
 </Project>

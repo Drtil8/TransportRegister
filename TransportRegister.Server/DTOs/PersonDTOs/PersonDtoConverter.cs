@@ -21,7 +21,6 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
             {
                 "Person" => JsonSerializer.Deserialize<PersonDto>(personJson, options),
                 "Driver" => JsonSerializer.Deserialize<DriverDto>(personJson, options),
-                "Owner" => JsonSerializer.Deserialize<OwnerDto>(personJson, options),
                 _ => throw new JsonException($"Unsupported person type: {personType}")
             };
         }

@@ -1,7 +1,7 @@
-﻿import { useEffect, useMemo, useState, useContext } from 'react';
+﻿import { useEffect, useMemo, useState } from 'react';
 import {
   MaterialReactTable, useMaterialReactTable,
-  type MRT_Row, type MRT_ColumnDef, type MRT_ColumnFiltersState,
+  type MRT_ColumnDef, type MRT_ColumnFiltersState,
   type MRT_PaginationState, type MRT_SortingState
 } from 'material-react-table';
 import { Box, Tooltip, IconButton } from '@mui/material';
@@ -13,15 +13,14 @@ import IDtFetchData from '../interfaces/datatables/IDtFetchData';
 import IDtParams from '../interfaces/datatables/IDtParams';
 import IOffenceListItem from '../interfaces/IOffenceListItem';
 import DetailIcon from '@mui/icons-material/VisibilityOutlined';
-import AuthContext from '../../auth/AuthContext';
+//import AuthContext from '../../auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 export const OffenceDatatable: React.FC<{
   fetchUrl: string,
   fetchDataRef: React.MutableRefObject<IDtFetchData | null>,
-  // TODO ->prop for showing if its valid/approved or not -> boolean
 }> = ({ fetchUrl, fetchDataRef }) => {
-  const authContext = useContext(AuthContext);
+  //const authContext = useContext(AuthContext);
   const navigate = useNavigate();
 
   // Data and fetching state
@@ -161,7 +160,7 @@ export const OffenceDatatable: React.FC<{
     renderRowActions: ({ row }) =>
     (
       <Box sx={{ display: 'flex', gap: '1rem' }}>
-        <Tooltip title="Zobrazit detail projektu">
+        <Tooltip title="Zobrazit detail přestupku">
           <IconButton onClick={() => goTo(row.original.offenceId)}>
             <DetailIcon />
           </IconButton>

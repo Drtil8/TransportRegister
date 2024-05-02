@@ -144,7 +144,7 @@ namespace TransportRegister.Server.Seeds
 
                 new()
                 {
-                    VIN = "MAN123456M",
+                    VIN = "MAN654321M",
                     Manufacturer = "MAN",
                     Model = "Lion's Coach",
                     Horsepower_KW = 390.0,

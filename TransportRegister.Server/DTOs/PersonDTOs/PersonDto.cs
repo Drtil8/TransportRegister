@@ -1,10 +1,12 @@
 ﻿using TransportRegister.Server.DTOs.DriversLicenseDTOs;
 using TransportRegister.Server.DTOs.VehicleDTOs;
+using TransportRegister.Server.DTOs.OffenceDTOs;
+using TransportRegister.Server.DTOs.TheftDTOs;
 using System.Text.Json.Serialization;
 
 namespace TransportRegister.Server.DTOs.PersonDTOs
 {
-    [JsonConverter(typeof(PersonDtoConverter))]
+    //[JsonConverter(typeof(PersonDtoConverter))]
     public class PersonDto
     {
         public int PersonId { get; set; }
@@ -18,8 +20,8 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
         public string PersonType { get; set; }
 
         public string OfficialId { get; set; }
-        //public ICollection<Offence> CommitedOffences { get; set; }  // TODO: Needs Offence and thefts Dto's
-        //public ICollection<Theft> ReportedThefts { get; set; }
+        //public IEnumerable<OffenceListSimpleDto> CommitedOffences { get; set; }
+        //public IEnumerable<TheftListItemDto> ReportedThefts { get; set; }
         public IEnumerable<VehicleListItemDto> Vehicles { get; set; }
     }
 
@@ -34,8 +36,8 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
         public IEnumerable<DriversLicenseDto> Licenses { get; set; } // Licenses DTo
     }
 
-    public class OwnerDto : PersonDto
-    {
-    }
+    //public class OwnerDto : PersonDto
+    //{
+    //}
 }
 

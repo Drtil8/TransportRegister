@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
+using System.Security.Claims;
 using TransportRegister.Server.DTOs.DatatableDTOs;
 using TransportRegister.Server.DTOs.LicensePlateHistoryDTOs;
 using TransportRegister.Server.DTOs.VehicleDTOs;
@@ -14,7 +16,7 @@ namespace TransportRegister.Server.Controllers
     //[Authorize]       // All roles can access
     //[Authorize(Roles = "Admin")]
     //[Authorize(Roles = "Official")]
-    //[Authorize(Roles = "Official,Officer")]
+    [Authorize(Roles = "Official,Officer")]
     [Route("api/[controller]")]
     [ApiController]
     public class VehicleController : ControllerBase
@@ -70,9 +72,12 @@ namespace TransportRegister.Server.Controllers
             if (vehicleDto == null)
                 return NotFound("Vehicle type is not supported.");
 
+            vehicleDto.LicensePlates = await _vehicleRepository.GetLicensePlateHistoryAsync(vehicleId);
+
             return Ok(vehicleDto);
         }
 
+        [Authorize(Roles = "Official")]
         [HttpPost("SaveVehicle")]
         public async Task<ActionResult<VehicleDetailDto>> SaveVehicle([FromBody] VehicleDetailDto vehicleDto)
         {
@@ -81,15 +86,15 @@ namespace TransportRegister.Server.Controllers
                 return BadRequest(ModelState);
             }
 
-            // TODO kontrola zda daný Official existují
-
             Vehicle vehicle = VehicleDtoTransformer.TransformToEntity(vehicleDto);
             if (vehicle == null)
             {
                 return BadRequest("Invalid vehicle data.");
             }
 
-            vehicle.Owner = await _personRepository.GetOwnerByVINAsync(vehicle.VIN);
+            vehicle.OfficialId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            vehicle.Owner = await _personRepository.GetPersonByIdAsync(vehicleDto.OwnerId);
             if (vehicle.Owner is null)
                 return BadRequest("Owner not found.");
 
@@ -106,16 +111,17 @@ namespace TransportRegister.Server.Controllers
             }
             else
             {
+                vehicle.LicensePlates = [newLicensePlate];
                 if (licensePlates.Last().LicensePlate != vehicleDto.CurrentLicensePlate)
                 {
-                    // todo fix this fucking SaveVehicle 1 method do everything dto hell
+                    // todo fix licenses plate history
                     // Update record of license plate history
+                    //vehicle.LicensePlates = [newLicensePlate];
                     //licensePlates.Add(newLicensePlate);
                     //vehicle.LicensePlates = licensePlates;
-                    ////vehicle.LicensePlates.Add(newLicensePlate);     // cannot be this way
+                    //vehicle.LicensePlates.Add(newLicensePlate);     // cannot be this way
                 }
             }
-
             await _vehicleRepository.SaveVehicleAsync(vehicle);
 
             VehicleDetailDto updatedDto = VehicleDtoTransformer.TransformToDto(vehicle);
@@ -126,33 +132,6 @@ namespace TransportRegister.Server.Controllers
 
             return Ok(updatedDto);
         }
-        
-        
-        [HttpPost("{vehicleId}/UploadImage")]
-        public async Task<IActionResult> UploadImage(int vehicleId, IFormFile file)
-        {
-            if (file == null || file.Length == 0)
-            {
-                return BadRequest("No file uploaded.");
-            }
-
-            var vehicle = await _vehicleRepository.GetVehicleByIdAsync(vehicleId);
-            if (vehicle == null)
-            {
-                return NotFound("Vehicle not found.");
-            }
-            
-            using (var memoryStream = new MemoryStream())
-            {
-                await file.CopyToAsync(memoryStream);
-                vehicle.Image = memoryStream.ToArray();
-            }
-
-            await _vehicleRepository.SaveVehicleAsync(vehicle);
-
-            return Ok();
-        }
-
 
         [HttpDelete("{vehicleId}")]
         public async Task<IActionResult> DeleteVehicle(int vehicleId)

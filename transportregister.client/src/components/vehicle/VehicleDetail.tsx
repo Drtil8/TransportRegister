@@ -1,13 +1,18 @@
-﻿import { Component } from 'react';
+﻿import { Component, ContextType } from 'react';
 import { Link } from 'react-router-dom';
-import { Alert, Button, Col, Row } from 'reactstrap';
+import { Alert, Button, Col, Row, Table } from 'reactstrap';
 import { IBus, ICar, IMotorcycle, ITruck, IVehicleDetail } from '../interfaces/IVehicleDetail';
+import { formatDate } from '../../common/DateFormatter';
+import ILicensePlateHistory from '../interfaces/ILicensePlateHistory';
+import AuthContext from '../../auth/AuthContext';
 
 interface IVehicleDetailProps {
   vehicleDetail: IVehicleDetail | null;
 }
 
 export class VehicleDetail extends Component<object | IVehicleDetailProps> {
+  static contextType = AuthContext;
+  declare context: ContextType<typeof AuthContext>;
   constructor(props: object) {
     super(props);
     this.state = {
@@ -50,6 +55,7 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
           throw new Error(`Unknown vehicle type: ${vehicle.vehicleType}`);
       }
       this.setState({ vehicleDetail: parsedVehicle });
+      console.log(parsedVehicle);
     }
     catch (error) {
       console.error('Error fetching vehicle data:', error);
@@ -65,6 +71,32 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
       'Bus': 'autobusu'
     };
 
+    const licensePlatesTable = (
+      <>
+        {(vehicleDetail?.licensePlateHistory && vehicleDetail!.licensePlateHistory.length > 1) && (
+          <>
+            <h5>Historie přestupků</h5>
+            <Table>
+              <thead>
+                <tr>
+                  <th>SPZ</th>
+                  <th>Datum změny</th>
+                </tr>
+              </thead>
+              <tbody>
+                {vehicleDetail!.licensePlateHistory.map((licensePlate: ILicensePlateHistory) => (
+                  <tr key={licensePlate.licensePlateHistoryId}>
+                    <td>{licensePlate.licensePlate}</td>
+                    <td>{formatDate(licensePlate.changedOn)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </>
+        )}
+      </>
+    );
+
     const content = !vehicleDetail ?
       (
         <Alert color="danger">Vozidlo nebylo nalezeno.</Alert>
@@ -76,11 +108,13 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
             <Col>
               <h4>Detail {localizedVehicleTypeMap[vehicleDetail.vehicleType]}</h4>
             </Col>
-            <Col className="d-flex justify-content-end">
-              <Button tag={Link} to={`/vehicle/edit/${vehicleDetail.vehicleId}`} color="primary">
-                Upravit vozidlo
-              </Button>
-            </Col>
+            {this.context?.isOfficial && (
+              <Col className="d-flex justify-content-end">
+                <Button tag={Link} to={`/vehicle/edit/${vehicleDetail.vehicleId}`} color="primary">
+                  Upravit vozidlo
+                </Button>
+              </Col>
+            )}
           </Row>
 
           <Row>
@@ -88,23 +122,31 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
               <Row>
                 <dl>
                   <Row>
+                    {vehicleDetail.imageBase64 && (
+                      <Col xs="6">
+                        <img
+                          src={`${vehicleDetail.imageBase64}`}
+                          alt="Vozidlo"
+                          className="vehicleImage" />
+                      </Col>
+                    )}
                     <Col>
-                      <dt>VIN:</dt>
-                      <dd>{vehicleDetail.vin}</dd>
-                    </Col>
-                    <Col>
-                      <dt>SPZ:</dt>
-                      <dd>{vehicleDetail.currentLicensePlate}</dd>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <dt>Model:</dt>
-                      <dd>{`${vehicleDetail.manufacturer} ${vehicleDetail.model}, ${vehicleDetail.manufacturedYear}`}</dd>
-                    </Col>
-                    <Col>
-                      <dt>Barva:</dt>
-                      <dd>{vehicleDetail.color}</dd>
+                      <Row className="mb-3">
+                        <dt>VIN:</dt>
+                        <dd>{vehicleDetail.vin}</dd>
+                      </Row>
+                      <Row className="mb-3">
+                        <dt>SPZ:</dt>
+                        <dd>{vehicleDetail.currentLicensePlate}</dd>
+                      </Row>
+                      <Row className="mb-3">
+                        <dt>Model:</dt>
+                        <dd>{`${vehicleDetail.manufacturer} ${vehicleDetail.model}, ${vehicleDetail.manufacturedYear}`}</dd>
+                      </Row>
+                      <Row className="mb-3">
+                        <dt>Barva:</dt>
+                        <dd>{vehicleDetail.color}</dd>
+                      </Row>
                     </Col>
                   </Row>
 
@@ -148,19 +190,19 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
                     )}
                     {/*{vehicleDetail.vehicleType === 'Truck' && (*/}
                     {/*)}*/}
-
-                    {vehicleDetail.imageBase64 && (
-                      <Col xs="8">
-                        <dt>Fotka vozidla:</dt>
-                        <img
-                          src={`${vehicleDetail.imageBase64}`}
-                          alt="Vozidlo"
-                          className="vehicleImage" />
-                      </Col>
-                    )}
                   </Row>
                 </dl>
               </Row>
+            </Col>
+          </Row>
+
+          {licensePlatesTable}
+
+          {/* todo add officialFullName */}
+          <Row>
+            <Col>
+              <dt>Naposledy upraveno:</dt>
+              <dd>{`${vehicleDetail.officialFullName}`}</dd>
             </Col>
           </Row>
         </>

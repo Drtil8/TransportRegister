@@ -59,7 +59,15 @@ namespace TransportRegister.Server.Repositories.Implementations
             }
             else
             {
-                _context.Vehicles.Update(vehicle);
+                var existingVehicle = await _context.Vehicles.FindAsync(vehicle.VehicleId);
+                if (existingVehicle != null)
+                {
+                    _context.Entry(existingVehicle).CurrentValues.SetValues(vehicle);
+                }
+                else
+                {
+                    _context.Vehicles.Update(vehicle);
+                }
             }
             await _context.SaveChangesAsync();
         }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TransportRegister.Server.Data;
+using TransportRegister.Server.DTOs.DatatableDTOs;
 using TransportRegister.Server.DTOs.TheftDTOs;
+using TransportRegister.Server.DTOs.VehicleDTOs;
 using TransportRegister.Server.Models;
 
 namespace TransportRegister.Server.Repositories.Implementations;
@@ -8,6 +10,68 @@ namespace TransportRegister.Server.Repositories.Implementations;
 public class TheftRepository(AppDbContext context) : ITheftRepository
 {
     private readonly AppDbContext _context = context;
+
+    public IQueryable<TheftListItemDto> QueryAllThefts()
+    {
+        return _context.Thefts
+            .AsNoTracking()
+            .Include(t => t.StolenVehicle)
+            .Include(t => t.StolenVehicle.LicensePlates)
+            .Select(t => new TheftListItemDto
+            {
+                TheftId = t.TheftId,
+                Vehicle = new VehicleSimpleDto
+                {
+                    VehicleId = t.VehicleId,
+                    VIN = t.StolenVehicle.VIN,
+                    LicensePlate = t.StolenVehicle.LicensePlates
+                        .OrderByDescending(lp => lp.ChangedOn)
+                        .Select(lp => lp.LicensePlate)
+                        .FirstOrDefault(),
+                    Manufacturer = t.StolenVehicle.Manufacturer,
+                    Model = t.StolenVehicle.Model
+                },
+                StolenOn = t.StolenOn,
+                ReportedOn = t.ReportedOn,
+                FoundOn = t.FoundOn,
+                IsFound = t.FoundOn != null,
+            });
+    }
+
+    public IQueryable<TheftListItemDto> QueryActiveThefts()
+    {
+        return _context.Thefts
+            .AsNoTracking()
+            .Include(t => t.StolenVehicle)
+            .Include(t => t.StolenVehicle.LicensePlates)
+            .Where(t => t.FoundOn == null)  // isFound == false
+            .Select(t => new TheftListItemDto
+            {
+                TheftId = t.TheftId,
+                Vehicle = new VehicleSimpleDto
+                {
+                    VehicleId = t.VehicleId,
+                    VIN = t.StolenVehicle.VIN,
+                    LicensePlate = t.StolenVehicle.LicensePlates
+                        .OrderByDescending(lp => lp.ChangedOn)
+                        .Select(lp => lp.LicensePlate)
+                        .FirstOrDefault(),
+                    Manufacturer = t.StolenVehicle.Manufacturer,
+                    Model = t.StolenVehicle.Model
+                },
+                StolenOn = t.StolenOn,
+                ReportedOn = t.ReportedOn,
+                FoundOn = t.FoundOn,
+                IsFound = t.FoundOn != null,
+            });
+    }
+
+    public IQueryable<TheftListItemDto> ApplyFilterQueryThefts(IQueryable<TheftListItemDto> query, DtParamsDto dtParams)
+    {
+        //todo
+
+        return query;
+    }
 
     public async Task<IEnumerable<TheftListItemDto>> GetActiveThefts()
     {
@@ -19,12 +83,17 @@ public class TheftRepository(AppDbContext context) : ITheftRepository
             .Select(t => new TheftListItemDto
             {
                 TheftId = t.TheftId,
-                VehicleId = t.VehicleId,
-                VIN = t.StolenVehicle.VIN,
-                LicensePlate = t.StolenVehicle.LicensePlates
-                    .OrderByDescending(lp => lp.ChangedOn)
-                    .Select(lp => lp.LicensePlate)
-                    .FirstOrDefault(),
+                Vehicle = new VehicleSimpleDto
+                {
+                    VehicleId = t.VehicleId,
+                    VIN = t.StolenVehicle.VIN,
+                    LicensePlate = t.StolenVehicle.LicensePlates
+                        .OrderByDescending(lp => lp.ChangedOn)
+                        .Select(lp => lp.LicensePlate)
+                        .FirstOrDefault(),
+                    Manufacturer = t.StolenVehicle.Manufacturer,
+                    Model = t.StolenVehicle.Model
+                },
                 StolenOn = t.StolenOn,
                 ReportedOn = t.ReportedOn,
                 FoundOn = t.FoundOn,
@@ -69,13 +138,16 @@ public class TheftRepository(AppDbContext context) : ITheftRepository
             .FirstOrDefaultAsync();
     }
 
-    public async Task<int> CreateTheft(TheftDetailDto theftDto)
+    public async Task<int> CreateTheft(TheftCreateDto theftDto, string officerId)
     {
         var newTheft = new Theft
         {
             StolenOn = theftDto.StolenOn,
-            ReportedOn = theftDto.ReportedOn,
+            ReportedOn = DateTime.Now,
             VehicleId = theftDto.VehicleId,
+            ReportingPersonId = theftDto.ReportingPersonId,
+            Description = theftDto.Description,
+            ReportingOfficerId = officerId
         };
         await _context.Thefts.AddAsync(newTheft);
         await _context.SaveChangesAsync();

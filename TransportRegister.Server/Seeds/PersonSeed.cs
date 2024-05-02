@@ -8,7 +8,7 @@ namespace TransportRegister.Server.Seeds
     {
         public static void Seed(AppDbContext context)
         {
-            var ownersToSeed = new Owner[]
+             var ownersToSeed = new Person[]
             {
                 new()
                 {
@@ -25,7 +25,8 @@ namespace TransportRegister.Server.Seeds
                         PostalCode = 12345
                     },
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png")
+                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png"),
+                    Sex_Male = true
                 },
                 new()
                 {
@@ -42,7 +43,8 @@ namespace TransportRegister.Server.Seeds
                         PostalCode = 54321
                     },
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png")
+                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png"),
+                    Sex_Male = false
                 },
 
                 new()
@@ -60,7 +62,8 @@ namespace TransportRegister.Server.Seeds
                         PostalCode = 67890
                     },
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stig.jpg")
+                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stig.jpg"),
+                    Sex_Male = true
                 },
 
                 new()
@@ -78,7 +81,8 @@ namespace TransportRegister.Server.Seeds
                         PostalCode = 54321
                     },
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png")
+                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png"),
+                    Sex_Male = false
                 },
 
                 new()
@@ -96,7 +100,8 @@ namespace TransportRegister.Server.Seeds
                         PostalCode = 54321
                     },
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png")
+                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png"),
+                    Sex_Male = false
                 },
 
                 new()
@@ -114,7 +119,8 @@ namespace TransportRegister.Server.Seeds
                         PostalCode = 54321
                     },
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png")
+                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png"),
+                    Sex_Male = true
                 }
             };
 
@@ -127,7 +133,8 @@ namespace TransportRegister.Server.Seeds
                     BirthNumber = "ABCD99999",
                     DriversLicenseNumber ="ABC1234",
                     BadPoints = 5,
-                    HasSuspendedLicense = false,
+                    HasSuspendedLicense = true,
+                    DrivingSuspendedUntil = DateTime.Parse("2025-12-12"),
                     LastCrimeCommited = DateTime.Now,
                     LastPointsDeduction = DateTime.Now,
                     Address = new Address
@@ -140,7 +147,8 @@ namespace TransportRegister.Server.Seeds
                         PostalCode = 12345
                     },
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png")
+                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png"),
+                    Sex_Male = true
                 },
                 new()
                 {
@@ -162,7 +170,8 @@ namespace TransportRegister.Server.Seeds
                         PostalCode = 54321
                     },
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png")
+                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png"),
+                    Sex_Male = false
                 },
 
                 new()
@@ -185,7 +194,8 @@ namespace TransportRegister.Server.Seeds
                         PostalCode = 98765
                     },
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png")
+                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png"),
+                    Sex_Male = true
                 },
 
                 new()
@@ -208,7 +218,8 @@ namespace TransportRegister.Server.Seeds
                         PostalCode = 54321
                     },
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png")
+                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png"),
+                    Sex_Male = false
                 },
 
                 new()
@@ -231,17 +242,19 @@ namespace TransportRegister.Server.Seeds
                         PostalCode = 54321
                     },
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png")
+                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png"),
+                    Sex_Male = true
                 }
             };
 
             foreach (var owner in ownersToSeed)
             {
-                if (!context.Owners.Any(o => o.PersonId == owner.PersonId))
+                if (!context.Persons.Any(o => o.PersonId == owner.PersonId))
                 {
-                    context.Owners.Add(owner);
+                    context.Persons.Add(owner);
                 }
             }
+            context.SaveChanges();
 
             foreach (var driver in driversToSeed)
             {
