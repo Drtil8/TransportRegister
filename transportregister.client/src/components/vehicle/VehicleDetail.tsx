@@ -1,7 +1,9 @@
 ﻿import { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Alert, Button, Col, Row } from 'reactstrap';
+import { Alert, Button, Col, Row, Table } from 'reactstrap';
 import { IBus, ICar, IMotorcycle, ITruck, IVehicleDetail } from '../interfaces/IVehicleDetail';
+import { formatDate } from '../../common/DateFormatter';
+import ILicensePlateHistory from '../interfaces/ILicensePlateHistory';
 
 interface IVehicleDetailProps {
   vehicleDetail: IVehicleDetail | null;
@@ -50,6 +52,7 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
           throw new Error(`Unknown vehicle type: ${vehicle.vehicleType}`);
       }
       this.setState({ vehicleDetail: parsedVehicle });
+      console.log(parsedVehicle);
     }
     catch (error) {
       console.error('Error fetching vehicle data:', error);
@@ -64,6 +67,32 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
       'Motorcycle': 'motocyklu',
       'Bus': 'autobusu'
     };
+
+    const licensePlatesTable = (
+      <>
+        {(vehicleDetail?.licensePlateHistory && vehicleDetail!.licensePlateHistory.length > 1) && (
+          <>
+            <h5>Historie přestupků</h5>
+            <Table>
+              <thead>
+                <tr>
+                  <th>SPZ</th>
+                  <th>Datum změny</th>
+                </tr>
+              </thead>
+              <tbody>
+                {vehicleDetail!.licensePlateHistory.map((licensePlate: ILicensePlateHistory) => (
+                  <tr key={licensePlate.licensePlateHistoryId}>
+                    <td>{licensePlate.licensePlate}</td>
+                    <td>{formatDate(licensePlate.changedOn)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </>
+        )}
+      </>
+    );
 
     const content = !vehicleDetail ?
       (
@@ -162,7 +191,7 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
             </Col>
           </Row>
 
-
+          {licensePlatesTable}
         </>
       );
 

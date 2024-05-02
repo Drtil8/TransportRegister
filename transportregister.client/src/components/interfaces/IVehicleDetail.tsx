@@ -1,4 +1,6 @@
-﻿export interface IVehicleDetail {
+﻿import ILicensePlateHistory from "./ILicensePlateHistory";
+
+export interface IVehicleDetail {
   vehicleId: number;
   vin: string;
   currentLicensePlate: string;
@@ -20,6 +22,8 @@
   ownerFullName: string;
   officialId: string;
   officialFullName: string;
+
+  licensePlateHistory: ILicensePlateHistory[];
 }
 
 export interface ICar extends IVehicleDetail {
