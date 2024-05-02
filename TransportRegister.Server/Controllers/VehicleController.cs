@@ -70,6 +70,8 @@ namespace TransportRegister.Server.Controllers
             if (vehicleDto == null)
                 return NotFound("Vehicle type is not supported.");
 
+            vehicleDto.LicensePlates = await _vehicleRepository.GetLicensePlateHistoryAsync(vehicleId);
+
             return Ok(vehicleDto);
         }
 

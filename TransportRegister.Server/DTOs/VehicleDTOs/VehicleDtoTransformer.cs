@@ -1,4 +1,3 @@
-using TransportRegister.Server.DTOs.LicensePlateHistoryDTOs;
 using TransportRegister.Server.Models;
 
 namespace TransportRegister.Server.DTOs.VehicleDTOs
@@ -46,13 +45,6 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
                 dto.LoadCapacityKG = vehicle.LoadCapacity_KG;
                 dto.ImageBase64 = vehicle.Image != null ? Convert.ToBase64String(vehicle.Image) : null;
                 dto.CurrentLicensePlate = vehicle.LicensePlates?.FirstOrDefault()?.LicensePlate;
-                dto.LicensePlates = vehicle.LicensePlates?
-                    .Select(lp => new LicensePlateHistoryDto
-                    {
-                        LicensePlate = lp.LicensePlate,
-                        ChangedOn = lp.ChangedOn
-                    })
-                    .ToList();
             }
             return dto;
         }
