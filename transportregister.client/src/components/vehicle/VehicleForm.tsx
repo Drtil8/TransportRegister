@@ -1,11 +1,13 @@
 ﻿import { useState } from 'react';
 import { Button, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap';
 import { ICar, IVehicleDetail } from '../interfaces/IVehicleDetail';
+import { useNavigate } from 'react-router-dom';
 
 export const VehicleForm: React.FC<{ fetchedVehicle: IVehicleDetail | null }> = ({ fetchedVehicle }) => {
   const [selectedVehicleType, setSelectedVehicleType] = useState<string>(
     fetchedVehicle?.vehicleType ?? 'Car');
   const [image, setImage] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -62,7 +64,12 @@ export const VehicleForm: React.FC<{ fetchedVehicle: IVehicleDetail | null }> = 
         body: JSON.stringify(params)
       });
 
-      if (!response.ok) {
+      if (response.ok) {
+        // navigate to detail
+        const json: IVehicleDetail = await response.json();
+        navigate(`/vehicle/${json.vehicleId}`);
+      }
+      else {
         console.error("Create vehicle failed");
       }
     }
@@ -172,7 +179,6 @@ export const VehicleForm: React.FC<{ fetchedVehicle: IVehicleDetail | null }> = 
         </Col>
       </Row>
 
-      {/* todo load specific vehicle type and fields */}
       <Row>
         <Col xs="6">
           <FormGroup>

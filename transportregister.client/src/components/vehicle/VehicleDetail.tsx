@@ -161,6 +161,8 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
               </Row>
             </Col>
           </Row>
+
+
         </>
       );
 
