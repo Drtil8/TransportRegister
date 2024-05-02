@@ -111,7 +111,7 @@ namespace TransportRegister.Server.Controllers
 
         // PUT: api/Persons/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        [HttpPost("{id}")]
         public async Task<ActionResult> PutPerson(int id, PersonUpdateDto person)
         {
             if (id != person.PersonId)
@@ -119,7 +119,7 @@ namespace TransportRegister.Server.Controllers
                 return BadRequest();
             }
             
-            //await _personRepository.SavePersonAsync(PersonDtoTransformer.TransformPersonUpdateToEntity(person));
+            await _personRepository.SavePersonAsync(PersonDtoTransformer.TransformPersonUpdateToEntity(person));
            
             return Ok();
 

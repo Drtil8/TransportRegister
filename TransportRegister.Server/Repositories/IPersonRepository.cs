@@ -8,6 +8,7 @@ namespace TransportRegister.Server.Repositories
 
         Task<Person> GetPersonByIdAsync(int personId);
         Task<Tuple<List<PersonSimpleListDto>, List<DriverSimpleListDto>>> GetAllPersons();
+        Task<Person> GetPersonByBirthNumberAsync(string birthNumber);
         Task<Driver> GetDriverAsync(string licenseNumber);
         Task<Person> GetOwnerByVINAsync(string VIN_number);
         Task SetDriverAsync(Person driver);

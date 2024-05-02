@@ -128,6 +128,28 @@ namespace TransportRegister.Server.Repositories.Implementations
                 .FirstOrDefaultAsync(o => o.Vehicles.Any(v => v.VIN == VIN_number));
         }
 
+        public async Task<Person> GetPersonByBirthNumberAsync(string birthNumber)
+        {
+            var person = await _context.Persons
+                                       .Include(owner => owner.Vehicles)
+                                       .ThenInclude(vehicle => vehicle.LicensePlates)
+                                       .FirstOrDefaultAsync(v => v.BirthNumber == birthNumber);
+            if (person is null)
+            {
+                return null;
+            }
+
+            if (person.GetType() == typeof(Driver))
+            {
+                return await _context.Drivers
+                    .Include(v => v.Licenses)
+                    .Include(owner => owner.Vehicles)
+                        .ThenInclude(vehicle => vehicle.LicensePlates)
+                    .FirstOrDefaultAsync(v => v.BirthNumber == birthNumber);
+            }
+            else return person;
+        }
+
         public async Task SetDriverAsync(Person driver)
         {
             if (driver.PersonId == 0)
