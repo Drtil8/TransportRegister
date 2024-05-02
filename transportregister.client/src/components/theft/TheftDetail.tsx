@@ -1,6 +1,6 @@
 ﻿import { Component } from "react";
 import ITheftDetail from "../interfaces/ITheftDetail";
-import { Alert, Col, Row } from "reactstrap";
+import { Alert, Button, Col, Row } from "reactstrap";
 import { IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
@@ -10,8 +10,8 @@ import { formatDateTime } from "../../common/DateFormatter";
 
 
 interface ITheftDetailProps {
-  //theftId: number;
   theftDetail: ITheftDetail | null;
+  showButtons: boolean;
 }
 
 export class TheftDetail extends Component<object, ITheftDetailProps> {
@@ -19,7 +19,11 @@ export class TheftDetail extends Component<object, ITheftDetailProps> {
     super(props);
     this.state = {
       theftDetail: null,
+      showButtons: false
     };
+  }
+
+  async handleFound() {
   }
 
   async populateTheftData() {
@@ -28,7 +32,7 @@ export class TheftDetail extends Component<object, ITheftDetailProps> {
     const apiUrl = `/api/Theft/GetTheftById/${id}`;
 
     try {
-      const response = await fetch(apiUrl); //TODO
+      const response = await fetch(apiUrl);
 
       if (!response.ok) {
         console.error(response.statusText);
@@ -37,6 +41,10 @@ export class TheftDetail extends Component<object, ITheftDetailProps> {
 
       const data: ITheftDetail = await response.json();
       this.setState({ theftDetail: data });
+      if (!data.isFound) {
+        this.setState({ showButtons: true });
+        //document.getElementById("editButton")?.classList.add("hidden");
+      }
     } catch (error) {
       console.error(error);
     }
@@ -63,20 +71,17 @@ export class TheftDetail extends Component<object, ITheftDetailProps> {
               </Col>
               <Col className="rightSide col-2">
                 <Row>
-                  {/*TODO ->errors in dev mode in browser console*/}
                   <Col id="editButton">
-                    {/*<Tooltip title="Upravit přestupek">*/}
-                    <IconButton color="primary" size="large" onClick={this.handleEditButton}>
+                    {/*<IconButton color="primary" size="large" onClick={this.handleEditButton}>*/}
+                    <IconButton color="primary" size="large">
                       <EditIcon fontSize="inherit" />
                     </IconButton>
-                    {/*</Tooltip>*/}
                   </Col>
                   <Col className="hidden" id="saveButton">
-                    {/*<Tooltip title="Uložit úpravy">*/}
-                    <IconButton color="primary" size="large" onClick={this.handleSaveButton}>
+                    <IconButton color="primary" size="large">
+                    {/*<IconButton color="primary" size="large" onClick={this.handleSaveButton}>*/}
                       <SaveIcon />
                     </IconButton>
-                    {/*</Tooltip>*/}
                   </Col>
                 </Row>
               </Col>
@@ -170,10 +175,27 @@ export class TheftDetail extends Component<object, ITheftDetailProps> {
                 </Row>
               </dl>
             </Row>
-            <Row>
-              <hr />
-              TODO BUTTON LOGIKA A LOGIKA UREDNIKA NA SCHVALENI?? PRIDAT BUTTON NAHLASIT NALEZ PRO POLICISTU A POTVRDIT NAVRACENI VOZIDLA PRO UREDNIKA?
-            </Row>
+            {this.state.showButtons ?
+              (
+                <Row>
+                  <hr />
+                  <Col className="rightSide pe-0">
+                    <Button color="success" className="me-2" onClick={this.handleFound}>Nahlásit nález</Button>
+                  </Col>
+                </Row>
+              )
+                :
+              (
+                <Row>
+                  <hr />
+                  <Col>
+                    <dt className="mb-1">Nález nahlásil:</dt>
+                    {/*<Link to={`/user/${theftDetail.official?.id}`}>*/}
+                    {/*  <dd>{offenceDetail.official?.fullName}</dd>*/}
+                    {/*</Link>*/}
+                  </Col>
+                </Row>
+                )}
           </Col>
         </Row>
       );

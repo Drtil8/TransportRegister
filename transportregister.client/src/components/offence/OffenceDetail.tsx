@@ -2,7 +2,6 @@
 import { Alert, Button, Col, Input, Row } from 'reactstrap';
 import IOffenceDetail from '../interfaces/IOffenceDetail';
 import { formatDate, formatDateTime } from '../../common/DateFormatter';
-//import LocationPicker from '../location/LocationPicker';
 import AuthContext from '../../auth/AuthContext';
 import { IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
@@ -10,8 +9,6 @@ import SaveIcon from '@mui/icons-material/Save';
 import DetailIcon from '@mui/icons-material/VisibilityOutlined';
 import { Link } from 'react-router-dom';
 import ImageGallery from '../ImageGallery';
-
-//var Carousel = require('react-responsive-carousel').Carousel;
 
 interface IOffenceDetailProps {
   offenceDetail: IOffenceDetail | null;
@@ -23,9 +20,6 @@ interface IOffenceDetailProps {
   editFineAmount: number;
 }
 
-// TODO -> zobrazit detail ownera/drivera a vozidla
-// Udelat logiku kdy neni zpracovany prestupek a urednik si jej zobrazi
-// Nejake hezke zobrazeni zpracovani/nezpracovani pro policistu
 export class OffenceDetail extends Component<object, IOffenceDetailProps> {
   static contextType = AuthContext;
   declare context: ContextType<typeof AuthContext>;
@@ -77,7 +71,7 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
     document.getElementById("saveButton")?.classList.add("hidden");
   }
 
-  handleEditButton() { // todo -> hidden gets errors in dev mode in browser console
+  handleEditButton() {
     this.setState({ editMode: true });
     document.getElementById("editButton")?.classList.add("hidden");
     document.getElementById("saveButton")?.classList.remove("hidden");

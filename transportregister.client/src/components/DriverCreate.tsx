@@ -17,7 +17,7 @@ export class DriverCreate extends Component<object, IDriverCreateState> {
         lastName: '',
         birthNumber1: 0,
         birthNumber2: 0,
-        sexMale: true,
+        sex_Male: true,
         dateOfBirth: '',
         //address: {
         //  street: '',
@@ -104,7 +104,7 @@ export class DriverCreate extends Component<object, IDriverCreateState> {
 
               <FormGroup check>
                 <Label check>
-                  <Input type="checkbox" id="sexMale" name="sexMale" value="true" checked={form.sexMale} onChange={this.handleChangeCheckbox} disabled={form.disableInput} />
+                  <Input type="checkbox" id="sexMale" name="sexMale" value="true" checked={form.sex_Male} onChange={this.handleChangeCheckbox} disabled={form.disableInput} />
                   Muž
                 </Label>
               </FormGroup>

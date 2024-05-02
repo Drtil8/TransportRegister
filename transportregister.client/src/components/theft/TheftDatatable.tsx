@@ -1,7 +1,7 @@
-﻿import { useEffect, useMemo, useState, useContext } from 'react';
+﻿import { useEffect, useMemo, useState } from 'react';
 import {
   MaterialReactTable, useMaterialReactTable,
-  type MRT_Row, type MRT_ColumnDef, type MRT_ColumnFiltersState,
+  type MRT_ColumnDef, type MRT_ColumnFiltersState,
   type MRT_PaginationState, type MRT_SortingState
 } from 'material-react-table';
 import { Box, Tooltip, IconButton } from '@mui/material';
@@ -13,7 +13,6 @@ import IDtFetchData from '../interfaces/datatables/IDtFetchData';
 import IDtParams from '../interfaces/datatables/IDtParams';
 import ITheftListItem from '../interfaces/ITheftListItem';
 import DetailIcon from '@mui/icons-material/VisibilityOutlined';
-import AuthContext from '../../auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 export const TheftDatatable: React.FC<{
@@ -175,7 +174,7 @@ export const TheftDatatable: React.FC<{
       </Box>
     ),
     muiTableBodyRowProps: (table) => ({
-      className: (table.row.original.isFound ? 'yes' : 'no'),
+      className: (table.row.original.isFound ? 'valid-item' : 'invalid-item'),
     }),
   });
 
