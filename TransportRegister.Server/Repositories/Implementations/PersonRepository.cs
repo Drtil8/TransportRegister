@@ -124,7 +124,7 @@ namespace TransportRegister.Server.Repositories.Implementations
                 newDriver.FirstName = existingPerson.FirstName;
                 newDriver.LastName = existingPerson.LastName;
                 newDriver.BirthNumber = existingPerson.BirthNumber;
-                newDriver.Address = existingPerson.Address;
+            
                 newDriver.Image = existingPerson.Image;
                 newDriver.PersonType = existingPerson.PersonType;
                 newDriver.OfficialId = existingPerson.OfficialId;
