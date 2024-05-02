@@ -153,16 +153,23 @@ namespace TransportRegister.Server.Repositories.Implementations
             else return person;
         }
 
-        public async Task SetDriverAsync(Person driver)
+        public async Task AddDriverAsync(int personId, string license)
         {
-            if (driver.PersonId == 0)
+
+            var newDriver = new Driver
             {
-                _context.Drivers.Add(driver as Driver);
-            }
-            else
-            {
-                //driver.PersonType = "Driver";
-            }
+                PersonId = personId,
+                DriversLicenseNumber = license,
+                BadPoints = 0,
+                HasSuspendedLicense = false,
+                LastCrimeCommited = null,
+                DrivingSuspendedUntil = null
+            };
+
+            // Add the new driver to the context
+            _context.Drivers.Add(newDriver);
+
+            // Save changes to the database
             await _context.SaveChangesAsync();
         }
 

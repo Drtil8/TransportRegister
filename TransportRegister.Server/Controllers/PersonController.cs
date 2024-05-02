@@ -93,7 +93,7 @@ namespace TransportRegister.Server.Controllers
         /// <returns>An ActionResult indicating success or failure.</returns>
         [HttpGet("{personId}/SetToDriver")]
         [Authorize(Roles = "Official")]
-        public async Task<IActionResult> SetPersonToDriver(int personId)
+        public async Task<IActionResult> SetPersonToDriver(int personId, string license)
         {
             var person = await _context.Persons.FindAsync(personId);
             if (person == null)
@@ -101,7 +101,7 @@ namespace TransportRegister.Server.Controllers
                 return NotFound();
             }
             person.OfficialId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            await _personRepository.SetDriverAsync(person);
+            await _personRepository.AddDriverAsync(person.PersonId, license);
 
             return Ok();
         }

@@ -13,7 +13,7 @@ namespace TransportRegister.Server.Repositories
         Task<Person> GetPersonByBirthNumberAsync(string birthNumber);
         Task<Driver> GetDriverAsync(string licenseNumber);
         Task<Person> GetOwnerByVINAsync(string VIN_number);
-        Task SetDriverAsync(Person driver);
+        Task AddDriverAsync(int personId, string license);
         Task DeletePersonAsync(int personId);
         Task SavePersonAsync(Person person);
         Task SaveDriverAsync(Driver driver);
