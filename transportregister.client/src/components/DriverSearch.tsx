@@ -1,21 +1,33 @@
 ﻿import { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Col, Row } from 'reactstrap';
-export class DriverSearch extends Component<object> {
-  //componentDidMount() {
-  //  const API_KEY = "AIzaSyBekkpy5L1p1HJeD-v5i5ZUnuzFk178fZI";
-  //  const script = document.createElement("script");
-  //  script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&libraries=places`;
-  //  script.async = true;
-  //  document.body.appendChild(script);
-  //}
+//import VehicleDatatable from './vehicle/VehicleDatatable';
+import IDtFetchData from './interfaces/datatables/IDtFetchData';
+//import DriverDatatable from './DriverDatatable';
+import GoogleMapsAutocomplete from './GoogleMapsAutocomplete';
+import IAddress from './interfaces/IAddress';
+
+// googleAdress JE PRIKLAD PRO VYUZITI GoogleMapsAutocomplete
+interface IDriverSearchState {
+  googleAdress: IAddress | null;
+}
+export class DriverSearch extends Component<object, IDriverSearchState> {
+
   constructor(props: object) {
     super(props);
+    this.state = {
+      googleAdress: null as IAddress | null,
+    };
   }
+  fetchDataRef: React.MutableRefObject<IDtFetchData | null> = { current: null };
+
+  handleInputChange = (value: IAddress) => {
+    this.setState({ googleAdress: value });
+    console.log('parent', value)
+  };
 
   render() {
 
-    //let API_KEY = "AIzaSyBekkpy5L1p1HJeD-v5i5ZUnuzFk178fZI";
     return (
       <div>
         <Row>
@@ -30,8 +42,13 @@ export class DriverSearch extends Component<object> {
           <Link to="/driver/1">
             <Button color="primary">Example driver detail</Button>
           </Link>
+          <div></div>
           <br></br>
-          {/*<GoogleMapsAutocomplete></GoogleMapsAutocomplete>*/}
+          <br></br>
+          <br></br>
+          <h6>nábřeží Doktora Edvarda Beneše 12, Přerov I-Město, Czechia</h6>
+          <GoogleMapsAutocomplete onInputChange={this.handleInputChange}></GoogleMapsAutocomplete>
+          {/*<DriverDatatable fetchDataRef={this.fetchDataRef} autoFetch={false} />*/}
         </Row>
       </div>
     );

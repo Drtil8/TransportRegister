@@ -41,14 +41,14 @@ nav .navbar-brand {
     align-content: center;
 }
 
-.vehicleRegForm > div {
-    display: inline;
-}
+    .vehicleRegForm > div {
+        display: inline;
+    }
 
-.vehicleRegForm button {
-    grid-column: 2 / span 1;
-    width: 150px;
-}
+    .vehicleRegForm button {
+        grid-column: 2 / span 1;
+        width: 150px;
+    }
 
 .hidden {
     display: none;
@@ -107,4 +107,25 @@ dl dt {
 
 .input-number:invalid {
     border-color: red; /* Change border color to indicate invalid input */
+}
+
+.suspendedLicence {
+    border: 5px solid red;
+    border-radius: 10px;
+}
+
+#licenceForm .form-check {
+    /*background-color:aqua;*/
+    width: 60px;
+}
+
+
+
+#pac-input {
+    max-width: 500px;
+    min-width: 200px;
+}
+/*map attempt*/
+#map {
+    height: 200px;
 }
