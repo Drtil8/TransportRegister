@@ -2,28 +2,30 @@
 import { Button, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row } from "reactstrap";
 import GoogleMapsAutocomplete from "../GoogleMapsAutocomplete";
 import IAddress from "../interfaces/IAddress";
+import { IVehicleDetail } from "../interfaces/IVehicleDetail";
 
 interface TheftReportModalProps {
+  vehicleDetail: IVehicleDetail | null;
 }
 
-const TheftReportModal: React.FC<TheftReportModalProps> = () => {
+const TheftReportModal: React.FC<TheftReportModalProps> = ({vehicleDetail }) => {
   const [modal, setModal] = useState(false);
   const [address, setAddress] = useState<IAddress | null>(null);
   const initialFormData = {
-    reportTheftVehicleId: 1, // TODO
+    reportTheftVehicleId: vehicleDetail?.vehicleId,
     reportTheftStolenOn: "",
     reportTheftDescription: "",
-    reportTheftAddress: "todo",
-    reportTheftPhotos: "todo",
-    reportTheftVIN: "fetch z detailu",
-    reportTheftSPZ: "fetch z detailu",
-    reportTheftBrand: "fetch z detailu",
-    reportTheftModel: "fetch z detailu",
-    reportTheftOwnerId: 1, // TODO
-    reportTheftOwnerFirstName: "fetch z detailu",
-    reportTheftOwnerLastName: "fetch z detailu",
-    reportTheftOwnerBirthNumber: "fetch z detailu",
-    reportTheftOwnerBirthDate: "fetch z detailu",
+    //reportTheftAddress: "todo",
+    //reportTheftPhotos: "todo",
+    reportTheftVIN: vehicleDetail?.vin,
+    reportTheftSPZ: vehicleDetail?.currentLicensePlate,
+    reportTheftBrand: vehicleDetail?.manufacturer,
+    reportTheftModel: vehicleDetail?.model,
+    reportTheftOwnerId: vehicleDetail?.ownerId,
+    reportTheftOwnerFirstName: vehicleDetail?.ownerFullName.split(" ")[0],
+    reportTheftOwnerLastName: vehicleDetail?.ownerFullName.split(" ")[1],
+    //reportTheftOwnerBirthNumber: "fetch z detailu",
+    //reportTheftOwnerBirthDate: "fetch z detailu",
   }
   const [formData, setFormData] = useState(initialFormData);
   const toggle = () => setModal(!modal);
@@ -46,14 +48,17 @@ const TheftReportModal: React.FC<TheftReportModalProps> = () => {
       });
 
       if (!response.ok) {
-        console.log("Něco se nepovedlo.");
+        const errP = document.getElementById("reportTheftErrorMsg");
+        errP?.classList.remove("hidden");
+        errP!.innerText = await response.text();
+      }
+      else {
+        toggle();
       }
     }
     catch (error) {
       console.log(error);
     }
-    console.log(formData);
-    toggle();
   };
 
   const handleAddressChange = (address: IAddress) => {
@@ -67,7 +72,7 @@ const TheftReportModal: React.FC<TheftReportModalProps> = () => {
 
   return (
     <div>
-      <Button color="danger" onClick={toggle}>Nahlásit krádež vozidla</Button>
+      <Button color="danger" onClick={toggle}>Nahlásit krádež</Button>
       <Modal isOpen={modal} toggle={toggle} backdrop="static">
         <ModalHeader toggle={toggle}>Nahlášení krádeže vozidla</ModalHeader>
         <Form onSubmit={handleSubmit}>
@@ -88,7 +93,7 @@ const TheftReportModal: React.FC<TheftReportModalProps> = () => {
                 <Row>
                   <Col>
                     <Label>Ukradeno dne:</Label>
-                    <Input id="reportTheftStolenOn" name="reportTheftStolenOn" type="datetime-local" value={formData.reportTheftStolenOn} onChange={handleChange} />
+                    <Input id="reportTheftStolenOn" name="reportTheftStolenOn" type="datetime-local" value={formData.reportTheftStolenOn} onChange={handleChange} required />
                   </Col>
                 </Row>
                 <Row>
@@ -149,16 +154,16 @@ const TheftReportModal: React.FC<TheftReportModalProps> = () => {
                     <Input readOnly id="reportTheftOwnerLastName" name="reportTheftOwnerLastName" type="text" value={formData.reportTheftOwnerLastName} />
                   </Col>
                 </Row>
-                <Row>
-                  <Col>
-                    <Label> Rodné číslo: </Label>
-                    <Input readOnly id="reportTheftOwnerBirthNumber" name="reportTheftOwnerBirthNumber" type="text" value={formData.reportTheftOwnerBirthNumber} />
-                  </Col>
-                  <Col>
-                    <Label> Datum narození: </Label>
-                    <Input readOnly id="reportTheftOwnerBirthDate" name="reportTheftOwnerBirthDate" type="text" value={formData.reportTheftOwnerBirthDate} />
-                  </Col>
-                </Row>
+                {/*<Row>*/}
+                {/*  <Col>*/}
+                {/*    <Label> Rodné číslo: </Label>*/}
+                {/*    <Input readOnly id="reportTheftOwnerBirthNumber" name="reportTheftOwnerBirthNumber" type="text" value={formData.reportTheftOwnerBirthNumber} />*/}
+                {/*  </Col>*/}
+                {/*  <Col>*/}
+                {/*    <Label> Datum narození: </Label>*/}
+                {/*    <Input readOnly id="reportTheftOwnerBirthDate" name="reportTheftOwnerBirthDate" type="text" value={formData.reportTheftOwnerBirthDate} />*/}
+                {/*  </Col>*/}
+                {/*</Row>*/}
               </FormGroup>
             </Row>
             <Row>

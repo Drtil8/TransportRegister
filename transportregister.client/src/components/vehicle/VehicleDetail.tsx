@@ -5,6 +5,9 @@ import { IBus, ICar, IMotorcycle, ITruck, IVehicleDetail } from '../interfaces/I
 import { formatDate } from '../../common/DateFormatter';
 import ILicensePlateHistory from '../interfaces/ILicensePlateHistory';
 import AuthContext from '../../auth/AuthContext';
+import OffenceReportVehicleModal from '../offence/OffenceReportVehicleModal';
+import OffenceReportDriverModal from '../offence/OffenceReportDriverModal';
+import TheftReportModal from '../theft/TheftReportModal';
 
 interface IVehicleDetailProps {
   vehicleDetail: IVehicleDetail | null;
@@ -105,7 +108,7 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
       (
         <>
           <Row className="mb-3">
-            <Col>
+            <Col xs="12" sm="6">
               <h4>Detail {localizedVehicleTypeMap[vehicleDetail.vehicleType]}</h4>
             </Col>
             {this.context?.isOfficial && (
@@ -113,6 +116,12 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
                 <Button tag={Link} to={`/vehicle/edit/${vehicleDetail.vehicleId}`} color="primary">
                   Upravit vozidlo
                 </Button>
+              </Col>
+            )}
+            {this.context?.isOfficer && (
+              <Col className="d-flex justify-content-center justify-content-sm-end me-sm-2" >
+                <OffenceReportVehicleModal vehicleDetail={vehicleDetail} />
+                <TheftReportModal vehicleDetail={vehicleDetail}></TheftReportModal>
               </Col>
             )}
           </Row>
@@ -146,6 +155,14 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
                       <Row className="mb-3">
                         <dt>Barva:</dt>
                         <dd>{vehicleDetail.color}</dd>
+                      </Row>
+                      <Row>
+                        <dt>Vlastník:</dt>
+                        <dd>
+                          <Link to={`/driver/${vehicleDetail.ownerId}`}>
+                            {vehicleDetail.ownerFullName}
+                          </Link>
+                        </dd>
                       </Row>
                     </Col>
                   </Row>
@@ -200,9 +217,13 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
 
           {/* todo add officialFullName */}
           <Row>
-            <Col>
+            <Col className="col-3">
               <dt>Naposledy upraveno:</dt>
-              <dd>{`${vehicleDetail.officialFullName}`}</dd>
+              <dd>
+                <Link to={`/user/${vehicleDetail.officialId}`}>
+                  {vehicleDetail.officialFullName}
+                </Link>
+              </dd>
             </Col>
           </Row>
         </>

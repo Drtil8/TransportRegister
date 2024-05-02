@@ -3,20 +3,21 @@ import { Button, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFoot
 import IOffenceType from "../interfaces/IOffenceType";
 import GoogleMapsAutocomplete from "../GoogleMapsAutocomplete";
 import IAddress from "../interfaces/IAddress";
+import { IPerson } from "../interfaces/IPersonDetail";
+import { formatDate } from "../../common/DateFormatter";
 
 interface OffenceReportDriverModalProps {
-  //visible: boolean;
-  //  onClose: () => void;
+  personDetail: IPerson | null;
 }
 
-const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => {
+const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = ({ personDetail }) => {
   const [modal, setModal] = useState(false);
   const [address, setAddress] = useState<IAddress | null>(null);
   const initialFormData = {
-    reportDriverFirstName: "default value bude fetchnuta z detailu",
-    reportDriverLastName: "default value bude fetchnuta z detailu",
-    reportDriverBirthNumber: "default value bude fetchnuta z detailu",
-    reportDriverBirthDate: "default value bude fetchnuta z detailu",
+    reportDriverFirstName: personDetail?.firstName,
+    reportDriverLastName: personDetail?.lastName,
+    reportDriverBirthNumber: personDetail?.birthNumber,
+    reportDriverBirthDate: formatDate(personDetail!.dateOfBirth),
     reportDriverId: 1, // TODO fetch from detail
     reportDriverType: 1,
     reportDriverDescription: "",
@@ -39,7 +40,7 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
     // fetch offence types
     if (modal === false) {
       try {
-        const response = await fetch('api/Offence/GetOffenceTypes', {
+        const response = await fetch('/api/Offence/GetOffenceTypes', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -69,7 +70,7 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
     }
 
     try {
-      const response = await fetch('api/Offence/ReportOffence', {
+      const response = await fetch('/api/Offence/ReportOffence', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -113,7 +114,7 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
     console.log(chosenVIN);
     if ((formData.reportDriverVehicleVIN !== "" && chosenVIN) || (formData.reportDriverVehicleSPZ !== "" && !chosenVIN)) {
       try {
-        const response = await fetch('api/Offence/GetVehicleForReport', {
+        const response = await fetch('/api/Offence/GetVehicleForReport', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
