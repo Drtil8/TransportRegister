@@ -2,6 +2,7 @@
 using TransportRegister.Server.Data;
 using TransportRegister.Server.DTOs.DatatableDTOs;
 using TransportRegister.Server.DTOs.TheftDTOs;
+using TransportRegister.Server.DTOs.UserDTOs;
 using TransportRegister.Server.DTOs.VehicleDTOs;
 using TransportRegister.Server.Models;
 
@@ -34,7 +35,9 @@ public class TheftRepository(AppDbContext context) : ITheftRepository
                 StolenOn = t.StolenOn,
                 ReportedOn = t.ReportedOn,
                 FoundOn = t.FoundOn,
+                ReturnedOn = t.ReturnedOn,
                 IsFound = t.FoundOn != null,
+                IsReturned = t.ReturnedOn != null,
             });
     }
 
@@ -44,7 +47,7 @@ public class TheftRepository(AppDbContext context) : ITheftRepository
             .AsNoTracking()
             .Include(t => t.StolenVehicle)
             .Include(t => t.StolenVehicle.LicensePlates)
-            .Where(t => t.FoundOn == null)  // isFound == false
+            .Where(t => t.FoundOn == null || t.ReturnedOn == null)  // isFound == false or isReturned == false -> is active theft
             .Select(t => new TheftListItemDto
             {
                 TheftId = t.TheftId,
@@ -62,7 +65,9 @@ public class TheftRepository(AppDbContext context) : ITheftRepository
                 StolenOn = t.StolenOn,
                 ReportedOn = t.ReportedOn,
                 FoundOn = t.FoundOn,
+                ReturnedOn = t.ReturnedOn,
                 IsFound = t.FoundOn != null,
+                IsReturned = t.ReturnedOn != null,
             });
     }
 
@@ -79,7 +84,7 @@ public class TheftRepository(AppDbContext context) : ITheftRepository
             .AsNoTracking()
             .Include(t => t.StolenVehicle)
             .Include(t => t.StolenVehicle.LicensePlates)
-            .Where(t => t.FoundOn == null)  // isFound == false
+            .Where(t => t.FoundOn == null || t.ReturnedOn == null)  // isFound == false
             .Select(t => new TheftListItemDto
             {
                 TheftId = t.TheftId,
@@ -97,7 +102,9 @@ public class TheftRepository(AppDbContext context) : ITheftRepository
                 StolenOn = t.StolenOn,
                 ReportedOn = t.ReportedOn,
                 FoundOn = t.FoundOn,
+                ReturnedOn = t.ReturnedOn,
                 IsFound = t.FoundOn != null,
+                IsReturned = t.ReturnedOn != null,
             })
             .ToListAsync();
     }
@@ -105,20 +112,24 @@ public class TheftRepository(AppDbContext context) : ITheftRepository
     public async Task<TheftDetailDto> GetTheftById(int theftId)
     {
         return await _context.Thefts
+            .AsNoTracking()
+            .Where(t => t.TheftId == theftId)
             .Include(t => t.StolenVehicle)
             .Include(t => t.StolenVehicle.LicensePlates)
             .Include(t => t.StolenVehicle.Owner)
-            .Where(t => t.TheftId == theftId)
             .Select(t => new TheftDetailDto
             {
                 TheftId = t.TheftId,
+                Address = OffenceRepository.GetAddresAsString(t.Address),
                 StolenOn = t.StolenOn,
                 ReportedOn = t.ReportedOn,
                 FoundOn = t.FoundOn,
+                ReturnedOn = t.ReturnedOn,
                 IsFound = t.FoundOn != null,
+                IsReturned = t.ReturnedOn != null,
                 Description = t.Description,
                 VehicleId = t.VehicleId,
-                StolenVehicle = new DTOs.VehicleDTOs.VehicleListItemDto
+                StolenVehicle = new VehicleListItemDto
                 {
                     Id = t.StolenVehicle.VehicleId,
                     VIN = t.StolenVehicle.VIN,
@@ -134,6 +145,21 @@ public class TheftRepository(AppDbContext context) : ITheftRepository
                     OwnerId = t.StolenVehicle.OwnerId,
                     OwnerFullName = t.StolenVehicle.Owner.FirstName + " " + t.StolenVehicle.Owner.LastName,
                 },
+                Official = t.ProcessedByOfficial == null ? null : new UserSimpleDto
+                {
+                    Id = t.ProcessedByOfficial.Id,
+                    FullName = t.ProcessedByOfficial.FirstName + " " + t.ProcessedByOfficial.LastName
+                },
+                OfficerReported = new UserSimpleDto
+                {
+                    Id = t.ReportedByOfficer.Id,
+                    FullName = t.ReportedByOfficer.FirstName + " " + t.ReportedByOfficer.LastName
+                },
+                OfficerFound = t.ResolvedByOfficer == null ? null : new UserSimpleDto
+                {
+                    Id = t.ResolvedByOfficer.Id,
+                    FullName = t.ResolvedByOfficer.FirstName + " " + t.ResolvedByOfficer.LastName
+                }
             })
             .FirstOrDefaultAsync();
     }
@@ -143,6 +169,15 @@ public class TheftRepository(AppDbContext context) : ITheftRepository
         var newTheft = new Theft
         {
             StolenOn = theftDto.StolenOn,
+            Address = new Address
+            {
+                Street = theftDto.Address.Street,
+                City = theftDto.Address.City,
+                State = theftDto.Address.State,
+                HouseNumber = theftDto.Address.HouseNumber,
+                PostalCode = theftDto.Address.PostalCode,
+                Country = theftDto.Address.Country
+            },
             ReportedOn = DateTime.Now,
             VehicleId = theftDto.VehicleId,
             ReportingPersonId = theftDto.ReportingPersonId,
@@ -154,13 +189,25 @@ public class TheftRepository(AppDbContext context) : ITheftRepository
         return newTheft.TheftId;
     }
 
-    public async Task ReportTheftDiscovery(int theftId)
+    public async Task ReportTheftDiscovery(int theftId, string officerId)
     {
         var theft = await _context.Thefts
             .Where(t => t.TheftId == theftId)
             .FirstOrDefaultAsync()
                 ?? throw new ApplicationException("Theft not found");
         theft.FoundOn = DateTime.Now;
+        theft.ResolvingOfficerId = officerId;
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task ReportTheftReturn(int theftId, string officialId)
+    {
+        var theft = await _context.Thefts
+            .Where(t => t.TheftId == theftId)
+            .FirstOrDefaultAsync()
+                ?? throw new ApplicationException("Theft not found");
+        theft.ReturnedOn = DateTime.Now;
+        theft.OfficialId = officialId;
         await _context.SaveChangesAsync();
     }
 }

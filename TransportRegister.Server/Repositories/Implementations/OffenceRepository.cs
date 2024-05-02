@@ -132,9 +132,93 @@ namespace TransportRegister.Server.Repositories.Implementations
             return query;
         }
 
+        public static string GetAddresAsString(Address address)
+        {
+            var finalString = "";
+            bool isFirst = true;
+
+            if(address == null)
+            {
+                return finalString;
+            }
+
+            if(address.Country != null && address.Country != "")
+            {
+                isFirst = false;
+                finalString += address.Country;
+            }
+
+            if(address.State != null && address.State != "") {
+                if (!isFirst)
+                {
+                    finalString += ", ";
+                }
+                else
+                {
+                    isFirst = false;
+                }
+                finalString += address.State;
+            }
+
+            if(address.City != null && address.City != "")
+            {
+                if (!isFirst)
+                {
+                    finalString += ", ";
+                }
+                else
+                {
+                    isFirst = false;
+                }
+                finalString += address.City;
+            }
+
+            if(address.Street != null && address.Street != "")
+            {
+                if (!isFirst)
+                {
+                    finalString += ", ";
+                }
+                else
+                {
+                    isFirst = false;
+                }
+                finalString += address.Street;
+            }
+
+            if(address.HouseNumber != 0)
+            {
+                if (!isFirst)
+                {
+                    finalString += ", ";
+                }
+                else
+                {
+                    isFirst = false;
+                }
+                finalString += address.HouseNumber.ToString();
+            }
+
+            if(address.PostalCode != 0)
+            {
+                if (!isFirst)
+                {
+                    finalString += ", ";
+                }
+                else
+                {
+                    isFirst = false;
+                }
+                finalString += address.PostalCode.ToString();
+            }
+
+            return finalString;
+        }
+
         public async Task<OffenceDetailDto> GetOffenceByIdAsync(int offenceId, User user)
         {
             var offenceDto = await _context.Offences
+                .AsNoTracking()
                 .Where(of => of.OffenceId == offenceId)
                 .Include(of => of.OffenceOnVehicle)
                 .Include(of => of.OffenceOnVehicle.LicensePlates)
@@ -144,14 +228,14 @@ namespace TransportRegister.Server.Repositories.Implementations
                 {
                     OffenceId = of.OffenceId,
                     ReportedOn = of.ReportedOn,
-                    //Address = of.Address, // TODO
+                    Address = OffenceRepository.GetAddresAsString(of.Address),
                     Type = of.OffenceType.Name,
                     IsValid = of.IsValid,
                     IsApproved = of.IsApproved,
                     Description = of.Description,
                     Vehicle = of.VehicleId == null ?
                     null :
-                    new VehicleSimpleDto // TODO -> doesnt have to be specified, can be null
+                    new VehicleSimpleDto
                     {
                         VehicleId = of.OffenceOnVehicle.VehicleId,
                         Manufacturer = of.OffenceOnVehicle.Manufacturer,
@@ -253,22 +337,21 @@ namespace TransportRegister.Server.Repositories.Implementations
 
         public async Task<Offence> ReportOffenceAsync(OffenceCreateDto offenceDto, User activeUser)
         {
-            // TODO -> implement
             var offence = new Offence
             {
                 OffenceTypeId = offenceDto.OffenceTypeId,
                 ReportedOn = DateTime.Now,
                 Description = offenceDto.Description,
                 PenaltyPoints = offenceDto.PenaltyPoints,
-                //Address = new Address // TODO
-                //{
-                //    City = offenceDto.Address.City,
-                //    Street = offenceDto.Address.Street,
-                //    State = offenceDto.Address.State,
-                //    Country = offenceDto.Address.Country,
-                //    HouseNumber = offenceDto.Address.HouseNumber,
-                //    PostalCode = offenceDto.Address.PostalCode
-                //},
+                Address = new Address
+                {
+                    Street = offenceDto.Address.Street,
+                    City = offenceDto.Address.City,
+                    State = offenceDto.Address.State,
+                    HouseNumber = offenceDto.Address.HouseNumber,
+                    PostalCode = offenceDto.Address.PostalCode,
+                    Country = offenceDto.Address.Country
+                },
                 IsApproved = false,
                 IsValid = true,
                 VehicleId = offenceDto.VehicleId != 0 ? offenceDto.VehicleId : null,
