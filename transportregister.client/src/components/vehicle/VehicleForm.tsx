@@ -1,9 +1,10 @@
 ﻿import { useState } from 'react';
 import { Button, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap';
-import { IVehicleDetail } from '../interfaces/IVehicleDetail';
+import { ICar, IVehicleDetail } from '../interfaces/IVehicleDetail';
 
 export const VehicleForm: React.FC<{ fetchedVehicle: IVehicleDetail | null }> = ({ fetchedVehicle }) => {
-  const [selectedVehicleType, setSelectedVehicleType] = useState<string>('Car');
+  const [selectedVehicleType, setSelectedVehicleType] = useState<string>(
+    fetchedVehicle?.vehicleType ?? 'Car');
   const [image, setImage] = useState<string | null>(null);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -196,7 +197,8 @@ export const VehicleForm: React.FC<{ fetchedVehicle: IVehicleDetail | null }> = 
           <Col>
             <FormGroup>
               <Label for="numberOfDoors">Počet dveří:</Label>
-              <Input type="number" name="numberOfDoors" min="1" defaultValue="5" />
+              <Input type="number" name="numberOfDoors" min="1"
+                defaultValue={fetchedVehicle ? (fetchedVehicle as ICar).numberOfDoors : "5"} />
             </FormGroup>
           </Col>
         </Row>
@@ -251,7 +253,7 @@ export const VehicleForm: React.FC<{ fetchedVehicle: IVehicleDetail | null }> = 
 
       <Row className="my-3">
         <Col className="d-flex justify-content-center">
-          <Button type="submit" size="lg" color="primary">Zaregistrovat</Button>
+          <Button type="submit" size="lg" color="primary">Uložit</Button>
         </Col>
       </Row>
     </Form>

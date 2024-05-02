@@ -81,7 +81,6 @@ namespace TransportRegister.Server.Controllers
                 return BadRequest(ModelState);
             }
 
-
             Vehicle vehicle = VehicleDtoTransformer.TransformToEntity(vehicleDto);
             if (vehicle == null)
             {
@@ -107,16 +106,17 @@ namespace TransportRegister.Server.Controllers
             }
             else
             {
+                vehicle.LicensePlates = [newLicensePlate];
                 if (licensePlates.Last().LicensePlate != vehicleDto.CurrentLicensePlate)
                 {
-                    // todo fix this fucking SaveVehicle 1 method do everything dto hell
+                    // todo fix licenses plate history
                     // Update record of license plate history
+                    //vehicle.LicensePlates = [newLicensePlate];
                     //licensePlates.Add(newLicensePlate);
                     //vehicle.LicensePlates = licensePlates;
-                    ////vehicle.LicensePlates.Add(newLicensePlate);     // cannot be this way
+                    //vehicle.LicensePlates.Add(newLicensePlate);     // cannot be this way
                 }
             }
-
             await _vehicleRepository.SaveVehicleAsync(vehicle);
 
             VehicleDetailDto updatedDto = VehicleDtoTransformer.TransformToDto(vehicle);
