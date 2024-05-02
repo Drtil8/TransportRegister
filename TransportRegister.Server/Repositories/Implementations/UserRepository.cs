@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Linq.Dynamic.Core;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using TransportRegister.Server.Data;
 using TransportRegister.Server.DTOs.DatatableDTOs;
 using TransportRegister.Server.DTOs.UserDTOs;
@@ -89,8 +90,11 @@ namespace TransportRegister.Server.Repositories.Implementations
                 {
                     Id = u.Id,
                     Email = u.Email,
-                    FullName = $"{u.FirstName} {u.LastName}",
-                    Role = UserRepository.GetUserRole(u.UserType),
+                    FullName = u.FirstName + " " + u.LastName,
+                    Role = u.UserType == "User" ? "Administrátor" :
+                           u.UserType == "Official" ? "Úředník" :
+                           u.UserType == "Officer" ? "Policista" :
+                           "Neznámý",
                     IsValid = u.IsValid,
                     IsActive = u.IsActive
                 });
@@ -109,9 +113,16 @@ namespace TransportRegister.Server.Repositories.Implementations
                 };
             }
 
-            query = query.OrderByDescending(p => p.Id);
-
-            return query;
+            if (dtParams.Sorting.Any())
+            {
+                Sorting sorting = dtParams.Sorting.First();
+                return query.OrderBy($"{sorting.Id} {sorting.Dir}")
+                    .ThenByDescending(v => v.Id);
+            }
+            else
+            {
+                return query.OrderByDescending(v => v.Id);
+            }
         }
 
         public async Task<TUser> SaveUserAsync<TUser>(UserCreateDto userDto, string role) where TUser : User, new()
