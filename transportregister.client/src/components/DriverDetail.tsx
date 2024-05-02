@@ -12,7 +12,6 @@ import DriverCreateModal from './DriverCreateModal';
 import OffenceReportDriverModal from './offence/OffenceReportDriverModal';
 import AuthContext from '../auth/AuthContext';
 
-// TODO fetch the actual driver
 interface DriverDetailState {
   activeTab: string;
   personDetail: IPerson | null;
@@ -76,7 +75,6 @@ export class DriverDetail extends Component<object, DriverDetailState> {
       }));
       switch (person.personType) {
         case 'Driver':
-          //parsedPerson = person as IOwner;
           let driver: IDriver = person as IDriver;
           let licensesStrings = driver.licenses.map(license => license.vehicleType);
           this.setState(prevState => ({
@@ -87,7 +85,6 @@ export class DriverDetail extends Component<object, DriverDetailState> {
               hasSuspendedLicense: driver.hasSuspendedLicense,
               lastCrimeCommited: '',
               drivingSuspendedUntil: driver.drivingSuspendedUntil ? formatDate(driver.drivingSuspendedUntil) : '',
-              /*licenses: driver.licenses,*/
               licensesStrings: licensesStrings,
               disableInput: true,
             },
@@ -110,14 +107,12 @@ export class DriverDetail extends Component<object, DriverDetailState> {
 
   handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    //this.setState({ [name]: value } as unknown as Pick<DriverFormState, keyof DriverFormState>);
     this.setState(prevState => ({
       form: {
         ...prevState.form,
         [name]: value
       }
     }));
-    //console.log(name, ' ', value);
   }
 
   handleChangeCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -131,7 +126,7 @@ export class DriverDetail extends Component<object, DriverDetailState> {
   };
 
   switchEditState = () => {
-    if (!this.state.form.disableInput) { //zrusit
+    if (!this.state.form.disableInput) { //zruseni
       console.log('zrusit')
       this.setState(prevState => ({
         form: {
@@ -143,24 +138,22 @@ export class DriverDetail extends Component<object, DriverDetailState> {
     this.setState(prevState => ({
       form: {
         ...prevState.form,
-        disableInput: !prevState.form.disableInput // Toggle the value of edit
+        disableInput: !prevState.form.disableInput
       }
     }));
     this.setState({activeTab : 'license'});
-    //console.log('switching state', this.state.form.disableInput);
   }
 
   putPersonData = async () => {
     this.setState(prevState => ({
       form: {
         ...prevState.form,
-        disableInput: !prevState.form.disableInput // Toggle the value of edit
+        disableInput: !prevState.form.disableInput
       }
     }));
     console.log('Putting Data', this.state.form.licensesStrings);
 
     const result: string[] = this.state.form.licensesStrings.filter(item => !this.state.hadLicenses.includes(item));
-    //console.log(hadLicenses);
     console.log(result);
     const params = result;
     try {
@@ -250,8 +243,6 @@ export class DriverDetail extends Component<object, DriverDetailState> {
                 <th>Model</th>
                 <th>Barva</th>
                 <th>Rok výroby</th>
-                {/*<th>Owner ID</th>*/}
-                {/*<th>Majitel</th>*/}
                 <th>Zobrazit</th>
               </tr>
             </thead>
@@ -266,8 +257,6 @@ export class DriverDetail extends Component<object, DriverDetailState> {
                   <td>{vehicle.model}</td>
                   <td>{vehicle.color}</td>
                   <td>{vehicle.manufacturedYear}</td>
-                  {/*<td>{vehicle.ownerId}</td>*/}
-                  {/*<td>{vehicle.ownerFullName}</td>*/}
                   <td>
                     <Link to={`/vehicle/${vehicle.id}`}>
                       <DetailIcon />
@@ -354,11 +343,6 @@ export class DriverDetail extends Component<object, DriverDetailState> {
                         <dd>{person?.birthNumber}</dd>
                       </Col>
                     </Row>
-                    {/*<Row>*/}
-                    {/*  {!isDriver && (*/}
-                    {/*    <DriverCreateModal person={person as IPerson}></DriverCreateModal>*/}
-                    {/*  )}*/}
-                    {/*</Row>*/}
                     <h1></h1>
                     <div className="licenceImage">
                       {(person?.imageBase64 != undefined) && (
@@ -432,7 +416,6 @@ export class DriverDetail extends Component<object, DriverDetailState> {
                           </React.Fragment>
                         ))}
                         <br></br>
-                        {/*{infoButtons}*/}
                       </Form>
                     </Col>
                   </Row>
