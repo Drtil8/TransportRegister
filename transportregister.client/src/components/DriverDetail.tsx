@@ -1,5 +1,5 @@
 ﻿
-import { ChangeEvent, Component } from 'react';
+import React, { ChangeEvent, Component } from 'react';
 import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col, FormGroup, Input, Label, Form, Button, Table } from 'reactstrap';
 import { IPerson, IDriver, IOwner } from './interfaces/IPersonDetail';
 import IDriverFormState from './interfaces/IDriverForm';
@@ -8,12 +8,14 @@ import { Link } from 'react-router-dom';
 import DetailIcon from '@mui/icons-material/VisibilityOutlined';
 import { formatDate } from '../common/DateFormatter';
 import IOffenceListSimple from './interfaces/IOffenceListSimple';
+import DriverCreateModal from './DriverCreateModal';
 
 // TODO fetch the actual driver
 interface DriverDetailState {
   activeTab: string;
   personDetail: IPerson | null;
   form: IDriverFormState;
+  hadLicenses: string[];
 }
 
 export class DriverDetail extends Component<object, DriverDetailState> {
@@ -22,29 +24,14 @@ export class DriverDetail extends Component<object, DriverDetailState> {
     this.state = {
       activeTab: 'detail',
       personDetail: null,
+      hadLicenses: [],
       form: {
-        firstName: '',
-        lastName: '',
-        birthNumber1: 0,
-        birthNumber2: 0,
-        sex_Male: true,
-        dateOfBirth: "TODO DATE",
-        //address: {
-        //  street: '',
-        //  city: '',
-        //  state: '',
-        //  country: '',
-        //  houseNumber: '',
-        //  postalCode: ''
-        //},
-        image: '',
-        //officialId: '',
         driversLicenseNumber: '0',
         badPoints: 0,
         hasSuspendedLicense: false,
         lastCrimeCommited: '',
         drivingSuspendedUntil: '',
-        licenses: [],
+        licensesStrings: [],
         disableInput: true,
       }
     };
@@ -87,6 +74,7 @@ export class DriverDetail extends Component<object, DriverDetailState> {
         case 'Driver':
           //parsedPerson = person as IOwner;
           let driver: IDriver = person as IDriver;
+          let licensesStrings = driver.licenses.map(license => license.vehicleType);
           this.setState(prevState => ({
             form: {
               ...prevState.form,
@@ -95,13 +83,15 @@ export class DriverDetail extends Component<object, DriverDetailState> {
               hasSuspendedLicense: driver.hasSuspendedLicense,
               lastCrimeCommited: '',
               drivingSuspendedUntil: driver.drivingSuspendedUntil ? formatDate(driver.drivingSuspendedUntil) : '',
-              licenses: driver.licenses,
+              /*licenses: driver.licenses,*/
+              licensesStrings: licensesStrings,
               disableInput: true,
-            }
+            },
+            hadLicenses: licensesStrings
           }));
           this.setState({ personDetail: driver });
           break;
-        case 'Owner':
+        case 'Person':
           parsedPerson = person as IOwner;
           this.setState({ personDetail: parsedPerson });
           break;
@@ -126,18 +116,26 @@ export class DriverDetail extends Component<object, DriverDetailState> {
     //console.log(name, ' ', value);
   }
 
-  handleChangeCheckbox = (e: ChangeEvent<HTMLInputElement>) => {
+  handleChangeCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
     this.setState(prevState => ({
       form: {
         ...prevState.form,
-        [name]: checked // Update the value associated with the checkbox name
+        licensesStrings: checked ? [...prevState.form.licensesStrings, name] : prevState.form.licensesStrings.filter(l => l !== name)
       }
     }));
-    //console.log(name, ' ', checked);
-  }
+  };
 
   switchEditState = () => {
+    if (!this.state.form.disableInput) { //zrusit
+      console.log('zrusit')
+      this.setState(prevState => ({
+        form: {
+          ...prevState.form,
+          licensesStrings: prevState.hadLicenses,
+        }
+      }));
+    }
     this.setState(prevState => ({
       form: {
         ...prevState.form,
@@ -147,30 +145,51 @@ export class DriverDetail extends Component<object, DriverDetailState> {
     //console.log('switching state', this.state.form.disableInput);
   }
 
-  putPersonData= () => {
+  putPersonData = async () => {
     this.setState(prevState => ({
       form: {
         ...prevState.form,
         disableInput: !prevState.form.disableInput // Toggle the value of edit
       }
     }));
-    //console.log('switching state', this.state.form.disableInput);
+    console.log('Putting Data', this.state.form.licensesStrings);
+
+    const result: string[] = this.state.form.licensesStrings.filter(item => !this.state.hadLicenses.includes(item));
+    //console.log(hadLicenses);
+    console.log(result);
+    const params = result;
+    try {
+      const urlstring: string = '/api/Persons/' + this.state.personDetail?.personId + '/AddDriversLicense';
+      const response = await fetch(urlstring, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(params)
+      });
+
+      if (response.ok) {
+        console.log('put ok');
+        const appended: string[] = [...this.state.hadLicenses, ...params];
+        this.setState({ hadLicenses: appended });
+      }
+      else {
+        console.error("Create vehicle failed");
+      }
+    }
+    catch (error) {
+      console.error('Create vehicle failed: ' + error);
+    }
   }
 
 
 
 
   render() {
-    const { activeTab, personDetail } = this.state;
+    const { activeTab } = this.state;
     const form = this.state.form;
     const person = this.state.personDetail;
-    //console.log("logging person", person);
     const isDriver: boolean = (person != null && person.personType == 'Driver');
-    //console.log("is driver", isDriver);
-    let driver: IDriver | undefined = undefined;
-    if (isDriver)
-      driver = person as IDriver;
-
 
 
     const hardoffences: IOffenceListSimple[] = [
@@ -202,7 +221,6 @@ export class DriverDetail extends Component<object, DriverDetailState> {
       <div>
         <Button onClick={this.switchEditState} color="danger">Zrušit</Button>
         <Button onClick={this.putPersonData} color="primary">Potvrdit</Button>
-        {/*TODO Put*/}
       </div>
     if (this.state.form.disableInput) {
       infoButtons = <Button onClick={this.switchEditState} color="primary">Editovat</Button>;
@@ -210,9 +228,6 @@ export class DriverDetail extends Component<object, DriverDetailState> {
 
 
     let vehicles = person?.vehicles;
-    //let vehicles = hardVehicles;
-    //console.log("vehicles", person?.imageBase64);
-    //vehicles = null;
 
     let vehiclesTab =
       (vehicles == undefined) ?
@@ -231,8 +246,8 @@ export class DriverDetail extends Component<object, DriverDetailState> {
                 <th>Model</th>
                 <th>Barva</th>
                 <th>Rok výroby</th>
-                <th>Owner ID</th>
-                <th>Majitel</th>
+                {/*<th>Owner ID</th>*/}
+                {/*<th>Majitel</th>*/}
                 <th>Zobrazit</th>
               </tr>
             </thead>
@@ -247,8 +262,8 @@ export class DriverDetail extends Component<object, DriverDetailState> {
                   <td>{vehicle.model}</td>
                   <td>{vehicle.color}</td>
                   <td>{vehicle.manufacturedYear}</td>
-                  <td>{vehicle.ownerId}</td>
-                  <td>{vehicle.ownerFullName}</td>
+                  {/*<td>{vehicle.ownerId}</td>*/}
+                  {/*<td>{vehicle.ownerFullName}</td>*/}
                   <td>
                     <Link to={`/vehicle/${vehicle.id}`}>
                       <DetailIcon />
@@ -260,9 +275,10 @@ export class DriverDetail extends Component<object, DriverDetailState> {
           </Table>
         );
 
-    //console.log(person?.sex_Male);
-
+    const dateOfBirthString = (person != null) ? formatDate(person!.dateOfBirth) : '';
     const imgsrcString = "data:image/png;base64," + person?.imageBase64;
+    const licenseBreakpointList = ['A', 'B', 'C', 'D', 'DE'];
+
     const contents = (
       <div className="container">
         <h1>{person?.firstName} {person?.lastName}</h1>
@@ -270,7 +286,7 @@ export class DriverDetail extends Component<object, DriverDetailState> {
           <div className="col-9">
             <Nav tabs className="flex-row-reverse">
               <NavItem>
-                <NavLink active={activeTab === 'vehicle'} onClick={() => this.toggleTab('vehicle')}> ?Vozidla </NavLink>
+                <NavLink active={activeTab === 'vehicle'} onClick={() => this.toggleTab('vehicle')}> Vozidla </NavLink>
               </NavItem>
               {isDriver &&
                 (<NavItem>
@@ -290,54 +306,46 @@ export class DriverDetail extends Component<object, DriverDetailState> {
                   <Col>
                     <br></br>
                     <h5>Osobní informace</h5>
-                    <p>{`${personDetail?.firstName} ${personDetail?.lastName}`}</p>
-                    <Form>
-                      <FormGroup floating>
-                        <Input id="firstName" name="firstName" placeholder="firstName" type="text" value={form.firstName} onChange={this.handleChange} required disabled={form.disableInput} />
-                        <Label for="firstName">Křestní jméno</Label>
-                      </FormGroup>
-
-                      <FormGroup floating>
-                        <Input id="firstName" name="lastName" placeholder="lastName" type="text" value={form.lastName} onChange={this.handleChange} required disabled={form.disableInput} />
-                        <Label for="lastName">Příjmení:</Label>
-                      </FormGroup>
-
-                      <FormGroup>
-                        <Label for="birthNumber">Rodné číslo:</Label>
-                        <div className="birthNumberInput">
-                          <Input type="number" id="birthNumber1" name="birthNumber1" maxLength={6} value={form.birthNumber1} onChange={this.handleChange} required disabled={true} />
-                          <h4>/</h4>
-                          <Input type="number" id="birthNumber2" name="birthNumber2" min={0} max={99999} value={form.birthNumber2} onChange={this.handleChange} required disabled={true} />
-                        </div>
-                      </FormGroup>
-
-                      {/*<FormGroup check>*/}
-                      {/*  <Label check>*/}
-                      {/*    <Input type="checkbox" id="sex_Male" name="sex_Male" value="true" checked={form.sex_Male} onChange={this.handleChangeCheckbox} disabled={form.disableInput} />*/}
-                      {/*    Muž*/}
-                      {/*  </Label>*/}
-                      {/*</FormGroup>*/}
-                      {person?.sex_Male ?
-                        (<p>Muž</p>)
-                        :
-                        (<p>Žena</p>)}
-                      {/*TODO adresa*/}
-                      {/*TODO Image*/}
-
-                      {/*TODO License number format check*/}
-                      <h1></h1>
-                      <h5>TODO</h5>
-                      <p>adresa bydlení</p>
-                      <div className="licenceImage">
-                        {(person?.imageBase64 != undefined) && (
-                          <img src={imgsrcString} alt={`Fotka: ${person?.firstName} ${person?.lastName}`} />
-                        )}
-                      </div>
-
-                      <div>
-                        {infoButtons}
-                      </div>
-                    </Form>
+                    <Row>
+                      <Col sm="6" lg="4">
+                        <dt>Křestní jméno</dt>
+                        <dd>{person?.firstName}</dd>
+                      </Col>
+                      <Col sm="6" lg="4">
+                        <dt>Příjmení</dt>
+                        <dd>{person?.lastName}</dd>
+                      </Col>
+                      <Col sm="6" lg="4">
+                        <dt>Pohlaví</dt>
+                        <dd>
+                          {person?.sex_Male ?
+                            (<p>Muž</p>)
+                            :
+                            (<p>Žena</p>)}
+                        </dd>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col sm="6" lg="8">
+                        <dt>Datum narození</dt>
+                        <dd>{dateOfBirthString}</dd>
+                      </Col>
+                      <Col sm="6" lg="4">
+                        <dt>Rodné číslo</dt>
+                        <dd>{person?.birthNumber}</dd>
+                      </Col>
+                    </Row>
+                    <Row>
+                      {!isDriver && (
+                        <DriverCreateModal person={person as IPerson}></DriverCreateModal>
+                      )}
+                    </Row>
+                    <h1></h1>
+                    <div className="licenceImage">
+                      {(person?.imageBase64 != undefined) && (
+                        <img src={imgsrcString} alt={`Fotka: ${person?.firstName} ${person?.lastName}`} />
+                      )}
+                    </div>
                   </Col>
                 </Row>
               </TabPane>
@@ -382,87 +390,30 @@ export class DriverDetail extends Component<object, DriverDetailState> {
                   <Row>
                     <Col>
                       <br></br>
+                      <dt>Číslo řidičského průkazu:</dt>
+                      <dd>{form.driversLicenseNumber}</dd>
                       <Form id="licenceForm">
-                        <FormGroup floating className={driver?.hasSuspendedLicense ? "suspendedLicence" : ""}>
-                          {/*<div >*/}
-                            <Input id="driversLicenseNumber" name="driversLicenseNumber" placeholder="driversLicenseNumber" type="text" maxLength={8} value={form.driversLicenseNumber} onChange={this.handleChange} required disabled={form.disableInput} />
-                            <Label for="driversLicenseNumber">Číslo řidičského průkazu</Label>
-                          {/*</div>*/}
-                        </FormGroup>
-
-                        <p>Oprávněn řídit:</p>
-                        <FormGroup check inline>
-                          <Input type="checkbox" id="AM" name="AM" value="false" disabled={form.disableInput} />
-                          <Label check htmlFor="AM">AM</Label>
-                        </FormGroup>
-                        <FormGroup check inline>
-                          <Input type="checkbox" id="A1" name="A1" value="false" disabled={form.disableInput} />
-                          <Label check htmlFor="A1">A1</Label>
-                        </FormGroup>
-                        <FormGroup check inline>
-                          <Input type="checkbox" id="A2" name="A2" value="false" disabled={form.disableInput} />
-                          <Label check htmlFor="A2">A2</Label>
-                        </FormGroup>
-                        <FormGroup check inline>
-                          <Input type="checkbox" id="A" name="A" value="false" disabled={form.disableInput} />
-                          <Label check htmlFor="A">A</Label>
-                        </FormGroup>
+                        <dt>Oprávněn řídit:</dt>
+                        {['AM', 'A1', 'A2', 'A', 'B1', 'B', 'C1', 'C', 'D1', 'D', 'BE', 'C1E', 'CE', 'D1E', 'DE', 'T'].map((license) => (
+                          <React.Fragment key={license}>
+                            <FormGroup check inline key={license}>
+                              <Input
+                                type="checkbox"
+                                id={license}
+                                name={license}
+                                checked={form.licensesStrings.includes(license)}
+                                onChange={this.handleChangeCheckbox}
+                                disabled={form.disableInput || (this.state.hadLicenses.includes(license))}
+                              />
+                              <Label check htmlFor={license}>
+                                {license}
+                              </Label>
+                            </FormGroup>
+                            {licenseBreakpointList.includes(license) ? <br></br> : null}
+                          </React.Fragment>
+                        ))}
                         <br></br>
-                        <FormGroup check inline>
-                          <Input type="checkbox" id="B1" name="B1" value="false" disabled={form.disableInput} />
-                          <Label check htmlFor="B1">B1</Label>
-                        </FormGroup>
-                        <FormGroup check inline>
-                          <Input type="checkbox" id="B" name="B" value="false" disabled={form.disableInput} />
-                          <Label check htmlFor="B">B</Label>
-                        </FormGroup>
-                        <br></br>
-                        <FormGroup check inline>
-                          <Input type="checkbox" id="C1" name="C1" value="false" disabled={form.disableInput} />
-                          <Label check htmlFor="C1">C1</Label>
-                        </FormGroup>
-                        <FormGroup check inline>
-                          <Input type="checkbox" id="C" name="C" value="false" disabled={form.disableInput} />
-                          <Label check htmlFor="C">C</Label>
-                        </FormGroup>
-                        <br></br>
-                        <FormGroup check inline>
-                          <Input type="checkbox" id="D1" name="D1" value="false" disabled={form.disableInput} />
-                          <Label check htmlFor="D1">D1</Label>
-                        </FormGroup>
-                        <FormGroup check inline>
-                          <Input type="checkbox" id="D" name="D" value="false" disabled={form.disableInput} />
-                          <Label check htmlFor="D">D</Label>
-                        </FormGroup>
-                        <br></br>
-                        <FormGroup check inline>
-                          <Input type="checkbox" id="BE" name="BE" value="false" disabled={form.disableInput} />
-                          <Label check htmlFor="BE">BE</Label>
-                        </FormGroup>
-                        <FormGroup check inline>
-                          <Input type="checkbox" id="C1E" name="C1E" value="false" disabled={form.disableInput} />
-                          <Label check htmlFor="C1E">C1E</Label>
-                        </FormGroup>
-                        <FormGroup check inline>
-                          <Input type="checkbox" id="CE" name="CE" value="false" disabled={form.disableInput} />
-                          <Label check htmlFor="CE">CE</Label>
-                        </FormGroup>
-                        <FormGroup check inline>
-                          <Input type="checkbox" id="D1E" name="D1E" value="false" disabled={form.disableInput} />
-                          <Label check htmlFor="D1E">D1E</Label>
-                        </FormGroup>
-                        <FormGroup check inline>
-                          <Input type="checkbox" id="DE" name="DE" value="false" disabled={form.disableInput} />
-                          <Label check htmlFor="DE">DE</Label>
-                        </FormGroup>
-                        <br></br>
-                        <FormGroup check inline>
-                          <Input type="checkbox" id="T" name="T" value="false" disabled={form.disableInput} />
-                          <Label check htmlFor="T">T</Label>
-                        </FormGroup>
-                        <div>
-                          {infoButtons}
-                        </div>
+                        {infoButtons}
                       </Form>
                     </Col>
                   </Row>
