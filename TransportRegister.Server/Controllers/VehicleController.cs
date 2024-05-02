@@ -1,22 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Dynamic.Core;
 using System.Security.Claims;
 using TransportRegister.Server.DTOs.DatatableDTOs;
 using TransportRegister.Server.DTOs.LicensePlateHistoryDTOs;
-using TransportRegister.Server.DTOs.UserDTOs;
 using TransportRegister.Server.DTOs.VehicleDTOs;
 using TransportRegister.Server.Models;
 using TransportRegister.Server.Repositories;
 
 namespace TransportRegister.Server.Controllers
 {
-    // todo when not authorized returns 404 instead of 401 -> create custom error handler in frontend
-    // todo adjust roles
-    //[Authorize]       // All roles can access
-    //[Authorize(Roles = "Admin")]
-    //[Authorize(Roles = "Official")]
+    /// <summary>
+    /// Controller for handling vehicle related data operations such as retrieval, modification, and deletion.
+    /// </summary>
     [Authorize(Roles = "Official,Officer")]
     [Route("api/[controller]")]
     [ApiController]
@@ -24,13 +20,11 @@ namespace TransportRegister.Server.Controllers
     {
         private readonly IVehicleRepository _vehicleRepository;
         private readonly IPersonRepository _personRepository;
-        private readonly IUserRepository _userRepository;
         
-        public VehicleController(IVehicleRepository vehicleRepository, IPersonRepository ownerRepository, IUserRepository userRepository)
+        public VehicleController(IVehicleRepository vehicleRepository, IPersonRepository ownerRepository)
         {
             _vehicleRepository = vehicleRepository;
             _personRepository = ownerRepository;
-            _userRepository = _userRepository;
         }
 
         /// <summary>
@@ -54,7 +48,11 @@ namespace TransportRegister.Server.Controllers
                 TotalRowCount = totalRowCount
             });
         }
-
+        
+        /// <summary>
+        /// Retrieves a list of all vehicle types available in the system.
+        /// </summary>
+        /// <returns>List of vehicle types</returns>
         [HttpGet("VehicleTypes")]
         public async Task<ActionResult<List<string>>> GetVehicleTypes()
         {
@@ -64,6 +62,11 @@ namespace TransportRegister.Server.Controllers
             return Ok(vehicleTypes);
         }
 
+        /// <summary>
+        /// Retrieves detailed information about a specific vehicle by its ID.
+        /// </summary>
+        /// <param name="vehicleId">The ID of the vehicle to retrieve</param>
+        /// <returns>Vehicle details if found, otherwise returns NotFound result</returns>
         [HttpGet("{vehicleId}")]
         public async Task<ActionResult<VehicleDetailDto>> GetVehicleById(int vehicleId)
         {
@@ -80,6 +83,11 @@ namespace TransportRegister.Server.Controllers
             return Ok(vehicleDto);
         }
 
+        /// <summary>
+        /// Saves a vehicle to the database. If the vehicle is new, it will be added. If the vehicle exists, it will be updated.
+        /// </summary>
+        /// <param name="vehicleDto">Vehicle data transfer object containing vehicle details to save or update</param>
+        /// <returns>Returns BadRequest if model state is invalid, otherwise returns updated vehicle details</returns>
         [Authorize(Roles = "Official")]
         [HttpPost("SaveVehicle")]
         public async Task<ActionResult<VehicleDetailDto>> SaveVehicle([FromBody] VehicleDetailDto vehicleDto)
@@ -131,6 +139,11 @@ namespace TransportRegister.Server.Controllers
             return Ok(updatedDto);
         }
 
+        /// <summary>
+        /// Deletes a vehicle from the database based on the provided vehicle ID.
+        /// </summary>
+        /// <param name="vehicleId">The ID of the vehicle to delete</param>
+        /// <returns>Returns NotFound if vehicle does not exist, otherwise returns Ok on successful deletion</returns>
         [HttpDelete("{vehicleId}")]
         public async Task<IActionResult> DeleteVehicle(int vehicleId)
         {
@@ -144,15 +157,15 @@ namespace TransportRegister.Server.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Retrieves the license plate history for a specific vehicle by its ID.
+        /// </summary>
+        /// <param name="id">Vehicle ID to fetch license plate history for</param>
+        /// <returns>List of license plate history records</returns>
         [HttpGet("LicensePlateHistory/{id}")]
         public async Task<ActionResult<List<LicensePlateHistoryDto>>> GetLicensePlateHistory(int id)
         {
             List<LicensePlateHistoryDto> licensePlateHistory = await _vehicleRepository.GetLicensePlateHistoryAsync(id);
-            // TODO check if it's useful
-            // if (licensePlateHistory == null || licensePlateHistory.Count == 0)
-            // {
-            //     return NotFound($"No license plate history found for vehicle with ID {id}.");
-            // }
 
             return Ok(licensePlateHistory);
         }

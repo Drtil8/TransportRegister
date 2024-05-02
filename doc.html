@@ -22,79 +22,88 @@
         <dd>
             David Drtil
             <a href="mailto:xdrtil03@stud.fit.vutbr.cz">xdrtil03@stud.fit.vutbr.cz</a> -
-            ADD (PIS + WAP)
+            Vývoj kontroléru a repozitáře pro krádeže, vyhledávací funkce pro vozidla, uživatele a řidiče.
+            Implementace počátečního nastavení včetně přihlašování, správy rolí uživatelů a navigačního panelu. Vytvoření uživatelských pohledů pro správu vozidel a integrace pokročilých tabulek s funkcemi řazení, filtrování a stránkování.
+            Zodpovědný za nasazení aplikace v prostředí Azure. (PIS + WAP)
         </dd>
+        <br />
         <dd>
             Dominik Pop
             <a href="mailto:xpopdo00@stud.fit.vutbr.cz">xpopdo00@stud.fit.vutbr.cz</a> -
-            ADD (PIS + WAP)
+            Vývoj kontrolérů pro přestupky, uživatele a částečně pro krádeže. Vývoj odpovídajících repozitářů a DTO (Data Transfer Objects) pro Offence, User, Theft a Fine.
+            Pohledy pro přestupky, krádeže a administrační rozhraní. (PIS + WAP)
         </dd>
+        <br />
         <dd>
             Tomáš Bartů
             <a href="mailto:xbartu11@stud.fit.vutbr.cz">xbartu11@stud.fit.vutbr.cz</a> -
-            ADD (PIS)
+            Návrh a implementace základní strukturu serveru (repozitáře, modely, seedy,...). Zprovoznění systému přihlašování a nastavení komunikace s databází. Implementace Quartz pro plánování úloh a práce na kontroléru a DTOs pro Vehicle a LicensePlateHistory.
+            (PIS)
         </dd>
+        <br />
         <dd>
             Matej Koreň
             <a href="mailto:xkoren10@stud.fit.vutbr.cz">xkoren10@stud.fit.vutbr.cz</a> -
-            ADD (PIS)
+            Definice modelů, příprava počátečních data pro databázi, a vytvoření kontroléru a repozitáře pro správu osob. (PIS)
         </dd>
+        <br />
         <dd>
             Adam Hos
             <a href="mailto:xhosad00@stud.fit.vutbr.cz">xhosad00@stud.fit.vutbr.cz</a> -
-            ADD (WAP)
+            Vývoj pohledu řidiče a osoby zahrnující osobní informace, řidičská oprávnění, přehledy přestupků a vozidel. 
+            Integrace Google Maps, respektive nastavení API a vývoj komponenty pro vyhledávání v rámci map Google. (WAP)
         </dd>
     </dl>
 
 <!-- uživatelské účty -->
 <h2>Uživatelé systému pro testování</h2>
-<p>Uveďte prosím existující zástupce <strong>všech rolí uživatelů</strong>.</p>
 <table>
 <tbody><tr><th>Login</th><th>Heslo</th><th>Role</th></tr>
 <tr><td>admin@example.com</td><td>Admin123</td><td>Administrátor</td></tr>
-<tr><td>officer@example.com</td><td>Officer123</td><td>Policajt</td></tr>
+<tr><td>officer@example.com</td><td>Officer123</td><td>Policista</td></tr>
 <tr><td>official@example.com</td><td>Official123</td><td>Úředník</td></tr>
 </tbody></table>
 
 <h2>Postup instalace</h2>
-<h3> Požadované prostředky </h3>
+<h3>Požadované Prostředky</h3>
+<h4>Software a nástroje</h4>
 <ul>
-    <li>Visual Studio 2022 Community Edition</li> 
-    <li>
-        Knihovny (pomocí Visual Studio Installer-u):
-        <ol>
-            <li>Development for ASP.NET Web</li>
-            <li>Node.js application development</li>
-            <li>Developing desktop applications using .NET</li>
-            <li>Data storage and processing</li>
-        </ol>
-    </li>
-    <li>Nainstalován Node.js - <a href="https://nodejs.org/en/download">nodejs.org</a></li> 
+    <li>Visual Studio 2022 Community Edition - Primární vývojové prostředí pro aplikaci.</li>
+    <li>Node.js - Nezbytné pro správu závislostí front-endu a spouštění některých skriptů. Dostupné ke stažení na <a href="https://nodejs.org/en/download">oficiální stránce Node.js</a>.</li>
 </ul>
-
-
-<p>Popis nastavení lokální databáze (<b>MS SQL Server</b> a <b>Management Studio</b>) je blíže uveden v dokumentu <a href="PIS_-_SQL_Setup.pdf"><b>PIS_-_SQL_Setup.pdf</b></a> </p>
+<h4>Knihovny a rozšíření pro Visual Studio</h4>
+<p>Následující knihovny jsou potřebné pro plnou funkčnost aplikace:</p>
+<ol>
+    <li>ASP.NET a webový vývoj - Balíček pro vývoj webových aplikací.</li>
+    <li>Vývoj aplikací Node.js - Podpora pro Node.js v Visual Studio.</li>
+    <li>Vývoj desktopových aplikací pomocí .NET - Pro případné desktopové komponenty aplikace.</li>
+    <li>Data storage and processing - Balíček pro práci s daty a databázemi.</li>
+</ol>
+<h4>Databázové nástroje</h4>
+<ul>
+    <li>MS SQL Server - Databázový server pro uložení a správu dat aplikace.</li>
+    <li>SQL Server Management Studio - Nástroj pro správu a údržbu databáze.</li>
+</ul>
+<h4>Instalační dokumentace</h4>
+<p>Kompletní postup nastavení databáze a další relevantní konfigurace jsou uvedeny v dokumentu <a href="PIS_-_SQL_Setup.pdf">PIS - SQL Setup</a>.</p>
 
 <h3> Postup lokální instalace </h3>
-    <ol>
-    <li>Stáhněte si a extrahujte zdrojové kódy</li>
-    <li>Otevřete projekt v <b>Visual Studio 2022</b></li>
-    <li>Spusťte konzoli a zadejte příkazy:
+<ol>
+    <li>Stáhněte si zdrojové kódy projektu.</li>
+    <li>Otevřete soubor řešení projektu (soubor .sln) ve Visual Studio 2022.</li>
+    <li>Před spuštěním projektu, otevřete terminál ve Visual Studio a navigujte do složky projektu serveru pomocí příkazu <code>cd .\TransportRegister.Server\</code>.</li>
+    <li>Proveďte následující příkazy k nastavení databáze:
         <ol>
-            <li><code>cd .\TransportRegister.Server\</code></li>
-            <li><code>dotnet run delete-db ; dotnet ef database update ; dotnet run seed</code></li>
+            <li><code>dotnet ef database update</code> - aplikuje migrace databáze.</li>
+            <li><code>dotnet run seed</code> - spustí seeding databáze.</li>
         </ol>
     </li>
-        <li>Spusťte projekt ve Visual Studiu (zelená šipka)</li>
-    </ol>
+    <li>Spuštěním projektu ve Visual Studiu (kliknutím na zelenou šipku nebo klávesou F5) zpřístupníte aplikaci lokálně.</li>
+</ol>
+<p>Aplikace by nyní měla být dostupná na lokální adrese <a href="https://localhost:7201/swagger/index.html">https://localhost:7201/swagger</a> pro backend a <a href="https://localhost:5173/">https://localhost:5173</a> pro frontend.</p>
 
-    <p>
-        Program je nyní spuštěn a dostupný na adrese
-        <a href="https://localhost:7201/swagger/index.html">https://localhost:7201</a> pro backend a
-        <a href="https://localhost:5173/">https://localhost:5173</a> pro frontend.
-    </p>
-<h3> Online verze </h3>
-    <p> Produkt je také dostupný online na adrese <a href="https://transport-register.azurewebsites.net/">transport-register.azurewebsites.net/</a>,
-    kde je možné přihlásit se do systému údaji z tabulky uživatelů.</p>
+<h2>Online verze</h2>
+    <p> Produkt je také dostupný na adrese <a href="https://transport-register.azurewebsites.net/">transport-register.azurewebsites.net/</a>. 
+        Zde je možné se přihlásit stejnými údaji z tabulky uživatelů.</p>
 </body>
 </html>
