@@ -2,6 +2,7 @@
 import { Link } from 'react-router-dom';
 import { Alert, Button, Col, Row, } from 'reactstrap';
 import { IBus, ICar, IMotorcycle, ITruck, IVehicleDetail } from '../interfaces/IVehicleDetail';
+import VehicleForm from './VehicleForm';
 
 interface IVehicleDetailProps {
   vehicleDetail: IVehicleDetail | null;
@@ -49,7 +50,7 @@ export class VehicleEdit extends Component<object | IVehicleDetailProps> {
         default:
           throw new Error(`Unknown vehicle type: ${vehicle.vehicleType}`);
       }
-      this.setState({ vehicleDetail: parsedVehicle, vehicleId: id });
+      this.setState({ vehicleDetail: parsedVehicle });
     }
     catch (error) {
       console.error('Error fetching vehicle data:', error);
@@ -76,7 +77,7 @@ export class VehicleEdit extends Component<object | IVehicleDetailProps> {
             </Col>
           </Row>
 
-          {/*<VehicleForm fetchedData={vehicleDetail} />*/}
+          <VehicleForm fetchedVehicle={vehicleDetail} />
         </>
       );
 
