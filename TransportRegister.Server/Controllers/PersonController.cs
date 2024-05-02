@@ -34,39 +34,35 @@ namespace TransportRegister.Server.Controllers
 
         [HttpPost("/api/PersonSearch")]
         [Produces("application/json")]
-        public async Task<IActionResult> PersonAdnDriverSearch([FromBody] DtParamsDto dtParams)
+        public async Task<IActionResult> PersonAndDriverSearch([FromBody] DtParamsDto dtParams)
         {
             var query = _personRepository.QueryPersonAndDriverSearch(dtParams);
-            int totalPersonRowCount =  query.Item1.Count();
-            int totalDriversRowCount =  query.Item2.Count();
-            var filteredPersonData =  query.Item1
+            var combinedData = query.Item1
+                .Select(person => new DriverSimpleListDto
+                {
+                    PersonId = person.PersonId,
+                    FirstName = person.FirstName,
+                    LastName = person.LastName,
+                    BirthNumber = person.BirthNumber,
+                    DriversLicenseNumber = null,
+                })
+                .Concat(query.Item2)
+                .ToList();
+
+            var totalCount = combinedData.Count;
+
+            var filteredData = combinedData
                 .Skip(dtParams.Start)
                 .Take(dtParams.Size)
                 .ToList();
 
-            var filteredDriverData = query.Item2
-                .Skip(dtParams.Start)
-                .Take(dtParams.Size)
-                .ToList();
-            var resultPerson = new DtResultDto<PersonSimpleListDto>
+            var result = new DtResultDto<DriverSimpleListDto>
             {
-                Data = filteredPersonData,
-                TotalRowCount = totalPersonRowCount
+                Data = filteredData,
+                TotalRowCount = totalCount
             };
 
-            var resultDriver = new DtResultDto<DriverSimpleListDto>
-            {
-                Data = filteredDriverData,
-                TotalRowCount = totalDriversRowCount
-            };
-
-            var combinedResult = new
-            {
-                Persons = resultPerson,
-                Drivers = resultDriver
-            };
-
-            return new JsonResult(combinedResult);
+            return new JsonResult(result);
         }
 
 
