@@ -59,7 +59,7 @@ const DriverCreateModal: React.FC<DriverCreateModalProps> = ({ person }) => {
 
   return (
     <div>
-      <Button color="primary" onClick={toggle}>Vytvořit řidický průkaz</Button>
+      <Button color="primary" onClick={toggle}>Vytvořit řidičský průkaz</Button>
       <Modal isOpen={modal} toggle={toggle} backdrop="static">
         <ModalHeader toggle={toggle}>Nahlášení krádeže vozidla</ModalHeader>
         <Form onSubmit={handleSubmit}>
