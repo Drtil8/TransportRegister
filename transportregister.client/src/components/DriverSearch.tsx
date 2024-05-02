@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Button, Col, Row } from 'reactstrap';
 //import VehicleDatatable from './vehicle/VehicleDatatable';
 import IDtFetchData from './interfaces/datatables/IDtFetchData';
-//import DriverDatatable from './DriverDatatable';
+import DriverDatatable from './DriverDatatable';
 import GoogleMapsAutocomplete from './GoogleMapsAutocomplete';
 import IAddress from './interfaces/IAddress';
 
@@ -46,9 +46,8 @@ export class DriverSearch extends Component<object, IDriverSearchState> {
           <br></br>
           <br></br>
           <br></br>
-          <h6>nábřeží Doktora Edvarda Beneše 12, Přerov I-Město, Czechia</h6>
-          <GoogleMapsAutocomplete onInputChange={this.handleInputChange}></GoogleMapsAutocomplete>
-          {/*<DriverDatatable fetchDataRef={this.fetchDataRef} autoFetch={false} />*/}
+          {/*<GoogleMapsAutocomplete onInputChange={this.handleInputChange}></GoogleMapsAutocomplete>*/}
+          <DriverDatatable fetchDataRef={this.fetchDataRef} autoFetch={false} />
         </Row>
       </div>
     );
