@@ -1,11 +1,14 @@
 ﻿import React, { FormEvent, useState } from "react";
 import { Button, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row } from "reactstrap";
+import GoogleMapsAutocomplete from "../GoogleMapsAutocomplete";
+import IAddress from "../interfaces/IAddress";
 
 interface TheftReportModalProps {
 }
 
 const TheftReportModal: React.FC<TheftReportModalProps> = () => {
   const [modal, setModal] = useState(false);
+  const [address, setAddress] = useState<IAddress | null>(null);
   const initialFormData = {
     reportTheftVehicleId: 1, // TODO
     reportTheftStolenOn: "",
@@ -36,7 +39,7 @@ const TheftReportModal: React.FC<TheftReportModalProps> = () => {
         body: JSON.stringify({
           description: formData.reportTheftDescription,
           stolenOn: formData.reportTheftStolenOn,
-          //address: formData.reportTheftAddress,
+          address: address,
           vehicleId: formData.reportTheftVehicleId,
           reportingPersonId: formData.reportTheftOwnerId,
         }),
@@ -52,6 +55,10 @@ const TheftReportModal: React.FC<TheftReportModalProps> = () => {
     console.log(formData);
     toggle();
   };
+
+  const handleAddressChange = (address: IAddress) => {
+    setAddress(address);
+  }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = event.target;
@@ -89,17 +96,9 @@ const TheftReportModal: React.FC<TheftReportModalProps> = () => {
                     <Label>
                       Místo činu:
                     </Label>
-                    <Input id="reportTheftAddress" name="reportTheftAddress" type="text" value={formData.reportTheftAddress} onChange={handleChange} />
+                    <GoogleMapsAutocomplete onInputChange={handleAddressChange} hideFields="hidden"></GoogleMapsAutocomplete>
                   </Col>
                 </Row>
-                {/*<Row>*/}
-                {/*  <Col>*/}
-                {/*    <Label>*/}
-                {/*      Fotky:*/}
-                {/*    </Label>*/}
-                {/*    <Input id="reportTheftPhotos" name="reportTheftPhotos" type="textarea" />*/}
-                {/*  </Col>*/}
-                {/*  </Row>*/}
               </FormGroup>
             </Row>
             <Row>

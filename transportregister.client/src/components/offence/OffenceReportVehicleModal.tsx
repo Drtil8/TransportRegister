@@ -1,11 +1,14 @@
 ﻿import React, { FormEvent, useState } from "react";
 import { Button, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row } from "reactstrap";
 import IOffenceType from "../interfaces/IOffenceType";
+import IAddress from "../interfaces/IAddress";
+import GoogleMapsAutocomplete from "../GoogleMapsAutocomplete";
 interface OffenceReportVehicleModalProps {
 }
 
 const OffenceReportVehicleModal: React.FC<OffenceReportVehicleModalProps> = () => {
   const [modal, setModal] = useState(false);
+  const [address, setAddress] = useState<IAddress | null>(null); // TODO]
   const initialFormData = {
     reportVehicleType: 1,
     reportVehicleDescription: "",
@@ -76,7 +79,7 @@ const OffenceReportVehicleModal: React.FC<OffenceReportVehicleModalProps> = () =
           finePaid: formData.reportVehiclePaid,
           offenceTypeId: formData.reportVehicleType,
           photos: photosBase64,
-          //address: formData.reportVehicleLocation, // TODO -> add location
+          address: address,
         }),
       });
 
@@ -123,6 +126,10 @@ const OffenceReportVehicleModal: React.FC<OffenceReportVehicleModalProps> = () =
       reportVehicleFineAmount: amount,
       reportVehiclePenaltyPoints: points,
     });
+  }
+
+  const handleAddressChange = (address: IAddress) => {
+    setAddress(address);
   }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -223,24 +230,10 @@ const OffenceReportVehicleModal: React.FC<OffenceReportVehicleModalProps> = () =
                 <Row>
                   <Col>
                     <Label>
-                      Místo činu:
-                    </Label>
-                    <Input id="reportVehicle" name="reportVehicle" type="text" />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <Label>
                       Výše pokuty:
                     </Label>
                     <Input id="reportVehicleFineAmount" name="reportVehicleFineAmount" type="number" step={0.01} min={0} value={formData.reportVehicleFineAmount} onChange={handleChange} />
                   </Col>
-                  {/*<Col>*/}
-                    {/*<Label>*/}
-                    {/*  Trestné body:*/}
-                    {/*</Label>*/}
-                    {/*<Input id="reportVehiclePenaltyPoints" name="reportVehiclePenaltyPoints" type="number" max={12} min={0} value={formData.reportVehiclePenaltyPoints} onChange={handleChange} />*/}
-                  {/*</Col>*/}
                 </Row>
                 <Row>
                   <Col>
@@ -253,6 +246,14 @@ const OffenceReportVehicleModal: React.FC<OffenceReportVehicleModalProps> = () =
                   </Col>
                 </Row>
                 <Row>
+                  <Col>
+                    <Label>
+                      Místo činu:
+                    </Label>
+                    <GoogleMapsAutocomplete onInputChange={handleAddressChange} hideFields="hidden"></GoogleMapsAutocomplete>
+                  </Col>
+                </Row>
+                <Row className="mt-2">
                   <Col>
                     <Label for="reportVehiclePhotos">
                       Fotky z místa činu:
