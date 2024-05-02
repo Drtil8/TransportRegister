@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
+using System.Security.Claims;
 using TransportRegister.Server.DTOs.DatatableDTOs;
 using TransportRegister.Server.DTOs.LicensePlateHistoryDTOs;
 using TransportRegister.Server.DTOs.VehicleDTOs;
@@ -14,7 +16,7 @@ namespace TransportRegister.Server.Controllers
     //[Authorize]       // All roles can access
     //[Authorize(Roles = "Admin")]
     //[Authorize(Roles = "Official")]
-    //[Authorize(Roles = "Official,Officer")]
+    [Authorize(Roles = "Official,Officer")]
     [Route("api/[controller]")]
     [ApiController]
     public class VehicleController : ControllerBase
@@ -89,7 +91,7 @@ namespace TransportRegister.Server.Controllers
                 return BadRequest("Invalid vehicle data.");
             }
 
-            // todo přidat OfficialId k vehicle
+            vehicle.OfficialId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             vehicle.Owner = await _personRepository.GetPersonByIdAsync(vehicleDto.OwnerId);
             if (vehicle.Owner is null)
