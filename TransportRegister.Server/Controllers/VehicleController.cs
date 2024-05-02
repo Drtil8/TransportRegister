@@ -20,7 +20,7 @@ namespace TransportRegister.Server.Controllers
     {
         private readonly IVehicleRepository _vehicleRepository;
         private readonly IPersonRepository _personRepository;
-        
+
         public VehicleController(IVehicleRepository vehicleRepository, IPersonRepository ownerRepository)
         {
             _vehicleRepository = vehicleRepository;
@@ -32,6 +32,7 @@ namespace TransportRegister.Server.Controllers
         /// </summary>
         /// <param name="dtParams">Data table filtering parameters</param>
         /// <returns>Filtered vehicles DTOs</returns>
+        /// <author>David Drtil</author>
         [HttpPost("/api/VehicleSearch")]
         [Produces("application/json")]
         public async Task<IActionResult> VehicleSearch([FromBody] DtParamsDto dtParams)
@@ -48,11 +49,12 @@ namespace TransportRegister.Server.Controllers
                 TotalRowCount = totalRowCount
             });
         }
-        
+
         /// <summary>
         /// Retrieves a list of all vehicle types available in the system.
         /// </summary>
         /// <returns>List of vehicle types</returns>
+        /// <author>Tomáš Bártů</author>
         [HttpGet("VehicleTypes")]
         public async Task<ActionResult<List<string>>> GetVehicleTypes()
         {
@@ -67,6 +69,7 @@ namespace TransportRegister.Server.Controllers
         /// </summary>
         /// <param name="vehicleId">The ID of the vehicle to retrieve</param>
         /// <returns>Vehicle details if found, otherwise returns NotFound result</returns>
+        /// <author>Tomáš Bártů</author>
         [HttpGet("{vehicleId}")]
         public async Task<ActionResult<VehicleDetailDto>> GetVehicleById(int vehicleId)
         {
@@ -88,6 +91,7 @@ namespace TransportRegister.Server.Controllers
         /// </summary>
         /// <param name="vehicleDto">Vehicle data transfer object containing vehicle details to save or update</param>
         /// <returns>Returns BadRequest if model state is invalid, otherwise returns updated vehicle details</returns>
+        /// <author>Tomáš Bártů + David Drtil</author>
         [Authorize(Roles = "Official")]
         [HttpPost("SaveVehicle")]
         public async Task<ActionResult<VehicleDetailDto>> SaveVehicle([FromBody] VehicleDetailDto vehicleDto)
@@ -144,6 +148,7 @@ namespace TransportRegister.Server.Controllers
         /// </summary>
         /// <param name="vehicleId">The ID of the vehicle to delete</param>
         /// <returns>Returns NotFound if vehicle does not exist, otherwise returns Ok on successful deletion</returns>
+        /// <author>Tomáš Bártů</author>
         [HttpDelete("{vehicleId}")]
         public async Task<IActionResult> DeleteVehicle(int vehicleId)
         {
@@ -162,6 +167,7 @@ namespace TransportRegister.Server.Controllers
         /// </summary>
         /// <param name="id">Vehicle ID to fetch license plate history for</param>
         /// <returns>List of license plate history records</returns>
+        /// <author>Tomáš Bártů</author>
         [HttpGet("LicensePlateHistory/{id}")]
         public async Task<ActionResult<List<LicensePlateHistoryDto>>> GetLicensePlateHistory(int id)
         {
