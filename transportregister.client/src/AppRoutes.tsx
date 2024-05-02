@@ -5,8 +5,6 @@ import DriverCreate from "./components/DriverCreate";
 import VehicleCreate from "./components/vehicle/VehicleCreate";
 import OffenceCreate from "./components/offence/OffenceCreate";
 import OffencePending from "./components/offence/OffencePending";
-import TheftCreate from "./components/TheftCreate";
-import TheftFound from "./components/TheftFound";
 import DriverDetail from "./components/DriverDetail";
 import OffenceDetail from "./components/offence/OffenceDetail";
 import UserList from "./components/admin/UserList";
@@ -16,6 +14,9 @@ import VehicleEdit from "./components/vehicle/VehicleEdit";
 import OffenceAll from "./components/offence/OffenceAll";
 import { UserDetail } from "./components/user/UserDetail";
 import { MyAccount } from "./components/user/MyAccount";
+import { TheftDetail } from "./components/theft/TheftDetail";
+import { TheftAll } from "./components/theft/TheftAll";
+import { TheftActive } from "./components/theft/TheftActive";
 
 const AppRoutes = [
   {
@@ -90,13 +91,18 @@ const AppRoutes = [
     isProtected: true
   },
   {
-    path: '/theftCreate',
-    element: <TheftCreate />,
+    path: '/thefts',
+    element: <TheftAll />,
     isProtected: true
   },
   {
-    path: '/theftFound',
-    element: <TheftFound />,
+    path: '/theftsActive',
+    element: <TheftActive />,
+    isProtected: true
+  },
+  {
+    path: '/theft/:id',
+    element: <TheftDetail />,
     isProtected: true
   },
   {
