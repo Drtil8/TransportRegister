@@ -69,13 +69,16 @@ public class TheftRepository(AppDbContext context) : ITheftRepository
             .FirstOrDefaultAsync();
     }
 
-    public async Task<int> CreateTheft(TheftDetailDto theftDto)
+    public async Task<int> CreateTheft(TheftCreateDto theftDto, string officerId)
     {
         var newTheft = new Theft
         {
             StolenOn = theftDto.StolenOn,
-            ReportedOn = theftDto.ReportedOn,
+            ReportedOn = DateTime.Now,
             VehicleId = theftDto.VehicleId,
+            ReportingPersonId = theftDto.ReportingPersonId,
+            Description = theftDto.Description,
+            ReportingOfficerId = officerId
         };
         await _context.Thefts.AddAsync(newTheft);
         await _context.SaveChangesAsync();
