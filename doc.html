@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- saved from url=(0123)https://www.fit.vutbr.cz/~burgetr/pis/projekt/doc.html?fbclid=IwAR0t6IfsTre0sAop8NVvaERqDk9rw47kCCfa70oKj1ZLO81PWQKoW7uDkuc -->
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Projekt PIS+WAP</title>
+    <title>Projekt PIS + WAP, tým xdrtil03, 2024</title>
     <style type="text/css">
         table { border-collapse: collapse; }
         td, th { border: 1px solid black; padding: 0.3em 0.5em; text-align: left; }
@@ -11,33 +11,90 @@
 <body>
 
 <!-- Nahraďte prosím názvem tématu -->
-<h1>Téma projektu (nahraďte)</h1>
+    <h1>
+        Evidence řidičů včetně dopravních přestupků, evidence
+        motorových vozidel
+    </h1>
 
 <!-- Editujte jména a maily autorů a jejich činnost -->
-<dl>
-    <dt>Autoři</dt>
-    <dd>První autor (nahraďte)
-        <a href="mailto:xautor01@stud.fit.vutbr.cz">xautor01@stud.fit.vutbr.cz</a> -
-        správa uživatelů a uživatelské rozhraní
-    </dd>
-    <dd>Druhý autor  (nahraďte)
-        <a href="mailto:xautor02@stud.fit.vutbr.cz">xautor02@stud.fit.vutbr.cz</a> - 
-        databázový subsystém
-    </dd>
-</dl>
+    <dl>
+        <dt>Autoři</dt>
+        <dd>
+            David Drtil
+            <a href="mailto:xdrtil03@stud.fit.vutbr.cz">xdrtil03@stud.fit.vutbr.cz</a> -
+            ADD (PIS + WAP)
+        </dd>
+        <dd>
+            Dominik Pop
+            <a href="mailto:xpopdo00@stud.fit.vutbr.cz">xpopdo00@stud.fit.vutbr.cz</a> -
+            ADD (PIS + WAP)
+        </dd>
+        <dd>
+            Tomáš Bartů
+            <a href="mailto:xbartu11@stud.fit.vutbr.cz">xbartu11@stud.fit.vutbr.cz</a> -
+            ADD (PIS)
+        </dd>
+        <dd>
+            Matej Koreň
+            <a href="mailto:xkoren10@stud.fit.vutbr.cz">xkoren10@stud.fit.vutbr.cz</a> -
+            ADD (PIS)
+        </dd>
+        <dd>
+            Adam Hos
+            <a href="mailto:xhosad00@stud.fit.vutbr.cz">xhosad00@stud.fit.vutbr.cz</a> -
+            ADD (WAP)
+        </dd>
+    </dl>
 
 <!-- uživatelské účty -->
 <h2>Uživatelé systému pro testování</h2>
 <p>Uveďte prosím existující zástupce <strong>všech rolí uživatelů</strong>.</p>
 <table>
 <tbody><tr><th>Login</th><th>Heslo</th><th>Role</th></tr>
-<tr><td>admin</td><td>admin</td><td>Administrátor</td></tr>
-<tr><td>prodavac</td><td>prodavac</td><td>Prodavač</td></tr>
-<tr><td>franta</td><td>franta</td><td>Zákazník</td></tr>
+<tr><td>admin@example.com</td><td>Admin123</td><td>Administrátor</td></tr>
+<tr><td>officer@example.com</td><td>Officer123</td><td>Policajt</td></tr>
+<tr><td>official@example.com</td><td>Official123</td><td>Úředník</td></tr>
 </tbody></table>
 
 <h2>Postup instalace</h2>
-<p>Např. vyžadované prostředky na serveru, datové zdroje, inicializace databáze, apod. Stačí v několika stručných bodech.</p>
+<h3> Požadované prostředky </h3>
+<ul>
+    <li>Visual Studio 2022 Community Edition</li> 
+    <li>
+        Knihovny (pomocí Visual Studio Installer-u):
+        <ol>
+            <li>Development for ASP.NET Web</li>
+            <li>Node.js application development</li>
+            <li>Developing desktop applications using .NET</li>
+            <li>Data storage and processing</li>
+        </ol>
+    </li>
+    <li>Nainstalován Node.js - <a href="https://nodejs.org/en/download">nodejs.org</a></li> 
+</ul>
 
+
+<p>Popis nastavení lokální databáze (<b>MS SQL Server</b> a <b>Management Studio</b>) je blíže uveden v dokumentu <a href="PIS_-_SQL_Setup.pdf"><b>PIS_-_SQL_Setup.pdf</b></a> </p>
+
+<h3> Postup lokální instalace </h3>
+    <ol>
+    <li>Stáhněte si a extrahujte zdrojové kódy</li>
+    <li>Otevřete projekt v <b>Visual Studio 2022</b></li>
+    <li>Spusťte konzoli a zadejte příkazy:
+        <ol>
+            <li><code>cd .\TransportRegister.Server\</code></li>
+            <li><code>dotnet run delete-db ; dotnet ef database update ; dotnet run seed</code></li>
+        </ol>
+    </li>
+        <li>Spusťte projekt ve Visual Studiu (zelená šipka)</li>
+    </ol>
+
+    <p>
+        Program je nyní spuštěn a dostupný na adrese
+        <a href="https://localhost:7201/swagger/index.html">https://localhost:7201</a> pro backend a
+        <a href="https://localhost:5173/">https://localhost:5173</a> pro frontend.
+    </p>
+<h3> Online verze </h3>
+    <p> Produkt je také dostupný online na adrese <a href="https://transport-register.azurewebsites.net/">transport-register.azurewebsites.net/</a>,
+    kde je možné přihlásit se do systému údaji z tabulky uživatelů.</p>
 </body>
 </html>
