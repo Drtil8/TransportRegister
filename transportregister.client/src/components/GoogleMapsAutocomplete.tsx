@@ -142,7 +142,7 @@ const GoogleMapsAutocomplete: React.FC<GoogleMapsAutocompleteProps> = ({ onInput
 
     <div>
       <div id="pac-container">
-        <Input id="pac-input" type="text" placeholder="Enter a location" />
+        <Input id="pac-input" type="text" placeholder="Enter a location" required/>
       </div>
       <br></br>
       <div id="map" style={{ width: '100%', height: '400px' }}></div>

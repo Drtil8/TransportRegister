@@ -8,7 +8,6 @@ namespace TransportRegister.Server.Repositories
     {
         IQueryable<OffenceListItemDto> QueryAllOffences();
         IQueryable<OffenceListItemDto> QueryUnresolvedOffences();
-        IQueryable<OffenceListItemDto> QueryOffences(bool unresolved);
         IQueryable<OffenceListItemDto> ApplyFilterQueryOffences(IQueryable<OffenceListItemDto> query, DtParamsDto dtParams);
         Task<OffenceDetailDto> GetOffenceByIdAsync(int offenceId, User user);
         Task<Offence> ReportOffenceAsync(OffenceCreateDto offenceDto, User activeUser);

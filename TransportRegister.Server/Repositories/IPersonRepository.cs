@@ -7,9 +7,7 @@ namespace TransportRegister.Server.Repositories
 {
     public interface IPersonRepository
     {
-
         Task<Person> GetPersonByIdAsync(int personId);
-        Task<Tuple<List<PersonSimpleListDto>, List<DriverSimpleListDto>>> GetAllPersons();
         Task<Person> GetPersonByBirthNumberAsync(string birthNumber);
         Task<Driver> GetDriverAsync(string licenseNumber);
         Task<Person> GetOwnerByVINAsync(string VIN_number);
@@ -21,6 +19,7 @@ namespace TransportRegister.Server.Repositories
         Task<List<Theft>> GetPersonReportedTheftsByIdAsync(int personId);
         Task<List<Offence>> GetPersonCommitedOffencesByIdAsync(int personId);
         Task AddDriversLicense(int driverId, string official_id, DriversLicenseCreateDto license);
-        (IQueryable<PersonSimpleListDto>, IQueryable<DriverSimpleListDto>) QueryPersonAndDriverSearch(DtParamsDto dtParams);
+
+        public IQueryable<DriverSimpleListDto> QueryAllPersons(DtParamsDto dtParams);
     }
 }

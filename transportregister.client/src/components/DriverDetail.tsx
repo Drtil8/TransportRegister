@@ -1,5 +1,5 @@
 ﻿
-import React, { ChangeEvent, Component } from 'react';
+import React, { ChangeEvent, Component, ContextType } from 'react';
 import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col, FormGroup, Input, Label, Form, Button, Table } from 'reactstrap';
 import { IPerson, IDriver, IOwner } from './interfaces/IPersonDetail';
 import IDriverFormState from './interfaces/IDriverForm';
@@ -9,6 +9,8 @@ import DetailIcon from '@mui/icons-material/VisibilityOutlined';
 import { formatDate } from '../common/DateFormatter';
 import IOffenceListSimple from './interfaces/IOffenceListSimple';
 import DriverCreateModal from './DriverCreateModal';
+import OffenceReportDriverModal from './offence/OffenceReportDriverModal';
+import AuthContext from '../auth/AuthContext';
 
 // TODO fetch the actual driver
 interface DriverDetailState {
@@ -19,6 +21,8 @@ interface DriverDetailState {
 }
 
 export class DriverDetail extends Component<object, DriverDetailState> {
+  static contextType = AuthContext;
+  declare context: ContextType<typeof AuthContext>;
   constructor(props: object) {
     super(props);
     this.state = {
@@ -142,6 +146,7 @@ export class DriverDetail extends Component<object, DriverDetailState> {
         disableInput: !prevState.form.disableInput // Toggle the value of edit
       }
     }));
+    this.setState({activeTab : 'license'});
     //console.log('switching state', this.state.form.disableInput);
   }
 
@@ -223,7 +228,7 @@ export class DriverDetail extends Component<object, DriverDetailState> {
         <Button onClick={this.putPersonData} color="primary">Potvrdit</Button>
       </div>
     if (this.state.form.disableInput) {
-      infoButtons = <Button onClick={this.switchEditState} color="primary">Editovat</Button>;
+      infoButtons = <div><Button onClick={this.switchEditState} color="primary">Editovat</Button></div>;
     }
 
 
@@ -234,7 +239,6 @@ export class DriverDetail extends Component<object, DriverDetailState> {
         (<p>Nebyly naležena žádná vozidla</p>)
         :
         (
-          //<p></p>
           <Table>
             <thead>
               <tr>
@@ -281,16 +285,31 @@ export class DriverDetail extends Component<object, DriverDetailState> {
 
     const contents = (
       <div className="container">
-        <h1>{person?.firstName} {person?.lastName}</h1>
+        <Row>
+          <Col>
+            <h1>{person?.firstName} {person?.lastName}</h1>
+          </Col>
+          <Col className="rightSide">
+            {isDriver ?
+              (this.context?.isOfficer ? 
+                <OffenceReportDriverModal personDetail={this.state.personDetail}></OffenceReportDriverModal>
+                :
+                infoButtons
+              )
+              :
+              <DriverCreateModal person={person as IPerson}></DriverCreateModal>
+            }
+          </Col>
+        </Row>
         <div className="row">
-          <div className="col-9">
+          <div className="col">
             <Nav tabs className="flex-row-reverse">
               <NavItem>
                 <NavLink active={activeTab === 'vehicle'} onClick={() => this.toggleTab('vehicle')}> Vozidla </NavLink>
               </NavItem>
               {isDriver &&
                 (<NavItem>
-                  <NavLink active={activeTab === 'license'} onClick={() => this.toggleTab('license')}> Řidický průkaz </NavLink>
+                  <NavLink active={activeTab === 'license'} onClick={() => this.toggleTab('license')}> Řidičský průkaz </NavLink>
                 </NavItem>)}
               {isDriver &&
                 (<NavItem>
@@ -335,11 +354,11 @@ export class DriverDetail extends Component<object, DriverDetailState> {
                         <dd>{person?.birthNumber}</dd>
                       </Col>
                     </Row>
-                    <Row>
-                      {!isDriver && (
-                        <DriverCreateModal person={person as IPerson}></DriverCreateModal>
-                      )}
-                    </Row>
+                    {/*<Row>*/}
+                    {/*  {!isDriver && (*/}
+                    {/*    <DriverCreateModal person={person as IPerson}></DriverCreateModal>*/}
+                    {/*  )}*/}
+                    {/*</Row>*/}
                     <h1></h1>
                     <div className="licenceImage">
                       {(person?.imageBase64 != undefined) && (
@@ -413,7 +432,7 @@ export class DriverDetail extends Component<object, DriverDetailState> {
                           </React.Fragment>
                         ))}
                         <br></br>
-                        {infoButtons}
+                        {/*{infoButtons}*/}
                       </Form>
                     </Col>
                   </Row>

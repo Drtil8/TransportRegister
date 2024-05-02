@@ -3,29 +3,30 @@ import { Button, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFoot
 import IOffenceType from "../interfaces/IOffenceType";
 import IAddress from "../interfaces/IAddress";
 import GoogleMapsAutocomplete from "../GoogleMapsAutocomplete";
+import { IVehicleDetail } from "../interfaces/IVehicleDetail";
 interface OffenceReportVehicleModalProps {
+  vehicleDetail: IVehicleDetail | null;
 }
 
-const OffenceReportVehicleModal: React.FC<OffenceReportVehicleModalProps> = () => {
+const OffenceReportVehicleModal: React.FC<OffenceReportVehicleModalProps> = ({ vehicleDetail }) => {
   const [modal, setModal] = useState(false);
   const [address, setAddress] = useState<IAddress | null>(null); // TODO]
   const initialFormData = {
     reportVehicleType: 1,
     reportVehicleDescription: "",
-    //reportVehicleLocation: "", // TODO
     reportVehicleId: 1, // TODO fetch from backend
-    reportVehicleVIN: "fetch from detail",
-    reportVehicleSPZ: "fetch from detail",
-    reportVehicleBrand: "fetch from detail",
-    reportVehicleModel: "fetch from detail",
+    reportVehicleVIN: vehicleDetail?.vin,
+    reportVehicleSPZ: vehicleDetail?.currentLicensePlate,
+    reportVehicleBrand: vehicleDetail?.manufacturer,
+    reportVehicleModel: vehicleDetail?.model,
     reportVehicleFineAmount: 0,
     reportVehiclePenaltyPoints: 0,
     reportVehiclePaid: false,
     reportVehicleOwnerId: 1, // TODO fetch from backend
-    reportVehicleOwnerFirstName: "fetch from detail",
-    reportVehicleOwnerLastName: "fetch from detail",
-    reportVehicleOwnerBirthNumber: "fetch from detail",
-    reportVehicleOwnerBirthDate: "fetch from detail",
+    reportVehicleOwnerFirstName: vehicleDetail?.ownerFullName.split(" ")[0],
+    reportVehicleOwnerLastName: vehicleDetail?.ownerFullName.split(" ")[1],
+    //reportVehicleOwnerBirthNumber: "fetch from detail",
+    //reportVehicleOwnerBirthDate: "fetch from detail",
     reportVehiclePhotos: [] as string[],
   }
 
@@ -36,14 +37,23 @@ const OffenceReportVehicleModal: React.FC<OffenceReportVehicleModalProps> = () =
     // fetch offence types
     if (modal === false) {
       try {
-        const response = await fetch('api/Offence/GetOffenceTypes', {
+        const response = await fetch('/api/Offence/GetOffenceTypes', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
           },
         });
-        const data: IOffenceType[] = await response.json();
-        setOffenceTypes(data);
+
+        console.log(response);
+
+        if (!response.ok) {
+          throw new Error('Failed to load offence types.');
+        }
+        else {
+          const data: IOffenceType[] = await response.json();
+          setOffenceTypes(data);
+        }
+
       }
       catch (error) {
         console.error('Error:', error);
@@ -65,7 +75,7 @@ const OffenceReportVehicleModal: React.FC<OffenceReportVehicleModalProps> = () =
     }
 
     try {
-      const response = await fetch('api/Offence/ReportOffence', {
+      const response = await fetch('/api/Offence/ReportOffence', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -189,7 +199,7 @@ const OffenceReportVehicleModal: React.FC<OffenceReportVehicleModalProps> = () =
 
   return (
     <div>
-      <Button color="success" onClick={toggle}> Nahlásit přestupek </Button>
+      <Button color="primary" onClick={toggle} className="me-2"> Nahlásit přestupek </Button>
       <Modal isOpen={modal} toggle={toggle} backdrop="static">
         <ModalHeader toggle={toggle}>Nahlášení přestupku vozidla</ModalHeader>
         <Form id="reportVehicleForm" onSubmit={handleSubmit}>
@@ -317,16 +327,16 @@ const OffenceReportVehicleModal: React.FC<OffenceReportVehicleModalProps> = () =
                     <Input readOnly id="reportVehicleOwnerLastName" name="reportVehicleOwnerLastName" type="text" value={formData.reportVehicleOwnerLastName} />
                   </Col>
                 </Row>
-                <Row>
-                  <Col>
-                    <Label> Rodné číslo: </Label>
-                    <Input readOnly id="reportVehicleOwnerBirthNumber" name="reportVehicleOwnerBirthNumber" type="text" value={formData.reportVehicleOwnerBirthNumber} />
-                  </Col>
-                  <Col>
-                    <Label> Datum narození: </Label>
-                    <Input readOnly id="reportVehicleOwnerBirthDate" name="reportVehicleOwnerBirthDate" type="text" value={formData.reportVehicleOwnerBirthDate} />
-                  </Col>
-                </Row>
+                {/*<Row>*/}
+                {/*  <Col>*/}
+                {/*    <Label> Rodné číslo: </Label>*/}
+                {/*    <Input readOnly id="reportVehicleOwnerBirthNumber" name="reportVehicleOwnerBirthNumber" type="text" value={formData.reportVehicleOwnerBirthNumber} />*/}
+                {/*  </Col>*/}
+                {/*  <Col>*/}
+                {/*    <Label> Datum narození: </Label>*/}
+                {/*    <Input readOnly id="reportVehicleOwnerBirthDate" name="reportVehicleOwnerBirthDate" type="text" value={formData.reportVehicleOwnerBirthDate} />*/}
+                {/*  </Col>*/}
+                {/*</Row>*/}
               </FormGroup>
             </Row>
             <Row>

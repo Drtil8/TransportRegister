@@ -55,7 +55,7 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ penaltyPoints: this.state.editPenaltyPoints, fineAmount: this.state.editFineAmount})
+        body: JSON.stringify({ penaltyPoints: this.state.editPenaltyPoints, fineAmount: this.state.editFineAmount })
       });
 
       if (!response.ok) {
@@ -409,9 +409,11 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
                   <Col className="pe-0">
                     <dt className="mb-1">Zpracoval:</dt>
                     {offenceDetail.official ?
-                      <Link to={`/user/${offenceDetail.official?.id}`}>
-                        <dd>{offenceDetail.official?.fullName}</dd>
-                      </Link>
+                      <dd>
+                        <Link to={`/user/${offenceDetail.official?.id}`}>
+                          {offenceDetail.official?.fullName}
+                        </Link>
+                      </dd>
                       :
                       <dd>Systém</dd>
                     }

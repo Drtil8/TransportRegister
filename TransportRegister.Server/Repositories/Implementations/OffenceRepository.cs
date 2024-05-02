@@ -11,6 +11,10 @@ using TransportRegister.Server.Models;
 
 namespace TransportRegister.Server.Repositories.Implementations
 {
+    /// <summary>
+    /// Repository for handling offences. Implements IOffenceRepository.
+    /// </summary>
+    /// <author> Dominik Pop </author>
     public class OffenceRepository : IOffenceRepository
     {
         private readonly AppDbContext _context;
@@ -20,6 +24,101 @@ namespace TransportRegister.Server.Repositories.Implementations
             _context = context;
         }
 
+        /// <summary>
+        /// Static method to get address as string.
+        /// </summary>
+        /// <param name="address"> Address to be convertred. </param>
+        /// <returns> Returns address as string. </returns>
+        public static string GetAddresAsString(Address address)
+        {
+            var finalString = "";
+            bool isFirst = true;
+
+            if (address == null)
+            {
+                return finalString;
+            }
+
+            if (address.Country != null && address.Country != "")
+            {
+                isFirst = false;
+                finalString += address.Country;
+            }
+
+            if (address.State != null && address.State != "")
+            {
+                if (!isFirst)
+                {
+                    finalString += ", ";
+                }
+                else
+                {
+                    isFirst = false;
+                }
+                finalString += address.State;
+            }
+
+            if (address.City != null && address.City != "")
+            {
+                if (!isFirst)
+                {
+                    finalString += ", ";
+                }
+                else
+                {
+                    isFirst = false;
+                }
+                finalString += address.City;
+            }
+
+            if (address.Street != null && address.Street != "")
+            {
+                if (!isFirst)
+                {
+                    finalString += ", ";
+                }
+                else
+                {
+                    isFirst = false;
+                }
+                finalString += address.Street;
+            }
+
+            if (address.HouseNumber != 0)
+            {
+                if (!isFirst)
+                {
+                    finalString += ", ";
+                }
+                else
+                {
+                    isFirst = false;
+                }
+                finalString += address.HouseNumber.ToString();
+            }
+
+            if (address.PostalCode != 0)
+            {
+                if (!isFirst)
+                {
+                    finalString += ", ";
+                }
+                else
+                {
+                    isFirst = false;
+                }
+                finalString += address.PostalCode.ToString();
+            }
+
+            return finalString;
+        }
+
+        ////////////////// QUERIES //////////////////
+
+        /// <summary>
+        /// Query all offences from database.
+        /// </summary>
+        /// <returns> Returns query of DTOs. </returns>
         public IQueryable<OffenceListItemDto> QueryAllOffences()
         {
             return _context.Offences
@@ -52,6 +151,10 @@ namespace TransportRegister.Server.Repositories.Implementations
                 });
         }
 
+        /// <summary>
+        /// Query unresolved offences from database.
+        /// </summary>
+        /// <returns> Returns query of DTOs. </returns>
         public IQueryable<OffenceListItemDto> QueryUnresolvedOffences()
         {
             return _context.Offences
@@ -78,51 +181,24 @@ namespace TransportRegister.Server.Repositories.Implementations
                     {
                         VehicleId = of.OffenceOnVehicle.VehicleId,
                         VIN = of.OffenceOnVehicle.VIN,
-                        LicensePlate = of.OffenceOnVehicle.LicensePlates.OrderByDescending(lp => lp.ChangedOn).Select(lp => lp.LicensePlate).FirstOrDefault(),
+                        LicensePlate = of.OffenceOnVehicle.LicensePlates
+                            .OrderByDescending(lp => lp.ChangedOn)
+                            .Select(lp => lp.LicensePlate)
+                            .FirstOrDefault(),
                         Manufacturer = of.OffenceOnVehicle.Manufacturer,
                         Model = of.OffenceOnVehicle.Model,
                     }
                 });
         }
 
-        public IQueryable<OffenceListItemDto> QueryOffences(bool unresolved)
-        {
-            var query = _context.Offences
-                .AsNoTracking()
-                .Include(of => of.OffenceType)
-                .Include(of => of.CommitedBy);
+        ////////////////// FILTER //////////////////
 
-            if (unresolved)
-            {
-                query.Where(of => !of.IsApproved && of.IsValid);
-            }
-
-            return query.Select(of => new OffenceListItemDto
-            {
-                OffenceId = of.OffenceId,
-                ReportedOn = of.ReportedOn,
-                OffenceType = of.OffenceType.Name,
-                IsValid = of.IsValid,
-                IsApproved = of.IsApproved,
-                PenaltyPoints = of.PenaltyPoints,
-                Person = new PersonSimpleDto
-                {
-                    PersonId = of.PersonId,
-                    FullName = of.CommitedBy.FirstName + " " + of.CommitedBy.LastName,
-                    BirthNumber = of.CommitedBy.BirthNumber
-                },
-                Vehicle = of.VehicleId == null ? null :
-                    new VehicleSimpleDto
-                    {
-                        VehicleId = of.OffenceOnVehicle.VehicleId,
-                        VIN = of.OffenceOnVehicle.VIN,
-                        LicensePlate = of.OffenceOnVehicle.LicensePlates.OrderByDescending(lp => lp.ChangedOn).Select(lp => lp.LicensePlate).FirstOrDefault(),
-                        Manufacturer = of.OffenceOnVehicle.Manufacturer,
-                        Model = of.OffenceOnVehicle.Model,
-                    }
-            });
-        }
-
+        /// <summary>
+        /// Applies filters to query of offences.
+        /// </summary>
+        /// <param name="query"> Query we apply filters to. </param>
+        /// <param name="dtParams"> Datatable parametres. </param>
+        /// <returns> Returns query with applied params. </returns>
         public IQueryable<OffenceListItemDto> ApplyFilterQueryOffences(IQueryable<OffenceListItemDto> query, DtParamsDto dtParams)
         {
             foreach (var filter in dtParams.Filters)
@@ -160,89 +236,14 @@ namespace TransportRegister.Server.Repositories.Implementations
             }
         }
 
-        public static string GetAddresAsString(Address address)
-        {
-            var finalString = "";
-            bool isFirst = true;
+        ////////////////// GETTERS //////////////////
 
-            if(address == null)
-            {
-                return finalString;
-            }
-
-            if(address.Country != null && address.Country != "")
-            {
-                isFirst = false;
-                finalString += address.Country;
-            }
-
-            if(address.State != null && address.State != "") {
-                if (!isFirst)
-                {
-                    finalString += ", ";
-                }
-                else
-                {
-                    isFirst = false;
-                }
-                finalString += address.State;
-            }
-
-            if(address.City != null && address.City != "")
-            {
-                if (!isFirst)
-                {
-                    finalString += ", ";
-                }
-                else
-                {
-                    isFirst = false;
-                }
-                finalString += address.City;
-            }
-
-            if(address.Street != null && address.Street != "")
-            {
-                if (!isFirst)
-                {
-                    finalString += ", ";
-                }
-                else
-                {
-                    isFirst = false;
-                }
-                finalString += address.Street;
-            }
-
-            if(address.HouseNumber != 0)
-            {
-                if (!isFirst)
-                {
-                    finalString += ", ";
-                }
-                else
-                {
-                    isFirst = false;
-                }
-                finalString += address.HouseNumber.ToString();
-            }
-
-            if(address.PostalCode != 0)
-            {
-                if (!isFirst)
-                {
-                    finalString += ", ";
-                }
-                else
-                {
-                    isFirst = false;
-                }
-                finalString += address.PostalCode.ToString();
-            }
-
-            return finalString;
-        }
-
+        /// <summary>
+        /// Gets offence by id from database. Includes all related entities.
+        /// </summary>
+        /// <param name="offenceId"> If of offence. </param>
+        /// <param name="user"> User logged in at the moment. </param>
+        /// <returns> Returns offence as DTO. </returns>
         public async Task<OffenceDetailDto> GetOffenceByIdAsync(int offenceId, User user)
         {
             var offenceDto = await _context.Offences
@@ -289,10 +290,10 @@ namespace TransportRegister.Server.Repositories.Implementations
                         Id = of.OfficialId,
                         FullName = of.ProcessedByOfficial.FirstName + " " + of.ProcessedByOfficial.LastName
                     }
-                    // TODO -> person dto
                 }).FirstOrDefaultAsync();
 
             var fine = await _context.Fines
+                .AsNoTracking()
                 .Where(f => f.OffenceId == offenceId)
                 .Select(f => new FineDetailDto
                 {
@@ -330,9 +331,14 @@ namespace TransportRegister.Server.Repositories.Implementations
             return offenceDto;
         }
 
+        /// <summary>
+        /// Gets all offence types from database. Used for dropdowns.
+        /// </summary>
+        /// <returns> Returns list of offence types as DTOs. </returns>
         public async Task<IEnumerable<OffenceTypeDto>> GetOffenceTypesAsync()
         {
             var offenceTypes = await _context.OffenceTypes
+                .AsNoTracking()
                 .Select(ot => new OffenceTypeDto
                 {
                     Id = ot.OffenceTypeId,
@@ -344,26 +350,9 @@ namespace TransportRegister.Server.Repositories.Implementations
             return offenceTypes;
         }
 
-        public async Task<bool> AssignPoints(int driverId, int points)
-        {
-            var driver = await _context.Drivers.FindAsync(driverId);
-            if (driver == null)
-            {
-                return false;
-            }
-
-            driver.BadPoints += points;
-            driver.LastCrimeCommited = DateTime.Now; // TODO -> rn sets last crime commited only when points are assigned!! check if its okay
-            if (driver.BadPoints >= 12)
-            {
-                driver.HasSuspendedLicense = true;
-                driver.DrivingSuspendedUntil = DateTime.Now.AddYears(1);
-            }
-
-            return await _context.SaveChangesAsync() > 0;
-        }
-
-        public async Task<Offence> ReportOffenceAsync(OffenceCreateDto offenceDto, User activeUser)
+        ////////////////// ACTIONS //////////////////
+      
+        public Offence CreateOffence(OffenceCreateDto offenceDto, User activeUser)
         {
             var offence = new Offence
             {
@@ -387,6 +376,19 @@ namespace TransportRegister.Server.Repositories.Implementations
                 OfficerId = activeUser.Id
             };
 
+            return offence;
+        }
+
+        /// <summary>
+        /// Creates new offence to the database. Sets all properties from DTO.
+        /// </summary>
+        /// <param name="offenceDto"> DTO with info about new offence. </param>
+        /// <param name="activeUser"> User which is logged at the moment. </param>
+        /// <returns> Returns new entity. </returns>
+        public async Task<Offence> ReportOffenceAsync(OffenceCreateDto offenceDto, User activeUser)
+        {
+            var offence = CreateOffence(offenceDto, activeUser);
+
             if (offenceDto.FineAmount != 0)
             {
                 offence.Fine = new Fine
@@ -407,9 +409,9 @@ namespace TransportRegister.Server.Repositories.Implementations
                     }
                 }
             }
-            else // TODO -> no penalty should mean not points but maybe i should check the points as well
+            else // If there is no fine, offence is automatically approved
             {
-                offence.IsApproved = true; // Automatically processing offence when no fine is assigned
+                offence.IsApproved = true;
             }
 
 
@@ -442,6 +444,39 @@ namespace TransportRegister.Server.Repositories.Implementations
             return offence;
         }
 
+        /// <summary>
+        /// Assigns points to driver. If driver has more than 12 points, his license is suspended.
+        /// </summary>
+        /// <param name="driverId"> Id of a driver we assign points to. </param>
+        /// <param name="points"> Number of points to be assigned. </param>
+        /// <returns></returns>
+        public async Task<bool> AssignPoints(int driverId, int points)
+        {
+            var driver = await _context.Drivers.FindAsync(driverId);
+            if (driver == null)
+            {
+                return false;
+            }
+
+            driver.BadPoints += points;
+            driver.LastCrimeCommited = DateTime.Now;
+            if (driver.BadPoints >= 12)
+            {
+                driver.BadPoints = 12;
+                driver.HasSuspendedLicense = true;
+                driver.DrivingSuspendedUntil = DateTime.Now.AddYears(1);
+            }
+
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        /// <summary>
+        /// Approves offence. Sets it as valid and approved.
+        /// </summary>
+        /// <param name="offenceId"> If of offence. </param>
+        /// <param name="officialId"> Id of official who did this operation. </param>
+        /// <param name="offenceDto"> DTO which will recieve new info. </param>
+        /// <returns></returns>
         public async Task<bool> ApproveOffenceAsync(int offenceId, string officialId, OffenceDetailDto offenceDto)
         {
             var offence = await _context.Offences.Include(of => of.Fine).Where(of => of.OffenceId == offenceId).FirstOrDefaultAsync();
@@ -452,7 +487,7 @@ namespace TransportRegister.Server.Repositories.Implementations
 
             if(offence.Fine != null)
             {
-                if(offence.Fine.IsActive) // TODO 
+                if(offence.Fine.IsActive)
                 {
                     offence.Fine.IsActive = false;
                     offence.Fine.PaidOn = DateOnly.FromDateTime(DateTime.Now);
@@ -492,6 +527,12 @@ namespace TransportRegister.Server.Repositories.Implementations
             return true;
         }
 
+        /// <summary>
+        /// Declines offence. Sets it as not valid and not approved.
+        /// </summary>
+        /// <param name="offenceId"> If of offence. </param>
+        /// <param name="officialId"> Id of official who did this operation. </param>
+        /// <returns></returns>
         public async Task<bool> DeclineOffenceAsync(int offenceId, string officialId)
         {
             var offence = await _context.Offences.FindAsync(offenceId);
@@ -507,6 +548,12 @@ namespace TransportRegister.Server.Repositories.Implementations
             return await _context.SaveChangesAsync() > 0;
         }
 
+        /// <summary>
+        /// Not used.
+        /// </summary>
+        /// <param name="offenceId"> If of offence. </param>
+        /// <param name="offenceDto"></param>
+        /// <returns></returns>
         public async Task<int> EditOffenceAsync(int offenceId, OffenceDetailDto offenceDto) // TODO
         {
             var offence = await _context.Offences.FindAsync(offenceId);
@@ -522,7 +569,12 @@ namespace TransportRegister.Server.Repositories.Implementations
             return -1;
         }
 
-        public async Task<bool> DeleteOffenceAsync(int offenceId) // TODO
+        /// <summary>
+        /// Deltes offence from database. Not used.
+        /// </summary>
+        /// <param name="offenceId"> If of offence. </param>
+        /// <returns> Returns true if operation was successful. </returns>
+        public async Task<bool> DeleteOffenceAsync(int offenceId)
         {
             var offence = await _context.Offences.FindAsync(offenceId);
             if (offence == null)
