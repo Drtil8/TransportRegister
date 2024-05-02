@@ -11,6 +11,7 @@ using TransportRegister.Server.Data;
 using TransportRegister.Server.DTOs.DriversLicenseDTOs;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 
 namespace TransportRegister.Server.Controllers
 {
@@ -38,33 +39,17 @@ namespace TransportRegister.Server.Controllers
         [Produces("application/json")]
         public async Task<IActionResult> PersonAndDriverSearch([FromBody] DtParamsDto dtParams)
         {
-            var query = _personRepository.QueryPersonAndDriverSearch(dtParams);
-            var combinedData =  query.Item1
-                .Select(person => new DriverSimpleListDto
-                {
-                    PersonId = person.PersonId,
-                    FirstName = person.FirstName,
-                    LastName = person.LastName,
-                    BirthNumber = person.BirthNumber,
-                    DriversLicenseNumber = null,
-                })
-                .Concat(query.Item2)
-                .ToList();
-
-            var totalCount = combinedData.Count;
-
-            var filteredData = combinedData
+            var query = _personRepository.QueryAllPersons(dtParams);
+            int totalRowCount = await query.CountAsync();
+            var filteredData = await query
                 .Skip(dtParams.Start)
                 .Take(dtParams.Size)
-                .ToList();
-
-            var result = new DtResultDto<DriverSimpleListDto>
+                .ToListAsync();
+            return new JsonResult(new DtResultDto<DriverSimpleListDto>
             {
                 Data = filteredData,
-                TotalRowCount = totalCount
-            };
-
-            return new JsonResult(result);
+                TotalRowCount = totalRowCount
+            });
         }
 
         /// GET: api/Persons/5

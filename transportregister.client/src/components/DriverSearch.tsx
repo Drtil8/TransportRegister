@@ -47,7 +47,7 @@ export class DriverSearch extends Component<object, IDriverSearchState> {
           <br></br>
           <br></br>
           {/*<GoogleMapsAutocomplete onInputChange={this.handleInputChange}></GoogleMapsAutocomplete>*/}
-          <DriverDatatable fetchDataRef={this.fetchDataRef} autoFetch={false} />
+          <DriverDatatable fetchDataRef={this.fetchDataRef} autoFetch={true} />
         </Row>
       </div>
     );
