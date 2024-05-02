@@ -230,29 +230,67 @@ namespace TransportRegister.Server.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("{driverId}/AddDriversLicense")]
         [Authorize(Roles = "Official")]
-        public async Task<IActionResult> PostDriversLicense(int driverId, DriversLicenseCreateDto license)
+        public async Task<IActionResult> PostDriversLicense(int driverId, List<string> new_licenses)
         {
             if (!ModelState.IsValid)    /// what about bad vehicle type?
             {
                 return BadRequest(ModelState);
             }
 
-            var driver = await _personRepository.GetPersonByIdAsync(driverId);
+            var person = await _personRepository.GetPersonByIdAsync(driverId);
 
-            if (driver is not Driver)
+            if (person is not Driver driver)
             {
                 return BadRequest($"Person {driverId} is not a driver.");
             }
-            if (!Enum.IsDefined(typeof(VehicleType), license.VehicleType))
-            {
-                return BadRequest($"Invalid vehicle type: {license.VehicleType}");
-            }
+
             var officialId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            await _personRepository.AddDriversLicense(driverId, officialId, license);
+
+            foreach (var licenseType in new_licenses)
+            {
+                if (!Enum.TryParse<VehicleType>(licenseType, out VehicleType vehicleType))
+                {
+                    return BadRequest($"Invalid vehicle type: {licenseType}");
+                }
+
+                var license = new DriversLicenseCreateDto
+                {
+                    VehicleType = licenseType,
+                    IssuedOn = DateOnly.FromDateTime(DateTime.Now),
+                    Description = GenerateDescription(licenseType)
+                };
+
+                await _personRepository.AddDriversLicense(driverId, officialId, license);
+            }
+
             return Ok();
-
-
         }
+
+        static string GenerateDescription(string licenseType)
+        {
+            return licenseType switch
+            {
+                "AM" => "Řidičák na mopedy",
+                "A1" => "Řidičák na motocykly s obsahem do 125 cm³",
+                "A2" => "Řidičák na motocykly s výkonem do 35 kW",
+                "A" => "Řidičák na motocykly",
+                "B1" => "Řidičák na čtyřkolkové čtyřkolky",
+                "B" => "Řidičák na osobní automobily",
+                "C1" => "Řidičák na malé nákladní automobily",
+                "C" => "Řidičák na nákladní automobily",
+                "D1" => "Řidičák na malé autobusy",
+                "D" => "Řidičák na autobusy",
+                "BE" => "Řidičák na obytné automobily s přívěsem",
+                "C1E" => "Řidičák na malé nákladní automobily s přívěsem",
+                "CE" => "Řidičák na nákladní automobily s přívěsem",
+                "D1E" => "Řidičák na malé autobusy s přívěsem",
+                "DE" => "Řidičák na autobusy s přívěsem",
+                "T" => "Řidičák na traktor",
+                _ => "Unknown License Type" // Default case
+            };
+        }
+
+
 
         [HttpPost("{personId}/UploadImage")]
         public async Task<IActionResult> UploadImage(int personId, IFormFile file)
