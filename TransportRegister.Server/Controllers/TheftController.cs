@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using TransportRegister.Server.DTOs.TheftDTOs;
+using TransportRegister.Server.Models;
 using TransportRegister.Server.Repositories;
 
 namespace TransportRegister.Server.Controllers;
@@ -9,9 +11,12 @@ namespace TransportRegister.Server.Controllers;
 public class TheftController : ControllerBase
 {
     private readonly ITheftRepository _theftRepository;
-    public TheftController(ITheftRepository theftRepository)
+    private readonly UserManager<User> _userManager;
+
+    public TheftController(ITheftRepository theftRepository, UserManager<User> userManager)
     {
         _theftRepository = theftRepository;
+        _userManager = userManager;
     }
 
     [HttpGet("/api/Theft/GetActiveThefts")]
@@ -29,9 +34,10 @@ public class TheftController : ControllerBase
     }
 
     [HttpPost("/api/Theft/ReportTheft")]
-    public async Task<IActionResult> ReportTheft(TheftDetailDto theft)
+    public async Task<IActionResult> ReportTheft(TheftCreateDto theft)
     {
-        int newTheftId = await _theftRepository.CreateTheft(theft);
+        var activeUser = await _userManager.GetUserAsync(User);
+        int newTheftId = await _theftRepository.CreateTheft(theft, activeUser.Id);
         return Ok(newTheftId);
     }
 

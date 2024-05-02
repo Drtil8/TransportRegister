@@ -7,36 +7,55 @@ interface TheftReportModalProps {
 const TheftReportModal: React.FC<TheftReportModalProps> = () => {
   const [modal, setModal] = useState(false);
   const initialFormData = {
-    reportTheftVehicleId: 0,
+    reportTheftVehicleId: 1, // TODO
     reportTheftStolenOn: "",
     reportTheftDescription: "",
     reportTheftAddress: "todo",
+    reportTheftPhotos: "todo",
     reportTheftVIN: "fetch z detailu",
     reportTheftSPZ: "fetch z detailu",
     reportTheftBrand: "fetch z detailu",
     reportTheftModel: "fetch z detailu",
-
+    reportTheftOwnerId: 1, // TODO
+    reportTheftOwnerFirstName: "fetch z detailu",
+    reportTheftOwnerLastName: "fetch z detailu",
+    reportTheftOwnerBirthNumber: "fetch z detailu",
+    reportTheftOwnerBirthDate: "fetch z detailu",
   }
   const [formData, setFormData] = useState(initialFormData);
   const toggle = () => setModal(!modal);
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    try {
+      const response = await fetch("/api/Theft/ReportTheft", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          description: formData.reportTheftDescription,
+          stolenOn: formData.reportTheftStolenOn,
+          //address: formData.reportTheftAddress,
+          vehicleId: formData.reportTheftVehicleId,
+          reportingPersonId: formData.reportTheftOwnerId,
+        }),
+      });
+
+      if (!response.ok) {
+        console.log("Něco se nepovedlo.");
+      }
+    }
+    catch (error) {
+      console.log(error);
+    }
+    console.log(formData);
     toggle();
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value, type } = event.target;
-
-    if (name === "reportTheftFineAmount" || name === "reportTheftPenaltyPoints") {
-      setFormData({ ...formData, [name]: parseFloat(value) });
-    }
-    else if (type === "checkbox") {
-      setFormData({ ...formData, [name]: (event.target as HTMLInputElement).checked });
-    }
-    else {
-      setFormData({ ...formData, [name]: value });
-    }
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
   }
 
   return (
@@ -70,7 +89,7 @@ const TheftReportModal: React.FC<TheftReportModalProps> = () => {
                     <Label>
                       Místo činu:
                     </Label>
-                    <Input id="reportTheftAddress" name="reportTheftAddress" type="text" />
+                    <Input id="reportTheftAddress" name="reportTheftAddress" type="text" value={formData.reportTheftAddress} onChange={handleChange} />
                   </Col>
                 </Row>
                 {/*<Row>*/}
