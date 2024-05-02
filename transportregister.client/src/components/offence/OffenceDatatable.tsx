@@ -31,7 +31,7 @@ export const OffenceDatatable: React.FC<{
   const [rowCount, setRowCount] = useState(0);
 
   // Table state
-  const initialColumnSort: ColumnSort = { id: 'start', desc: true };
+  const initialColumnSort: ColumnSort = { id: 'offenceId', desc: true };
   const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
   const [sorting, setSorting] = useState<MRT_SortingState>([initialColumnSort]);
@@ -115,17 +115,17 @@ export const OffenceDatatable: React.FC<{
         header: 'Trestné body',
       },
       {
-        id: 'personFullName', // Use a unique id for the column
+        id: 'Person.FullName', // Use a unique id for the column
         accessorFn: (row) => row.person.fullName, // Access the fullName property of the person object
         header: 'Osoba',
       },
       {
-        id: 'birthNumber',
+        id: 'Person.BirthNumber',
         accessorFn: (row) => row.person.birthNumber, // Access the fullName property of the person object
         header: 'Rodné číslo',
       },
       {
-        id: 'vehiclePlate', // Use a unique id for the column
+        id: 'Vehicle.LicensePlate', // Use a unique id for the column
         accessorFn: (row) => row.vehicle?.licensePlate ?? 'N/A', // Access the plate property of the vehicle object
         header: 'SPZ',
       },
