@@ -36,17 +36,17 @@ namespace TransportRegister.Server.Controllers
         public async Task<IActionResult> PersonAdnDriverSearch([FromBody] DtParamsDto dtParams)
         {
             var query = _personRepository.QueryPersonAndDriverSearch(dtParams);
-            int totalPersonRowCount = await query.Item1.CountAsync();
-            int totalDriversRowCount = await query.Item2.CountAsync();
-            var filteredPersonData = await query.Item1
+            int totalPersonRowCount =  query.Item1.Count();
+            int totalDriversRowCount =  query.Item2.Count();
+            var filteredPersonData =  query.Item1
                 .Skip(dtParams.Start)
                 .Take(dtParams.Size)
-                .ToListAsync();
+                .ToList();
 
-            var filteredDriverData = await query.Item2
+            var filteredDriverData = query.Item2
                 .Skip(dtParams.Start)
                 .Take(dtParams.Size)
-                .ToListAsync();
+                .ToList();
             var resultPerson = new DtResultDto<PersonSimpleListDto>
             {
                 Data = filteredPersonData,
