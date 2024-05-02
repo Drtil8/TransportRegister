@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TransportRegister.Server.DTOs.DatatableDTOs;
@@ -71,6 +72,7 @@ public class TheftController : ControllerBase
     }
 
     [HttpPost("/api/Theft/ReportTheft")]
+    [Authorize(Roles = "Officer")]
     public async Task<IActionResult> ReportTheft(TheftCreateDto theft)
     {
         var activeUser = await _userManager.GetUserAsync(User);
@@ -78,10 +80,21 @@ public class TheftController : ControllerBase
         return Ok(newTheftId);
     }
 
-    [HttpPost("/api/Theft/ReportTheftDiscovery/{theftId}")]
+    [HttpPut("/api/Theft/ReportTheftDiscovery/{theftId}")]
+    [Authorize(Roles = "Officer")]
     public async Task<IActionResult> ReportTheftDiscovery(int theftId)
     {
-        await _theftRepository.ReportTheftDiscovery(theftId);
+        var activeUser = await _userManager.GetUserAsync(User);
+        await _theftRepository.ReportTheftDiscovery(theftId, activeUser.Id);
+        return Ok();
+    }
+
+    [HttpPut("/api/Theft/ReportTheftReturn/{theftId}")]
+    [Authorize(Roles = "Official")]
+    public async Task<IActionResult> ReportTheftReturn(int theftId)
+    {
+        var activeUser = await _userManager.GetUserAsync(User);
+        await _theftRepository.ReportTheftReturn(theftId, activeUser.Id);
         return Ok();
     }
 }
