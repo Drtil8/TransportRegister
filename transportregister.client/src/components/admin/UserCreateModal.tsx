@@ -2,8 +2,7 @@
 import { Form, Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, FormGroup, Label, Input, Col } from 'reactstrap';
 
 interface CreateUserModalProps {
-  fetchDataRef: React.MutableRefObject<any>; // TODO
-  //fetchData: () => void;
+  fetchDataRef: React.MutableRefObject<any>;
 }
 
 const UserCreateModal: React.FC<CreateUserModalProps> = ({fetchDataRef}) => {
@@ -22,7 +21,6 @@ const UserCreateModal: React.FC<CreateUserModalProps> = ({fetchDataRef}) => {
       return;
     }
 
-    // TODO -> password encryption when sending
     try {
       const response = await fetch('/api/User', {
         method: 'POST',
