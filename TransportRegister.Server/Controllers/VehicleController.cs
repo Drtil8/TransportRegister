@@ -58,9 +58,7 @@ namespace TransportRegister.Server.Controllers
         [HttpGet("VehicleTypes")]
         public async Task<ActionResult<List<string>>> GetVehicleTypes()
         {
-            //var isAdmin = User.IsInRole("Admin");     // todo isAdmin query
             List<string> vehicleTypes = await _vehicleRepository.GetVehicleTypesAsync();
-
             return Ok(vehicleTypes);
         }
 

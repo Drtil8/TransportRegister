@@ -2,10 +2,10 @@
 
 namespace TransportRegister.Server.Models
 {
-    [Owned] // TODO: skusiť
+    [Owned]
     public class Address
     {
-        public string Street { get; set; }    // TODO: tabulka adresy -- krajina, kraj, ulica, mesto, čislo domu, psč -- otestovať
+        public string Street { get; set; }
         public string City { get; set; }
         public string State { get; set; }
         public string Country { get; set; }

@@ -31,7 +31,7 @@ namespace TransportRegister.Server.Models
         [Range(0, 12)]
         public int BadPoints { get; set; }
         public bool HasSuspendedLicense { get; set; }
-        public DateTime? LastCrimeCommited { get; set; }        // TODO: is really nullable?
+        public DateTime? LastCrimeCommited { get; set; }
         public DateTime? LastPointsDeduction { get; set; }
         public DateTime? DrivingSuspendedUntil { get; set; }
 

@@ -15,7 +15,7 @@ public abstract class Vehicle
     public double Height_CM { get; set; }
     public double LoadCapacity_KG { get; set; }
     public byte[] Image { get; set; } = default!;
-    public int OwnerId { get; set; }            // TODO: owner == �t�t (komunizmus !!)
+    public int OwnerId { get; set; }
     public Person Owner { get; set; }
     public string OfficialId { get; set; }
     public Official AddedByOfficial { get; set; }

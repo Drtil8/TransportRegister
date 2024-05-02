@@ -116,7 +116,6 @@ namespace TransportRegister.Server.Repositories.Implementations
         {
             foreach (var filter in dtParams.Filters)
             {
-                // todo string properties can be filtered by Contains or StartsWith
                 query = filter.PropertyName switch
                 {
                     nameof(VehicleListItemDto.Id) =>
@@ -126,7 +125,7 @@ namespace TransportRegister.Server.Repositories.Implementations
                     nameof(VehicleListItemDto.LicensePlate) =>
                         query.Where(v => v.LicensePlate.StartsWith(filter.Value)),
                     nameof(VehicleListItemDto.VehicleType) =>
-                        query.Where(v => v.VehicleType == filter.Value),        // todo fix VehicleType getting
+                        query.Where(v => v.VehicleType == filter.Value),
                     nameof(VehicleListItemDto.Manufacturer) =>
                         query.Where(v => v.Manufacturer.StartsWith(filter.Value)),
                     nameof(VehicleListItemDto.Model) =>
@@ -145,11 +144,10 @@ namespace TransportRegister.Server.Repositories.Implementations
 
         public IQueryable<VehicleListItemDto> QueryVehicleSearch(DtParamsDto dtParams)
         {
-            //VehicleDetailDto vehicleDto = VehicleDtoTransformer.TransformToDto(vehicle);  // todo check this
             var query = _context.Vehicles
                 .AsNoTracking()
                 .Include(v => v.LicensePlates)
-                .Include(v => v.Owner)          // todo inconsitency with driver and owner
+                .Include(v => v.Owner)
                 .Where(v => v.Owner != null)    // todo should never happend, fix the seeds or model
                 .Select(v =>
                     new VehicleListItemDto

@@ -192,47 +192,6 @@ namespace TransportRegister.Server.Repositories.Implementations
             return result;
         }
 
-
-        // Person search
-
-        private static IQueryable<PersonSimpleListDto> ApplySortingPersonSearch(
-    IQueryable<PersonSimpleListDto> query, DtParamsDto dtParams)
-        {
-            if (dtParams.Sorting.Any())
-            {
-                Sorting sorting = dtParams.Sorting.First();
-                return query.OrderBy($"{sorting.Id} {sorting.Dir}")
-                    .ThenByDescending(v => v.PersonId);
-            }
-            else
-            {
-                return query.OrderByDescending(v => v.PersonId);
-            }
-        }
-
-        private static IQueryable<PersonSimpleListDto> ApplyFilterPersonSearch(
-            IQueryable<PersonSimpleListDto> query, DtParamsDto dtParams)
-        {
-            foreach (var filter in dtParams.Filters)
-            {
-                // todo string properties can be filtered by Contains or StartsWith
-                query = filter.PropertyName switch
-                {
-                    nameof(PersonSimpleListDto.PersonId) =>
-                        query.Where(v => v.PersonId.ToString().StartsWith(filter.Value)), // numeric property
-                    nameof(PersonSimpleListDto.FirstName) =>
-                        query.Where(v => v.FirstName.StartsWith(filter.Value)),
-                    nameof(PersonSimpleListDto.LastName) =>
-                        query.Where(v => v.LastName.StartsWith(filter.Value)),
-                    nameof(PersonSimpleListDto.BirthNumber) =>
-                        query.Where(v => v.BirthNumber.StartsWith(filter.Value)),
-                    _ => query      // Default case - do not apply any filter    // Default case - do not apply any filter
-                };
-            }
-            return query;
-        }
-
-        // Driver Search
         private static IQueryable<DriverSimpleListDto> ApplySortingDriverSearch(
         IQueryable<DriverSimpleListDto> query, DtParamsDto dtParams)
         {
@@ -253,11 +212,10 @@ namespace TransportRegister.Server.Repositories.Implementations
         {
             foreach (var filter in dtParams.Filters)
             {
-                // todo string properties can be filtered by Contains or StartsWith
                 query = filter.PropertyName switch
                 {
                     nameof(DriverSimpleListDto.PersonId) =>
-                        query.Where(v => v.PersonId.ToString().StartsWith(filter.Value)), // numeric property
+                        query.Where(v => v.PersonId.ToString().StartsWith(filter.Value)),
                     nameof(DriverSimpleListDto.DriversLicenseNumber) =>
                         query.Where(v => v.DriversLicenseNumber.StartsWith(filter.Value)),
                     nameof(DriverSimpleListDto.FirstName) =>
@@ -266,7 +224,7 @@ namespace TransportRegister.Server.Repositories.Implementations
                         query.Where(v => v.LastName.StartsWith(filter.Value)),
                     nameof(DriverSimpleListDto.BirthNumber) =>
                         query.Where(v => v.BirthNumber.StartsWith(filter.Value)),
-                    _ => query      // Default case - do not apply any filter
+                    _ => query
                 };
             }
             return query;
