@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Dynamic.Core;
+using Microsoft.EntityFrameworkCore;
 using TransportRegister.Server.Data;
 using TransportRegister.Server.DTOs.DatatableDTOs;
 using TransportRegister.Server.DTOs.FineDTOs;
@@ -124,12 +125,39 @@ namespace TransportRegister.Server.Repositories.Implementations
 
         public IQueryable<OffenceListItemDto> ApplyFilterQueryOffences(IQueryable<OffenceListItemDto> query, DtParamsDto dtParams)
         {
-            //foreach(var filter in dtParams.Filters)
-            //{
+            foreach (var filter in dtParams.Filters)
+            {
+                query = filter.PropertyName switch
+                {
+                    nameof(OffenceListItemDto.OffenceId) =>
+                        query.Where(o => o.OffenceId.ToString().StartsWith(filter.Value)),
+                    nameof(OffenceListItemDto.OffenceType) =>
+                        query.Where(o => o.OffenceType.StartsWith(filter.Value)),
+                    nameof(OffenceListItemDto.ReportedOn) =>
+                        query.Where(o => o.ReportedOn <= DtParamsDto
+                            .ParseClientDate(filter.Value, DateTime.MinValue)),
+                    nameof(OffenceListItemDto.PenaltyPoints) =>
+                        query.Where(o => o.PenaltyPoints.ToString().StartsWith(filter.Value)),
+                    "Person.FullName" =>
+                        query.Where(o => o.Person.FullName.StartsWith(filter.Value)),
+                    "Person.BirthNumber" =>
+                        query.Where(o => o.Person.BirthNumber.StartsWith(filter.Value)),
+                    "Vehicle.LicensePlate" =>
+                        query.Where(o => o.Vehicle.LicensePlate.StartsWith(filter.Value)),
+                    _ => query
+                };
+            }
 
-            //}
-
-            return query;
+            if (dtParams.Sorting.Any())
+            {
+                Sorting sorting = dtParams.Sorting.First();
+                return query.OrderBy($"{sorting.Id} {sorting.Dir}")
+                    .ThenByDescending(o => o.OffenceId);
+            }
+            else
+            {
+                return query.OrderByDescending(o => o.OffenceId);
+            }
         }
 
         public static string GetAddresAsString(Address address)
