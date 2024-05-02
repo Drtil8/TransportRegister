@@ -11,7 +11,7 @@ namespace TransportRegister.Server.DTOs.OffenceDTOs
         public string Description { get; set; }
         public int OffenceTypeId { get; set; }
         public int PenaltyPoints { get; set; }
-        public Address Address { get; set; } // TODO
+        public AddressDto Address { get; set; }
         public double FineAmount { get; set; }
         public bool FinePaid { get; set; }
         public int VehicleId { get; set; } // Comitted on vehicle

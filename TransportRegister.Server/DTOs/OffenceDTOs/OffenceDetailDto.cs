@@ -13,7 +13,7 @@ namespace TransportRegister.Server.DTOs.OffenceDTOs
     {
         public int OffenceId { get; set; }
         public DateTime ReportedOn { get; set; }
-        //public string Location { get; set; } // TODO -> use address
+        public string Address { get; set; }
         public string Type { get; set; } // TODO -> enum or new table in db
         public bool IsValid { get; set; }
         public bool IsApproved { get; set; }
