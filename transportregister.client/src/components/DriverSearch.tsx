@@ -20,7 +20,6 @@ export class DriverSearch extends Component<object, IDriverSearchState> {
 
   handleInputChange = (value: IAddress) => {
     this.setState({ googleAdress: value });
-    console.log('parent', value)
   };
 
   render() {

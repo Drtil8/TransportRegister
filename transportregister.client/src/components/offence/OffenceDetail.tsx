@@ -94,7 +94,6 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
   }
 
   async handleDecline() {
-    console.log("Decline");
     try {
       const response = await fetch(`/api/Offence/${this.state.offenceDetail?.offenceId}/Decline`, {
         method: 'PUT',

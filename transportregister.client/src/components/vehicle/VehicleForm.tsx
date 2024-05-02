@@ -53,7 +53,6 @@ export const VehicleForm: React.FC<{ fetchedVehicle: IVehicleDetail | null }> = 
       imageBase64: imageBase64,
       ...additionalFields,
     };
-    console.log(params);
 
     try {
       const response = await fetch(`/api/Vehicle/SaveVehicle`, {

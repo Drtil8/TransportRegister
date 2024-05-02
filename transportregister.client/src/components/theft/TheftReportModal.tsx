@@ -53,7 +53,7 @@ const TheftReportModal: React.FC<TheftReportModalProps> = ({vehicleDetail }) => 
       }
     }
     catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

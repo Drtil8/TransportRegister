@@ -32,7 +32,6 @@ export class TheftDetail extends Component<object, ITheftDetailProps> {
   }
 
   async handleFound() {
-    console.log(this.state.theftDetail);
     try {
       const response = await fetch(`/api/Theft/ReportTheftDiscovery/${this.state.theftDetail?.theftId}`, {
         method: 'PUT',

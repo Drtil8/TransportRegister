@@ -126,8 +126,7 @@ export class DriverDetail extends Component<object, DriverDetailState> {
   };
 
   switchEditState = () => {
-    if (!this.state.form.disableInput) { //zruseni
-      console.log('zrusit')
+    if (!this.state.form.disableInput) {
       this.setState(prevState => ({
         form: {
           ...prevState.form,
@@ -151,10 +150,8 @@ export class DriverDetail extends Component<object, DriverDetailState> {
         disableInput: !prevState.form.disableInput
       }
     }));
-    console.log('Putting Data', this.state.form.licensesStrings);
 
     const result: string[] = this.state.form.licensesStrings.filter(item => !this.state.hadLicenses.includes(item));
-    console.log(result);
     const params = result;
     try {
       const urlstring: string = '/api/Persons/' + this.state.personDetail?.personId + '/AddDriversLicense';
@@ -167,7 +164,6 @@ export class DriverDetail extends Component<object, DriverDetailState> {
       });
 
       if (response.ok) {
-        console.log('put ok');
         const appended: string[] = [...this.state.hadLicenses, ...params];
         this.setState({ hadLicenses: appended });
       }

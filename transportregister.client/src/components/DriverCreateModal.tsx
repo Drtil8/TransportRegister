@@ -40,20 +40,17 @@ const DriverCreateModal: React.FC<DriverCreateModalProps> = ({ person }) => {
       });
 
       if (!response.ok) {
-        console.log("Něco se nepovedlo.");
+        console.error("Něco se nepovedlo.");
       }
     }
     catch (error) {
-      console.log(error);
+      console.error(error);
     }
-    console.log('submioging');
-    //toggle();
   };
 
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = event.target;
-    console.log(name, value);
     setFormData({ ...formData, [name]: value });
 
   

@@ -21,21 +21,12 @@ const GoogleMapsAutocomplete: React.FC<GoogleMapsAutocompleteProps> = ({ onInput
     postalCode: 0,
   });
 
-  //const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //  const { value } = event.target;
-  //  setInputValue(value);
-  //  // call the callback 
-  //  console.log(value);
-  //  onInputChange(value);
-  //};
-
   // Function to update address state
   const updateAddress = (key: keyof IAddress, value: string | number) => {
     setAddress(prevAddress => ({
       ...prevAddress,
       [key]: value,
     }));
-    console.log(value);
     const newAddress: IAddress = {
       ...address,
       [key]: value,

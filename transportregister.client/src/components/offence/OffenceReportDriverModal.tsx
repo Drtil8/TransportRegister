@@ -110,7 +110,6 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = ({ per
     const errMsg = document.getElementById('reportDriverErrorMsg');
     const chosenVIN = event.target.name === "reportDriverVehicleVIN";
     errMsg!.classList.add('hidden');
-    console.log(chosenVIN);
     if ((formData.reportDriverVehicleVIN !== "" && chosenVIN) || (formData.reportDriverVehicleSPZ !== "" && !chosenVIN)) {
       try {
         const response = await fetch('/api/Offence/GetVehicleForReport', {
@@ -222,7 +221,6 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = ({ per
       if (imageFiles) {
         setFormData({ ...formData, [name]: imageFiles });
       }
-      console.log(imageFiles);
     }
     else if (type === "checkbox") {
       setFormData({ ...formData, [name]: (event.target as HTMLInputElement).checked });

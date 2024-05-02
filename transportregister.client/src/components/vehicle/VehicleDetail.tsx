@@ -58,7 +58,6 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
           throw new Error(`Unknown vehicle type: ${vehicle.vehicleType}`);
       }
       this.setState({ vehicleDetail: parsedVehicle });
-      console.log(parsedVehicle);
     }
     catch (error) {
       console.error('Error fetching vehicle data:', error);

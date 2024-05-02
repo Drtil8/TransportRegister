@@ -42,8 +42,6 @@ const OffenceReportVehicleModal: React.FC<OffenceReportVehicleModalProps> = ({ v
           },
         });
 
-        console.log(response);
-
         if (!response.ok) {
           throw new Error('Failed to load offence types.');
         }
@@ -163,7 +161,6 @@ const OffenceReportVehicleModal: React.FC<OffenceReportVehicleModalProps> = ({ v
       if (imageFiles) {
         setFormData({ ...formData, [name]: imageFiles });
       }
-      console.log(imageFiles);
     }
     else if (type === "checkbox") {
       setFormData({ ...formData, [name]: (event.target as HTMLInputElement).checked });
