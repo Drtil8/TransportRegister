@@ -1,5 +1,6 @@
 ﻿import React, { FormEvent, useState } from "react";
 import { Button, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row } from "reactstrap";
+import { IPerson } from "./interfaces/IPersonDetail";
 
 interface DriverCreateModalProps {
   person: IPerson;
@@ -8,10 +9,9 @@ interface DriverCreateModalProps {
 
 const DriverCreateModal: React.FC<DriverCreateModalProps> = ({ person }) => {
   const [modal, setModal] = useState(false);
-  //const [person, setPerson] = useState(person);
   
-  const [formData, setFormData] = useState<{ licensesStrings: string[], driversLicenseNumber: string }>({
-    licensesStrings: [], // Specify the type as an array of strings
+  const [formData, setFormData] = useState<{ licensesStrings: string[], driversLicenseNumber: string }>({ 
+    licensesStrings: [], 
     driversLicenseNumber: "",
   });
 
@@ -25,33 +25,28 @@ const DriverCreateModal: React.FC<DriverCreateModalProps> = ({ person }) => {
       return; // Return early if the format is invalid
     }
 
-    //try {
-    //  const response = await fetch("/api/Theft/ReportTheft", {
-    //    method: "POST",
-    //    headers: {
-    //      "Content-Type": "application/json",
-    //    },
-    //    //body: JSON.stringify({
-    //    //  description: formData.reportTheftDescription,
-    //    //  stolenOn: formData.reportTheftStolenOn,
-    //    //  vehicleId: formData.reportTheftVehicleId,
-    //    //  reportingPersonId: formData.reportTheftOwnerId,
-    //    //}),
-    //  });
+    try {
+      const urlString: string= "/api/DriverCreate/" + person.personId;
+      const response = await fetch(urlString, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          personId: person.personId,
+          licenses: formData.licensesStrings,
+          driversLicenseNumber: formData.driversLicenseNumber,
+        }),
+      });
 
-    //  if (!response.ok) {
-    //    console.log("Něco se nepovedlo.");
-    //  }
-    //}
-    //catch (error) {
-    //  console.log(error);
-    //}
-    //console.log(formData);
+      if (!response.ok) {
+        console.log("Něco se nepovedlo.");
+      }
+    }
+    catch (error) {
+      console.log(error);
+    }
     console.log('submioging');
-    console.log(person);
-    //const driver: IDriver = {
-
-    //}
     //toggle();
   };
 
