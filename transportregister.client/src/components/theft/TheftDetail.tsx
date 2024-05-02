@@ -195,9 +195,11 @@ export class TheftDetail extends Component<object, ITheftDetailProps> {
                   </Col>
                   <Col>
                     <dt>Krádež nahlásil:</dt>
-                    <Link to={`/user/${theftDetail.officerReported?.id}`}>
-                      <dd>{theftDetail.officerReported?.fullName}</dd>
-                    </Link>
+                    <dd>
+                      <Link to={`/user/${theftDetail.officerReported?.id}`}>
+                        {theftDetail.officerReported?.fullName}
+                      </Link>
+                    </dd>
                   </Col>
                 </Row>
                 <Row>
@@ -279,15 +281,19 @@ export class TheftDetail extends Component<object, ITheftDetailProps> {
                   <hr />
                   <Col>
                     <dt className="mb-1">Nález nahlásil:</dt>
-                    <Link to={`/user/${theftDetail.officerFound?.id}`}>
-                      <dd>{theftDetail.officerFound?.fullName}</dd>
-                    </Link>
+                    <dd>
+                      <Link to={`/user/${theftDetail.officerFound?.id}`}>
+                        {theftDetail.officerFound?.fullName}
+                      </Link>
+                    </dd>
                   </Col>
                   <Col>
                     <dt className="mb-1">Navrácení potvrdil:</dt>
-                    <Link to={`/user/${theftDetail.official?.id}`}>
-                      <dd>{theftDetail.official?.fullName}</dd>
-                    </Link>
+                    <dd>
+                      <Link to={`/user/${theftDetail.official?.id}`}>
+                        {theftDetail.official?.fullName}
+                      </Link>
+                    </dd>
                   </Col>
                 </Row>
               )}
