@@ -199,6 +199,7 @@ namespace TransportRegister.Server.Repositories.Implementations
         /// <param name="query"> Query we apply filters to. </param>
         /// <param name="dtParams"> Datatable parametres. </param>
         /// <returns> Returns query with applied params. </returns>
+        /// <author> David Drtil </author>
         public IQueryable<OffenceListItemDto> ApplyFilterQueryOffences(IQueryable<OffenceListItemDto> query, DtParamsDto dtParams)
         {
             foreach (var filter in dtParams.Filters)

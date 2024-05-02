@@ -116,6 +116,7 @@ namespace TransportRegister.Server.Repositories.Implementations
         /// <param name="query"> Query. </param>
         /// <param name="dtParams"> Datatable parametres. </param>
         /// <returns> Returns query with applied filters. </returns>
+        /// <author> David Drtil </author>
         public IQueryable<UserListItemDto> ApplyFilterQueryUsers(IQueryable<UserListItemDto> query, DtParamsDto dtParams)
         {
             foreach(var filter in dtParams.Filters)
