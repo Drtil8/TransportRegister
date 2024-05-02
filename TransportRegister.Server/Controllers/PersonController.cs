@@ -14,6 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 using TransportRegister.Server.Data;
 using TransportRegister.Server.DTOs.DriversLicenseDTOs;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace TransportRegister.Server.Controllers
 {
@@ -93,6 +94,7 @@ namespace TransportRegister.Server.Controllers
         }
 
         [HttpGet("{personId}/SetToDriver")]
+        [Authorize(Roles = "Official")]
         public async Task<IActionResult> SetPersonToDriver(int personId)
         {
             var person = await _context.Persons.FindAsync(personId);
@@ -100,7 +102,7 @@ namespace TransportRegister.Server.Controllers
             {
                 return NotFound();
             }
-
+            person.OfficialId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             await _personRepository.SetDriverAsync(person);
 
             return Ok();
@@ -160,6 +162,7 @@ namespace TransportRegister.Server.Controllers
         // PUT: api/Persons/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("{id}")]
+        [Authorize(Roles = "Official")]
         public async Task<ActionResult> PutPerson(int id, PersonUpdateDto person)
         {
             if (id != person.PersonId)
@@ -167,6 +170,7 @@ namespace TransportRegister.Server.Controllers
                 return BadRequest();
             }
 
+            person.OfficialId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             await _personRepository.SavePersonAsync(PersonDtoTransformer.TransformPersonUpdateToEntity(person));
 
             return Ok();
@@ -174,6 +178,7 @@ namespace TransportRegister.Server.Controllers
         }
 
         [HttpPost("Drivers/{id}")]
+        [Authorize(Roles = "Official")]
         public async Task<ActionResult> PutDriver(int id, DriverUpdateDto driver)
         {
             if (id != driver.PersonId)
@@ -188,6 +193,7 @@ namespace TransportRegister.Server.Controllers
             {
                 return BadRequest($"Person {id} is not a driver.");
             }
+            driver.OfficialId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             await _personRepository.SaveDriverAsync(PersonDtoTransformer.TransformPersonUpdateToEntity(driver));
 
@@ -197,6 +203,7 @@ namespace TransportRegister.Server.Controllers
 
 
         [HttpPut("{driverId}/RemoveLicenseSuspension")]
+        [Authorize(Roles = "Official")]
         public async Task<ActionResult> RemoveLicenseSuspenison(int driverId)
         {
             var person = await _personRepository.GetPersonByIdAsync(driverId);
@@ -207,6 +214,7 @@ namespace TransportRegister.Server.Controllers
             }
             if (driver.HasSuspendedLicense)
             {
+                driver.OfficialId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 driver.HasSuspendedLicense = false;
                 driver.DrivingSuspendedUntil = null;
                 await _personRepository.SavePersonAsync(driver);
@@ -221,6 +229,7 @@ namespace TransportRegister.Server.Controllers
         // POST: api/Persons
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("{driverId}/AddDriversLicense")]
+        [Authorize(Roles = "Official")]
         public async Task<IActionResult> PostDriversLicense(int driverId, DriversLicenseCreateDto license)
         {
             if (!ModelState.IsValid)    /// what about bad vehicle type?
@@ -238,8 +247,8 @@ namespace TransportRegister.Server.Controllers
             {
                 return BadRequest($"Invalid vehicle type: {license.VehicleType}");
             }
-
-            await _personRepository.AddDriversLicense(driverId, license);
+            var officialId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            await _personRepository.AddDriversLicense(driverId, officialId, license);
             return Ok();
 
 

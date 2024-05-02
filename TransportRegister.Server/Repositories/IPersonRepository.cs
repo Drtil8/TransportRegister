@@ -20,7 +20,7 @@ namespace TransportRegister.Server.Repositories
         Task<List<Tuple<Driver, int>>> GetDriversAndPoints();
         Task<List<Theft>> GetPersonReportedTheftsByIdAsync(int personId);
         Task<List<Offence>> GetPersonCommitedOffencesByIdAsync(int personId);
-        Task AddDriversLicense(int driverId, DriversLicenseCreateDto license);
+        Task AddDriversLicense(int driverId, string official_id, DriversLicenseCreateDto license);
         (IQueryable<PersonSimpleListDto>, IQueryable<DriverSimpleListDto>) QueryPersonAndDriverSearch(DtParamsDto dtParams);
     }
 }

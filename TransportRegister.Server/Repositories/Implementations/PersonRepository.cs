@@ -7,6 +7,7 @@ using System;
 using TransportRegister.Server.DTOs.VehicleDTOs;
 using TransportRegister.Server.DTOs.DatatableDTOs;
 using System.Security.Permissions;
+using System.Security.Claims;
 
 namespace TransportRegister.Server.Repositories.Implementations
 {
@@ -174,7 +175,7 @@ namespace TransportRegister.Server.Repositories.Implementations
                 await _context.SaveChangesAsync();
             }
         }
-        public async Task AddDriversLicense(int driverId, DriversLicenseCreateDto license)
+        public async Task AddDriversLicense(int driverId,string official_id,  DriversLicenseCreateDto license)
         {
             Driver driver = await _context.Drivers
                 .Include(v => v.Licenses)
@@ -189,7 +190,7 @@ namespace TransportRegister.Server.Repositories.Implementations
                     VehicleType = (VehicleType)Enum.Parse(typeof(VehicleType), license.VehicleType),
                     DriverId = driverId,
                 };
-
+                driver.OfficialId = official_id;
                 driver.Licenses.Add(new_license);
                 await _context.SaveChangesAsync();
             }
