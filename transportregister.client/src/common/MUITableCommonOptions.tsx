@@ -8,8 +8,8 @@ function MUITableCommonOptions<T extends MRT_RowData>(): MRT_TableOptions<T> {
     enableFilters: true,
     enableTopToolbar: true,
     enableRowSelection: false,
-    enableColumnFilterModes: false, // todo maybe set to true but restrict to only one filter mode
-    enableGlobalFilter: false,      // todo delete global filter or alternatively create fulltext index to flex (*nerd)
+    enableColumnFilterModes: false,
+    enableGlobalFilter: false,
     positionActionsColumn: 'last',
     manualFiltering: true,
     manualPagination: true,

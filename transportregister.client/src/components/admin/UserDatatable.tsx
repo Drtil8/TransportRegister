@@ -188,7 +188,6 @@ export const UserDatatable: React.FC<{
               </IconButton>
             </Tooltip>
           )}
-        {/*TODO vacation icon*/}
       </Box>
     ),
     muiTableBodyRowProps: (table) => ({

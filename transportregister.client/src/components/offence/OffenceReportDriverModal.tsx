@@ -18,11 +18,10 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = ({ per
     reportDriverLastName: personDetail?.lastName,
     reportDriverBirthNumber: personDetail?.birthNumber,
     reportDriverBirthDate: formatDate(personDetail!.dateOfBirth),
-    reportDriverId: 1, // TODO fetch from detail
+    reportDriverId: 1,
     reportDriverType: 1,
     reportDriverDescription: "",
-    //reportDriverLocation: "", // TODO
-    reportDriverVehicleId: 0, // TODO fetch from backend
+    reportDriverVehicleId: 0,
     reportDriverVehicleVIN: "",
     reportDriverVehicleSPZ: "",
     reportDriverVehicleBrand: "",

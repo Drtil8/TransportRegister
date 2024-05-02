@@ -10,11 +10,11 @@ interface OffenceReportVehicleModalProps {
 
 const OffenceReportVehicleModal: React.FC<OffenceReportVehicleModalProps> = ({ vehicleDetail }) => {
   const [modal, setModal] = useState(false);
-  const [address, setAddress] = useState<IAddress | null>(null); // TODO]
+  const [address, setAddress] = useState<IAddress | null>(null);
   const initialFormData = {
     reportVehicleType: 1,
     reportVehicleDescription: "",
-    reportVehicleId: 1, // TODO fetch from backend
+    reportVehicleId: 1,
     reportVehicleVIN: vehicleDetail?.vin,
     reportVehicleSPZ: vehicleDetail?.currentLicensePlate,
     reportVehicleBrand: vehicleDetail?.manufacturer,
@@ -22,11 +22,9 @@ const OffenceReportVehicleModal: React.FC<OffenceReportVehicleModalProps> = ({ v
     reportVehicleFineAmount: 0,
     reportVehiclePenaltyPoints: 0,
     reportVehiclePaid: false,
-    reportVehicleOwnerId: 1, // TODO fetch from backend
+    reportVehicleOwnerId: 1,
     reportVehicleOwnerFirstName: vehicleDetail?.ownerFullName.split(" ")[0],
     reportVehicleOwnerLastName: vehicleDetail?.ownerFullName.split(" ")[1],
-    //reportVehicleOwnerBirthNumber: "fetch from detail",
-    //reportVehicleOwnerBirthDate: "fetch from detail",
     reportVehiclePhotos: [] as string[],
   }
 

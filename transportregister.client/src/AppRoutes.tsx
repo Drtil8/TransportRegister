@@ -34,7 +34,7 @@ const AppRoutes = [
     isProtected: true
   },
   {
-    path: '/driver/:id',   // TODO delete, DrierDetail will not be called like this, this is a bad solution for GUI example
+    path: '/driver/:id',
     element: <DriverDetail />,
     isProtected: true
   },

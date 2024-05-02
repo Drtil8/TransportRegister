@@ -35,7 +35,7 @@ export const VehicleForm: React.FC<{ fetchedVehicle: IVehicleDetail | null }> = 
     }
 
     let params = {
-      ownerId: 1, // todo get from user
+      ownerId: 1,
       vehicleId: fetchedVehicle?.vehicleId || 0,
       vehicleType: vehicleType,
       VIN: formData.get('VIN'),
@@ -153,7 +153,6 @@ export const VehicleForm: React.FC<{ fetchedVehicle: IVehicleDetail | null }> = 
         </Col>
         <Col>
           <FormGroup>
-            {/* todo číselník barev - select + možnost přidat novou barvu */}
             <Label for="color">Barva:</Label>
             <Input type="text" name="color" defaultValue={fetchedVehicle?.color} />
           </FormGroup>

@@ -69,7 +69,7 @@ export class DriverDetail extends Component<object, DriverDetailState> {
           birthNumber1: 0,
           birthNumber2: 0,
           sex_Male: parsedPerson.sex_Male,
-          dateOfBirth: "TODO DATE",
+          dateOfBirth: "",
           image: ''
         }
       }));

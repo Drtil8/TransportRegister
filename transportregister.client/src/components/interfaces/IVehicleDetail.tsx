@@ -17,7 +17,6 @@ export interface IVehicleDetail {
   loadCapacityKG: number;
   imageBase64?: string;
 
-  // todo probably load whole interface
   ownerId: number;
   ownerFullName: string;
   officialId: string;

@@ -124,8 +124,6 @@ export const DriverDatatable: React.FC<{
     []
   );
 
-  // todo rework
-  // todo probably should perform on component mount
   useEffect(() => {
     const tableBody = document.querySelector('tbody') as HTMLElement;
     tableBody.style.display = 'none';
@@ -164,12 +162,6 @@ export const DriverDatatable: React.FC<{
     ),
   });
 
-  // todo add search button
-  //<Toolbar>
-  //  <Button variant="contained" color="primary" onClick={() => fetchDataRef.current?.()}>
-  //    Vyhledat
-  //  </Button>
-  //</Toolbar>
   return (
       <MaterialReactTable table={table} />
   );

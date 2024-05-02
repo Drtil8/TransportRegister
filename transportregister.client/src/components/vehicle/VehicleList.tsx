@@ -5,7 +5,6 @@ import VehicleDatatable from './VehicleDatatable';
 import { Link } from 'react-router-dom';
 import AuthContext from '../../auth/AuthContext';
 
-// todo change to search later
 export class VehicleList extends Component<object> {
   fetchDataRef: React.MutableRefObject<IDtFetchData | null> = { current: null };
   static contextType = AuthContext;
