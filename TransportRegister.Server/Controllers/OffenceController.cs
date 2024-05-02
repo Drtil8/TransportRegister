@@ -29,20 +29,6 @@ namespace TransportRegister.Server.Controllers
 
         ////////////////// GET METHODS //////////////////
 
-        // GET: api/Offence/5/UnresolvedOffences
-        //[HttpGet("{officialId}/UnresolvedOffences")]
-        //public async Task<ActionResult<IEnumerable<Offence>>> GetUnresolvedOffences(string officialId)
-        //{
-        //    var offences = await _offenceRepository.GetUnresolvedOfficialsOffencesAsync(officialId);
-
-        //    if (offences == null)
-        //    {
-        //        return NotFound("Nenalezeny žádné přestupky.");
-        //    }
-
-        //    return Ok(offences);
-        //}
-
         // GET: api/Offence/5
         // url = api/Offence/5
         [HttpGet("{id}")]
@@ -123,12 +109,6 @@ namespace TransportRegister.Server.Controllers
             {
                 return BadRequest("Přestupek se nepodařilo nahlásit.");
             }
-
-            //var assigned = await _offenceRepository.AssignOffenceToOfficialAsync(offence);
-            //if (!assigned)
-            //{
-            //    return BadRequest("Přestupek se nepodařilo přiřadit k úředníkovi.");
-            //}
 
             return Ok(offence.OffenceId);
         }
@@ -224,28 +204,6 @@ namespace TransportRegister.Server.Controllers
             return Ok("Přestupek byl úspěšně zamítnut.");
         }
 
-        //[HttpPut("{offenceId}/PayFine")]
-        //[Authorize(Roles = "Official")]
-        //public async Task<IActionResult> PayFine(int offenceId)
-        //{
-        //    var offence = await _context.Offences.Where(of => of.OffenceId == offenceId).Include(of => of.Fine).FirstOrDefaultAsync();
-        //    if (offence == null)
-        //    {
-        //        return NotFound("Přestupek nebyl nalezen.");
-        //    }
-
-        //    if (offence.Fine == null)
-        //    {
-        //        return BadRequest("Přestupek nemá žádnou pokutu.");
-        //    }
-
-        //    offence.Fine.IsActive = false;
-        //    offence.Fine.PaidOn = DateOnly.FromDateTime(DateTime.Now);
-
-        //    await _context.SaveChangesAsync();
-        //    return Ok("Pokuta byla úspěšně zaplacena.");
-        //}
-
         ////////////////// DELETE METHODS //////////////////
 
         // DELETE: api/Offence/5
@@ -262,11 +220,6 @@ namespace TransportRegister.Server.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool OffenceExists(int id)
-        {
-            return _context.Offences.Any(e => e.OffenceId == id);
         }
     }
 }

@@ -174,7 +174,7 @@ export const TheftDatatable: React.FC<{
       </Box>
     ),
     muiTableBodyRowProps: (table) => ({
-      className: (table.row.original.isFound ? 'valid-item' : 'invalid-item'),
+      className: (!table.row.original.isFound ? 'invalid-item' : (table.row.original.isReturned ? 'valid-item' : "workedOn-item")),
     }),
   });
 

@@ -1,6 +1,8 @@
 ﻿import React, { FormEvent, useState } from "react";
 import { Button, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row } from "reactstrap";
 import IOffenceType from "../interfaces/IOffenceType";
+import GoogleMapsAutocomplete from "../GoogleMapsAutocomplete";
+import IAddress from "../interfaces/IAddress";
 
 interface OffenceReportDriverModalProps {
   //visible: boolean;
@@ -9,6 +11,7 @@ interface OffenceReportDriverModalProps {
 
 const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => {
   const [modal, setModal] = useState(false);
+  const [address, setAddress] = useState<IAddress | null>(null);
   const initialFormData = {
     reportDriverFirstName: "default value bude fetchnuta z detailu",
     reportDriverLastName: "default value bude fetchnuta z detailu",
@@ -80,7 +83,7 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
           finePaid: formData.reportDriverPaid,
           offenceTypeId: formData.reportDriverType,
           photos: photosBase64,
-          //address: formData.reportDriverLocation, // TODO -> add location
+          address: address,
         }),
       });
 
@@ -190,6 +193,10 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
       reportDriverFineAmount: amount,
       reportDriverPenaltyPoints: points,
     });
+  }
+
+  const handleAddressChange = (address: IAddress) => {
+    setAddress(address);
   }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -322,6 +329,14 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
                   </Col>
                 </Row>
                 <Row>
+                  <Col>
+                    <Label>
+                      Místo činu:
+                    </Label>
+                    <GoogleMapsAutocomplete onInputChange={handleAddressChange} hideFields="hidden"></GoogleMapsAutocomplete>
+                  </Col>
+                </Row>
+                <Row className="mt-2">
                   <Col>
                     <Label for="reportDriverPhotos">
                       Fotky z místa činu:

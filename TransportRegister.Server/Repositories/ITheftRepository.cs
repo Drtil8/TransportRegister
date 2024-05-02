@@ -12,6 +12,7 @@ namespace TransportRegister.Server.Repositories
         Task<IEnumerable<TheftListItemDto>> GetActiveThefts();
         Task<TheftDetailDto> GetTheftById(int theftId);
         Task<int> CreateTheft(TheftCreateDto theft, string officerId);
-        Task ReportTheftDiscovery(int theftId);
+        Task ReportTheftDiscovery(int theftId, string officerId);
+        Task ReportTheftReturn(int theftId, string officialId);
     }
 }

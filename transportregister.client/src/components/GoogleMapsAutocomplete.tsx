@@ -1,13 +1,15 @@
 ﻿import { useEffect, useState } from "react";
 import IAddress from "./interfaces/IAddress";
 import { Col, Input, Label, Row } from "reactstrap";
+import { on } from "stream";
 
 
 interface GoogleMapsAutocompleteProps {
   onInputChange: (value: IAddress) => void;
+  hideFields: string;
 }
 
-const GoogleMapsAutocomplete: React.FC<GoogleMapsAutocompleteProps> = ({ onInputChange }) => {
+const GoogleMapsAutocomplete: React.FC<GoogleMapsAutocompleteProps> = ({ onInputChange, hideFields }) => {
 
   //const [inputValue, setInputValue] = useState('');
   const [address, setAddress] = useState<IAddress>({
@@ -121,13 +123,14 @@ const GoogleMapsAutocomplete: React.FC<GoogleMapsAutocompleteProps> = ({ onInput
         const newAddress: IAddress = {
           street: street,
           city: city,
-          state: country,
+          state: state,
           country: country,
           houseNumber: houseNumberNum,
           postalCode: postalCodeNum,
         };
 
         setAddress(newAddress);
+        onInputChange(newAddress);
       });
     }
 
@@ -138,10 +141,12 @@ const GoogleMapsAutocomplete: React.FC<GoogleMapsAutocompleteProps> = ({ onInput
   return (
 
     <div>
-      <Input id="pac-input" type="text" placeholder="Enter a location" />
+      <div id="pac-container">
+        <Input id="pac-input" type="text" placeholder="Enter a location" />
+      </div>
       <br></br>
       <div id="map" style={{ width: '100%', height: '400px' }}></div>
-      <div>
+      <div className={hideFields}>
         <h2>Adresa:</h2>
         <Row>
           <Col>

@@ -8,7 +8,7 @@ namespace TransportRegister.Server.Seeds
     {
         public static void Seed(AppDbContext context)
         {
-             var ownersToSeed = new Person[]
+            var ownersToSeed = new Person[]
             {
                 new()
                 {
@@ -25,7 +25,7 @@ namespace TransportRegister.Server.Seeds
                         PostalCode = 12345
                     },
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png"),
+                    Image = null,
                     Sex_Male = true
                 },
                 new()
@@ -43,7 +43,7 @@ namespace TransportRegister.Server.Seeds
                         PostalCode = 54321
                     },
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png"),
+                    Image = null,
                     Sex_Male = false
                 },
 
@@ -62,7 +62,7 @@ namespace TransportRegister.Server.Seeds
                         PostalCode = 67890
                     },
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stig.jpg"),
+                    Image = null,
                     Sex_Male = true
                 },
 
@@ -81,7 +81,7 @@ namespace TransportRegister.Server.Seeds
                         PostalCode = 54321
                     },
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png"),
+                    Image = null,
                     Sex_Male = false
                 },
 
@@ -100,7 +100,7 @@ namespace TransportRegister.Server.Seeds
                         PostalCode = 54321
                     },
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png"),
+                    Image = null,
                     Sex_Male = false
                 },
 
@@ -119,7 +119,7 @@ namespace TransportRegister.Server.Seeds
                         PostalCode = 54321
                     },
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png"),
+                    Image = null,
                     Sex_Male = true
                 }
             };
@@ -147,7 +147,7 @@ namespace TransportRegister.Server.Seeds
                         PostalCode = 12345
                     },
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png"),
+                    Image = null,
                     Sex_Male = true
                 },
                 new()
@@ -170,7 +170,7 @@ namespace TransportRegister.Server.Seeds
                         PostalCode = 54321
                     },
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png"),
+                    Image = null,
                     Sex_Male = false
                 },
 
@@ -194,7 +194,7 @@ namespace TransportRegister.Server.Seeds
                         PostalCode = 98765
                     },
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png"),
+                    Image = null,
                     Sex_Male = true
                 },
 
@@ -218,7 +218,7 @@ namespace TransportRegister.Server.Seeds
                         PostalCode = 54321
                     },
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png"),
+                    Image = null,
                     Sex_Male = false
                 },
 
@@ -242,7 +242,7 @@ namespace TransportRegister.Server.Seeds
                         PostalCode = 54321
                     },
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Drivers/stickman.png"),
+                    Image = null,
                     Sex_Male = true
                 }
             };

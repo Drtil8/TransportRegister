@@ -6,8 +6,8 @@ namespace TransportRegister.Server.Models
         public DateTime StolenOn { get; set; }
         public DateTime ReportedOn { get; set; }
         public DateTime? FoundOn { get; set; }
-        // TODO: add Address StolenAddress!!!!!!!!!!!
-        // TODO: add Address FoundAddress!!!!!!!!!!!!
+        public DateTime? ReturnedOn { get; set; }
+        public Address Address { get; set; }
         public string Description { get; set; }
 
         public int VehicleId { get; set; }

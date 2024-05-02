@@ -6,18 +6,17 @@ import IVehicleSimple from "./IVehicleSimple";
 interface IOffenceDetail {
   offenceId: number;
   reportedOn: Date;
-  //location: string; // todo
+  address: string;
   type: string;
   isValid: boolean;
   isApproved: boolean;
   description: string;
-  vehicle: IVehicleSimple | null; // todo
+  vehicle: IVehicleSimple | null;
   person: IPersonSimple;
   officer: IUserSimple;
   official: IUserSimple | null;
   penaltyPoints: number;
   fine: IFineDetail | null;
-  //photos: string[]; // todo
   isResponsibleOfficial: boolean;
   offencePhotos64: string[];
 }

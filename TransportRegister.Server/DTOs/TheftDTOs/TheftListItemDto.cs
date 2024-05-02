@@ -12,6 +12,8 @@ namespace TransportRegister.Server.DTOs.TheftDTOs
         public DateTime StolenOn { get; set; }
         public DateTime ReportedOn { get; set; }
         public DateTime? FoundOn { get; set; }
+        public DateTime? ReturnedOn { get; set; }
         public bool IsFound { get; set; }
+        public bool IsReturned { get; set; }
     }
 }

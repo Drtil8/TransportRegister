@@ -55,12 +55,14 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ penaltyPoints: this.state.editPenaltyPoints, fineAmount: this.state.editFineAmount })
+        body: JSON.stringify({ penaltyPoints: this.state.editPenaltyPoints, fineAmount: this.state.editFineAmount})
       });
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+
+      this.populateOffenceData();
     }
     catch (error) {
       console.error('Error:', error);
@@ -69,12 +71,14 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
     this.setState({ editMode: false });
     document.getElementById("editButton")?.classList.remove("hidden");
     document.getElementById("saveButton")?.classList.add("hidden");
+    document.getElementById("offenceDetailTextArea")?.setAttribute("readonly", "true");
   }
 
   handleEditButton() {
     this.setState({ editMode: true });
     document.getElementById("editButton")?.classList.add("hidden");
     document.getElementById("saveButton")?.classList.remove("hidden");
+    document.getElementById("offenceDetailTextArea")?.removeAttribute("readonly")
   }
 
   handleEmptyInput(e: any) {
@@ -223,7 +227,7 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
               <dl>
                 <Row>
                   <dt>Popis:</dt>
-                  <dd><textarea readOnly value={offenceDetail.description ? offenceDetail.description : ""} className="form-control" /></dd>
+                  <dd><textarea id="offenceDetailTextArea" readOnly value={offenceDetail.description ? offenceDetail.description : ""} className="form-control" /></dd>
                 </Row>
                 <Row>
                   <Col>
@@ -260,7 +264,7 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
                 <Row>
                   <Col>
                     <dt>Místo činu:</dt>
-                    <dd>adresa</dd>
+                    <dd>{offenceDetail.address}</dd>
                   </Col>
                 </Row>
                 {offenceDetail.offencePhotos64 && offenceDetail.offencePhotos64.length > 0 && (

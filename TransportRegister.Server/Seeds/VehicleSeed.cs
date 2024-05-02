@@ -24,7 +24,7 @@ namespace TransportRegister.Server.Seeds
                     OwnerId = 6,
                     NumberOfDoors = 5,
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Cars/car_generic.png")
+                    Image = null
                 },
 
                 new()
@@ -42,7 +42,7 @@ namespace TransportRegister.Server.Seeds
                     OwnerId = 7,
                     NumberOfDoors = 4,
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Cars/car_generic.png")
+                    Image = null
                 },
 
                 new()
@@ -60,7 +60,7 @@ namespace TransportRegister.Server.Seeds
                     OwnerId = 8,
                     NumberOfDoors = 4,
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Cars/mazda_miata.jpg")
+                    Image = null
                 }
             };
 
@@ -81,7 +81,7 @@ namespace TransportRegister.Server.Seeds
                     OwnerId = 9,
                     Constraints = "<50cm3",
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Cars/car_generic.png")
+                    Image = null
                 },
 
                 new()
@@ -99,7 +99,7 @@ namespace TransportRegister.Server.Seeds
                     OwnerId = 10,
                     Constraints = "<100cm3>",
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Cars/car_generic.png")
+                    Image = null
                 },
 
                 new()
@@ -117,7 +117,7 @@ namespace TransportRegister.Server.Seeds
                     OwnerId = 11,
                     Constraints = "Žádné",
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Cars/car_generic.png")
+                    Image = null
                 }
             };
 
@@ -139,7 +139,7 @@ namespace TransportRegister.Server.Seeds
                     SeatCapacity = 70,
                     StandingCapacity = 100,
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Cars/car_generic.png")
+                    Image = null
                 },
 
                 new()
@@ -158,7 +158,7 @@ namespace TransportRegister.Server.Seeds
                     SeatCapacity = 60,
                     StandingCapacity = 80,
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Cars/car_generic.png")
+                    Image = null
                 },
 
                 new()
@@ -177,7 +177,7 @@ namespace TransportRegister.Server.Seeds
                     SeatCapacity = 45,
                     StandingCapacity = 60,
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Cars/car_generic.png")
+                    Image = null
                 }
             };
 
@@ -197,7 +197,7 @@ namespace TransportRegister.Server.Seeds
                     Height_CM = 200.0,
                     OwnerId = 9,
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Cars/car_generic.png")
+                    Image = null
                 },
 
                 new()
@@ -214,7 +214,7 @@ namespace TransportRegister.Server.Seeds
                     Height_CM = 280.0,
                     OwnerId = 10,
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Cars/car_generic.png")
+                    Image = null
                 },
 
                 new()
@@ -231,7 +231,7 @@ namespace TransportRegister.Server.Seeds
                     Height_CM = 290.0,
                     OwnerId = 11,
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = File.ReadAllBytes("Seeds/Images/Cars/car_generic.png")
+                    Image = null
                 }
             };
 
