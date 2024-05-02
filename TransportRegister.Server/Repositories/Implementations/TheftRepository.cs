@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Dynamic.Core;
+using Microsoft.EntityFrameworkCore;
 using TransportRegister.Server.Data;
 using TransportRegister.Server.DTOs.DatatableDTOs;
+using TransportRegister.Server.DTOs.OffenceDTOs;
 using TransportRegister.Server.DTOs.TheftDTOs;
 using TransportRegister.Server.DTOs.UserDTOs;
 using TransportRegister.Server.DTOs.VehicleDTOs;
@@ -73,9 +75,41 @@ public class TheftRepository(AppDbContext context) : ITheftRepository
 
     public IQueryable<TheftListItemDto> ApplyFilterQueryThefts(IQueryable<TheftListItemDto> query, DtParamsDto dtParams)
     {
-        //todo
+        foreach (var filter in dtParams.Filters)
+        {
+            query = filter.PropertyName switch
+            {
+                nameof(TheftListItemDto.TheftId) =>
+                    query.Where(t => t.TheftId.ToString().StartsWith(filter.Value)),
+                nameof(TheftListItemDto.StolenOn) =>
+                    query.Where(t => t.StolenOn <= DtParamsDto
+                        .ParseClientDate(filter.Value, DateTime.MinValue)),
+                nameof(TheftListItemDto.ReportedOn) =>
+                    query.Where(t => t.ReportedOn <= DtParamsDto
+                        .ParseClientDate(filter.Value, DateTime.MinValue)),
+                nameof(TheftListItemDto.FoundOn) =>
+                    query.Where(t => t.FoundOn <= DtParamsDto
+                        .ParseClientDate(filter.Value, DateTime.MinValue)),
+                "Vehicle.LicensePlate" =>
+                    query.Where(t => t.Vehicle.LicensePlate.StartsWith(filter.Value)),
+                "Vehicle.Manufacturer" =>
+                    query.Where(t => t.Vehicle.Manufacturer.StartsWith(filter.Value)),
+                "Vehicle.Model" =>
+                    query.Where(t => t.Vehicle.Model.StartsWith(filter.Value)),
+                _ => query
+            };
+        }
 
-        return query;
+        if (dtParams.Sorting.Any())
+        {
+            Sorting sorting = dtParams.Sorting.First();
+            return query.OrderBy($"{sorting.Id} {sorting.Dir}")
+                .ThenByDescending(t => t.TheftId);
+        }
+        else
+        {
+            return query.OrderByDescending(t => t.TheftId);
+        }
     }
 
     public async Task<IEnumerable<TheftListItemDto>> GetActiveThefts()

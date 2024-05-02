@@ -134,7 +134,7 @@ namespace TransportRegister.Server.Repositories.Implementations
                     nameof(OffenceListItemDto.OffenceType) =>
                         query.Where(o => o.OffenceType.StartsWith(filter.Value)),
                     nameof(OffenceListItemDto.ReportedOn) =>
-                        query.Where(o => o.ReportedOn >= DtParamsDto
+                        query.Where(o => o.ReportedOn <= DtParamsDto
                             .ParseClientDate(filter.Value, DateTime.MinValue)),
                     nameof(OffenceListItemDto.PenaltyPoints) =>
                         query.Where(o => o.PenaltyPoints.ToString().StartsWith(filter.Value)),
