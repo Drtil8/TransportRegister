@@ -1,8 +1,11 @@
-﻿interface ITheftListItem {
+﻿import IVehicleSimple from "./IVehicleSimple";
+
+interface ITheftListItem {
   theftId: number;
-  vehicleId: number;
-  vin: string;
-  licensePlate: string;
+  vehicle: IVehicleSimple | null;
+  //vehicleId: number;
+  //vin: string;
+  //licensePlate: string;
   stolenOn: Date;
   reportedOn: Date;
   foundOn: Date | null;
