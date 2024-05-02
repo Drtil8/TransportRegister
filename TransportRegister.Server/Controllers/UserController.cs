@@ -79,7 +79,6 @@ namespace TransportRegister.Server.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RegisterUser([FromBody] UserCreateDto userDto)
         {
-            // TODO -> password encryption when sending
             if (userDto.PasswordConfirm != userDto.Password)
             {
                 return BadRequest("* Hesla se neshodují.");

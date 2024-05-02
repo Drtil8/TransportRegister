@@ -90,7 +90,6 @@ export const UserDatatable: React.FC<{
         body: JSON.stringify(dtParams)
       });
       const json: IDtResult<IUserListItem> = await response.json();
-      //console.log(json.data);     // todo fix invalid array format with c# JsonConvertors
       setData(json.data);
       setRowCount(json.totalRowCount);
     }
@@ -168,11 +167,11 @@ export const UserDatatable: React.FC<{
       showProgressBars: isRefetching,
       sorting,
     },
-    //enableSorting: false,   // todo create state to enable sorting dynamically
+    //enableSorting: false,
     //enablePagination: false,
     //enableTopToolbar: false,
     enableRowActions: true,       // Display row actions
-    renderRowActions: ({ row }) => (// todo why not href instead of onClick
+    renderRowActions: ({ row }) => (
       <Box sx={{ display: 'flex', gap: '1rem' }}>
         {row.original.isValid ? (
           <Tooltip title="Smazat uživatele">

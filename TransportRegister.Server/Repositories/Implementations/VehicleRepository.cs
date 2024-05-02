@@ -148,13 +148,13 @@ namespace TransportRegister.Server.Repositories.Implementations
                 .AsNoTracking()
                 .Include(v => v.LicensePlates)
                 .Include(v => v.Owner)
-                .Where(v => v.Owner != null)    // todo should never happend, fix the seeds or model
+                .Where(v => v.Owner != null)
                 .Select(v =>
                     new VehicleListItemDto
                     {
                         Id = v.VehicleId,
                         VIN = v.VIN,
-                        VehicleType = v.GetType().Name,     // todo fix VehicleType getting
+                        VehicleType = v.GetType().Name,
                         LicensePlate = v.LicensePlates
                             .OrderByDescending(lp => lp.ChangedOn)
                             .Select(lp => lp.LicensePlate)

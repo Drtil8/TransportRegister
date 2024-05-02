@@ -105,10 +105,12 @@ namespace TransportRegister.Server.Repositories.Implementations
 
         public async Task AddDriverAsync(int personId, string license)
         {
-
+            
             var newDriver = new Driver
             {
-                PersonId = personId,
+                FirstName = "Name",
+                LastName = "Surname",
+                BirthNumber = "000000/0000",
                 DriversLicenseNumber = license,
                 BadPoints = 0,
                 HasSuspendedLicense = false,
@@ -116,10 +118,21 @@ namespace TransportRegister.Server.Repositories.Implementations
                 DrivingSuspendedUntil = null
             };
 
-            // Add the new driver to the context
-            _context.Drivers.Add(newDriver);
-
-            // Save changes to the database
+            var existingPerson = await _context.Persons.FirstOrDefaultAsync(p => p.PersonId == personId);
+            if (existingPerson != null)
+            {
+                newDriver.FirstName = existingPerson.FirstName;
+                newDriver.LastName = existingPerson.LastName;
+                newDriver.BirthNumber = existingPerson.BirthNumber;
+                //todo
+                _context.Entry(existingPerson).State = EntityState.Deleted;
+                _context.Entry(newDriver).State = EntityState.Added;
+            }
+            else
+            {
+                newDriver.PersonId = personId;
+                _context.Drivers.Add(newDriver);
+            }
             await _context.SaveChangesAsync();
         }
 
