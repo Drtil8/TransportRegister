@@ -65,8 +65,6 @@ export const DriverDatatable: React.FC<{
         const json: IDtResult<IDriverSimpleList> = await response.json();
         //if (json.data.length === 1)
         //  navigate(`/Person/${json.data[0].id}`);
-
-        console.log(json.data);
         setData(json.data);
         setRowCount(json.totalRowCount);
       }
