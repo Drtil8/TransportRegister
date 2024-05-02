@@ -76,9 +76,9 @@ namespace TransportRegister.Server.Controllers
         /// </summary>
         /// <param name="personId">The ID of the person to set as a driver.</param>
         /// <returns>An ActionResult indicating success or failure.</returns>
-        [HttpGet("{personId}/SetToDriver")]
+        [HttpPost("{personId}/SetToDriver")]
         [Authorize(Roles = "Official")]
-        public async Task<IActionResult> SetPersonToDriver(int personId, string license)
+        public async Task<IActionResult> SetPersonToDriver(int personId, string license, List<string> licenseTypes)
         {
             var person = await _context.Persons.FindAsync(personId);
             if (person == null)
@@ -88,7 +88,9 @@ namespace TransportRegister.Server.Controllers
             person.OfficialId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             await _personRepository.AddDriverAsync(person.PersonId, license);
 
-            return Ok();
+            return await PostDriversLicense(personId, licenseTypes);
+
+ 
         }
         /// GET: api/Persons/5/ReportedThefts
         /// <summary>
