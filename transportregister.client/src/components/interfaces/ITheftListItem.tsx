@@ -10,6 +10,8 @@ interface ITheftListItem {
   reportedOn: Date;
   foundOn: Date | null;
   isFound: boolean;
+  returnedOn: Date | null;
+  isReturned: boolean;
 }
 
 export default ITheftListItem;
