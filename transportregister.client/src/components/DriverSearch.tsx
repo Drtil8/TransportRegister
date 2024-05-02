@@ -4,7 +4,6 @@ import { Button, Col, Row } from 'reactstrap';
 //import VehicleDatatable from './vehicle/VehicleDatatable';
 import IDtFetchData from './interfaces/datatables/IDtFetchData';
 import DriverDatatable from './DriverDatatable';
-import GoogleMapsAutocomplete from './GoogleMapsAutocomplete';
 import IAddress from './interfaces/IAddress';
 
 // googleAdress JE PRIKLAD PRO VYUZITI GoogleMapsAutocomplete
