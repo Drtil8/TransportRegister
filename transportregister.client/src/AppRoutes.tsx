@@ -2,7 +2,6 @@
 import Login from './components/Login';
 import DriverSearch from "./components/DriverSearch";
 import VehicleCreate from "./components/vehicle/VehicleCreate";
-import OffenceCreate from "./components/offence/OffenceCreate";
 import OffencePending from "./components/offence/OffencePending";
 import DriverDetail from "./components/DriverDetail";
 import OffenceDetail from "./components/offence/OffenceDetail";
