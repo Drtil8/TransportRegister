@@ -29,7 +29,7 @@ export const TheftDatatable: React.FC<{
   const [rowCount, setRowCount] = useState(0);
 
   // Table state
-  const initialColumnSort: ColumnSort = { id: 'start', desc: true };
+  const initialColumnSort: ColumnSort = { id: 'theftId', desc: true };
   const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
   const [sorting, setSorting] = useState<MRT_SortingState>([initialColumnSort]);
@@ -122,17 +122,17 @@ export const TheftDatatable: React.FC<{
         Cell: ({ cell }) => cell.getValue<Date>() !== null ? formatDate(cell!.getValue<Date>()) : 'Nenalezeno',
       },
       {
-        id: 'vehiclePlate', // Use a unique id for the column
+        id: 'Vehicle.LicensePlate', // Use a unique id for the column
         accessorFn: (row) => row.vehicle?.licensePlate ?? 'N/A', // Access the plate property of the vehicle object
         header: 'SPZ',
       },
       {
-        id: 'vehicleManufacturer', // Use a unique id for the column
+        id: 'Vehicle.Manufacturer', // Use a unique id for the column
         accessorFn: (row) => row.vehicle?.manufacturer ?? 'N/A', // Access the plate property of the vehicle object
         header: 'Výrobce',
       },
       {
-        id: 'vehicleModel', // Use a unique id for the column
+        id: 'Vehicle.Model', // Use a unique id for the column
         accessorFn: (row) => row.vehicle?.model ?? 'N/A', // Access the plate property of the vehicle object
         header: 'Model',
       },
