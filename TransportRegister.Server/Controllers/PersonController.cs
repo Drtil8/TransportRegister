@@ -13,11 +13,13 @@ using TransportRegister.Server.DTOs.OffenceDTOs;
 using Microsoft.IdentityModel.Tokens;
 using TransportRegister.Server.Data;
 using TransportRegister.Server.DTOs.DriversLicenseDTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TransportRegister.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Officer,Official")]
     public class PersonsController : ControllerBase
     {
         private readonly IPersonRepository _personRepository;
@@ -124,6 +126,29 @@ namespace TransportRegister.Server.Controllers
             return Ok();
 
         }
+
+        [HttpPost("Drivers/{id}")]
+        public async Task<ActionResult> PutDriver(int id, DriverUpdateDto driver)
+        {
+            if (id != driver.PersonId)
+            {
+                return BadRequest();
+
+            }
+
+            var person = await _personRepository.GetPersonByIdAsync(id);
+
+            if (person is not Driver)
+            {
+                return BadRequest($"Person {id} is not a driver.");
+            }
+
+            await _personRepository.SaveDriverAsync(PersonDtoTransformer.TransformPersonUpdateToEntity(driver));
+
+            return Ok();
+
+        }
+
 
         [HttpPut("{driverId}/RemoveLicenseSuspension")]
         public async Task<ActionResult> RemoveLicenseSuspenison(int driverId)

@@ -14,6 +14,7 @@ namespace TransportRegister.Server.Repositories
         Task SetDriverAsync(Person driver);
         Task DeletePersonAsync(int personId);
         Task SavePersonAsync(Person person);
+        Task SaveDriverAsync(Driver driver);
         Task<List<Tuple<Driver, int>>> GetDriversAndPoints();
         Task<List<Theft>> GetPersonReportedTheftsByIdAsync(int personId);
         Task<List<Offence>> GetPersonCommitedOffencesByIdAsync(int personId);

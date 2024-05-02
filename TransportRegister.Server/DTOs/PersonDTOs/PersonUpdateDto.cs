@@ -22,7 +22,7 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
 
     }
 
-    public class DriverUpdateDto : PersonDto
+    public class DriverUpdateDto : PersonUpdateDto
     {
         public string DriversLicenseNumber { get; set; }
         public int BadPoints { get; set; }

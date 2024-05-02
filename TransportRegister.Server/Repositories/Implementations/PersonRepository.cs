@@ -206,6 +206,19 @@ namespace TransportRegister.Server.Repositories.Implementations
             await _context.SaveChangesAsync();
         }
 
+        public async Task SaveDriverAsync(Driver driver)
+        {
+            if (driver.PersonId == default)
+            {
+                _context.Drivers.Add(driver);
+            }
+            else
+            {
+                _context.Drivers.Update(driver);
+            }
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<List<Tuple<Driver, int>>> GetDriversAndPoints()
         {
             var driversWithPoints = await _context.Drivers

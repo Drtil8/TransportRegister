@@ -88,8 +88,29 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
                 OfficialId = dto.OfficialId,
                 Image = dto.ImageBase64 != null ? Convert.FromBase64String(dto.ImageBase64) : null,
             };
-            
-            
+           
+        }
+
+        public static Driver TransformPersonUpdateToEntity(DriverUpdateDto dto)
+        {
+            return new Driver
+            {
+                Address = TransformToEntity(dto.AddressDto),
+                PersonId = dto.PersonId,
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                BirthNumber = dto.BirthNumber,
+                Sex_Male = dto.Sex_Male,
+                DateOfBirth = dto.DateOfBirth,
+                OfficialId = dto.OfficialId,
+                Image = dto.ImageBase64 != null ? Convert.FromBase64String(dto.ImageBase64) : null,
+                DriversLicenseNumber = dto.DriversLicenseNumber,
+                BadPoints = dto.BadPoints,
+                HasSuspendedLicense = dto.HasSuspendedLicense,
+                LastCrimeCommited = dto.LastCrimeCommited,
+                DrivingSuspendedUntil = dto.DrivingSuspendedUntil,
+            };
+
         }
 
         public static Address TransformToEntity(AddressDto dto)
