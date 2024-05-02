@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using TransportRegister.Server.DTOs.DatatableDTOs;
+using TransportRegister.Server.DTOs.OffenceDTOs;
 using TransportRegister.Server.DTOs.TheftDTOs;
 using TransportRegister.Server.Models;
 using TransportRegister.Server.Repositories;
@@ -31,6 +34,40 @@ public class TheftController : ControllerBase
     {
         var theft = await _theftRepository.GetTheftById(theftId);
         return Ok(theft);
+    }
+
+    ////////////////// POST METHODS //////////////////
+
+    [HttpPost("/api/Thefts")]
+    [Produces("application/json")]
+    public async Task<IActionResult> GetThefts([FromBody] DtParamsDto dtParams)
+    {
+        var query = _theftRepository.QueryAllThefts();
+        query = _theftRepository.ApplyFilterQueryThefts(query, dtParams);
+        int totalRowCount = await query.CountAsync();
+        var thefts = await query.Skip(dtParams.Start).Take(dtParams.Size).ToListAsync();
+
+        return new JsonResult(new DtResultDto<TheftListItemDto>
+        {
+            Data = thefts,
+            TotalRowCount = totalRowCount
+        });
+    }
+
+    [HttpPost("/api/TheftsActive")]
+    [Produces("application/json")]
+    public async Task<IActionResult> GetTheftsActive([FromBody] DtParamsDto dtParams)
+    {
+        var query = _theftRepository.QueryActiveThefts();
+        query = _theftRepository.ApplyFilterQueryThefts(query, dtParams);
+        int totalRowCount = await query.CountAsync();
+        var thefts = await query.Skip(dtParams.Start).Take(dtParams.Size).ToListAsync();
+
+        return new JsonResult(new DtResultDto<TheftListItemDto>
+        {
+            Data = thefts,
+            TotalRowCount = totalRowCount
+        });
     }
 
     [HttpPost("/api/Theft/ReportTheft")]

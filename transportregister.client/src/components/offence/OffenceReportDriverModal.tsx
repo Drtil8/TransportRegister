@@ -26,6 +26,7 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
     reportDriverFineAmount: 0,
     reportDriverPenaltyPoints: 0,
     reportDriverPaid: false,
+    reportDriverPhotos: [] as string[],
   }
 
   const [formData, setFormData] = useState(initialFormData as any);
@@ -54,7 +55,15 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    console.log(formData);
+
+    let photosBase64: string[] = [];
+    for (let i = 0; i < formData.reportDriverPhotos.length; i++) {
+      let imageBase64 = formData.reportDriverPhotos[i];
+      if (imageBase64) {
+        imageBase64 = imageBase64.replace(/^data:image\/[a-z]+;base64,/, "");
+        photosBase64.push(imageBase64);
+      }
+    }
 
     try {
       const response = await fetch('api/Offence/ReportOffence', {
@@ -70,6 +79,7 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
           penaltyPoints: formData.reportDriverPenaltyPoints,
           finePaid: formData.reportDriverPaid,
           offenceTypeId: formData.reportDriverType,
+          photos: photosBase64,
           //address: formData.reportDriverLocation, // TODO -> add location
         }),
       });
@@ -188,6 +198,25 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
     if (name === "reportDriverFineAmount" || name === "reportDriverPenaltyPoints") {
       setFormData({ ...formData, [name]: parseFloat(value) });
     }
+    else if (name === "reportDriverPhotos") {
+      const files = (event.target as HTMLInputElement).files;
+      let imageFiles: string[] = [];
+      for (let i = 0; i < files!.length; i++) {
+        const file = files![i];
+        if (file) {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const imageInBase64 = reader.result as string;
+            imageFiles.push(imageInBase64);
+          };
+          reader.readAsDataURL(files![i]);
+        }
+      }
+      if (imageFiles) {
+        setFormData({ ...formData, [name]: imageFiles });
+      }
+      console.log(imageFiles);
+    }
     else if (type === "checkbox") {
       setFormData({ ...formData, [name]: (event.target as HTMLInputElement).checked });
     }
@@ -292,14 +321,20 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = () => 
                     </FormGroup>
                   </Col>
                 </Row>
-                {/*<Row>*/}
-                {/*  <Col>*/}
-                {/*    <Label>*/}
-                {/*      Fotky:*/}
-                {/*    </Label>*/}
-                {/*    <Input id="reportDriverPhotos" name="reportDriverPhotos" type="textarea" />*/}
-                {/*  </Col>*/}
-                {/*  </Row>*/}
+                <Row>
+                  <Col>
+                    <Label for="reportDriverPhotos">
+                      Fotky z místa činu:
+                    </Label>
+                    <Input
+                      id="reportDriverPhotos"
+                      name="reportDriverPhotos"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleChange}
+                      multiple />
+                  </Col>
+                </Row>
               </FormGroup>
             </Row>
             <Row>

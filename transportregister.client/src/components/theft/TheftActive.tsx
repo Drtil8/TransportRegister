@@ -19,7 +19,7 @@ export class TheftActive extends Component<object> {
         </Row>
         <Row>
         {/*TODO*/}
-          <TheftDatatable fetchUrl="/api/Theft/Active" fetchDataRef={this.fetchDataRef}></TheftDatatable>
+          <TheftDatatable fetchUrl="/api/TheftsActive" fetchDataRef={this.fetchDataRef}></TheftDatatable>
         </Row>
       </div>
     );

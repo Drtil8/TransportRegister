@@ -10,71 +10,14 @@ using TransportRegister.Server.Models;
 
 namespace TransportRegister.Server.Repositories.Implementations
 {
-    public class OffenceRepository(AppDbContext context) : IOffenceRepository
+    public class OffenceRepository : IOffenceRepository
     {
-        private readonly AppDbContext _context = context;
+        private readonly AppDbContext _context;
 
-        //public async Task<IEnumerable<OffenceListItemDto>> GetUnresolvedOfficialsOffencesAsync(string officialId)
-        //{
-        //    var offences = await _context.Offences
-        //        .Where(of => of.OfficialId == officialId && !of.IsApproved && of.IsValid)
-        //        .Include(of => of.OffenceOnVehicle)
-        //        .Include(of => of.OffenceOnVehicle.LicensePlates)
-        //        .Select(of => new OffenceListItemDto
-        //        {
-        //            OffenceId = of.OffenceId,
-        //            //OffenceType = of.OffenceType, // TODO
-        //            ReportedOn = of.ReportedOn,
-        //            //VIN = of.OffenceOnVehicle.VIN,
-        //            LicensePlate = of.OffenceOnVehicle.LicensePlates.OrderByDescending(lp => lp.ChangedOn).Select(lp => lp.LicensePlate).FirstOrDefault(),
-        //            IsPaid = !of.Fine.IsActive,
-        //            Amount = of.Fine.Amount
-        //        }).ToListAsync();
-
-        //    return offences;
-        //}
-
-        //public async Task<IEnumerable<OffenceListItemDto>> GetPersonsOffencesAsync(int personId)
-        //{
-        //    // TODO
-        //    var offences = await _context.Offences
-        //        .Where(of => of.PersonId == personId && of.IsApproved && of.IsValid)
-        //        .Include(of => of.OffenceOnVehicle)
-        //        .Include(of => of.OffenceOnVehicle.LicensePlates)
-        //        .Select(of => new OffenceListItemDto
-        //        {
-        //            OffenceId = of.OffenceId,
-        //            //OffenceType = of.OffenceType, // TODO
-        //            ReportedOn = of.ReportedOn,
-        //            //VIN = of.OffenceOnVehicle.VIN,
-        //            LicensePlate = of.OffenceOnVehicle.LicensePlates.OrderByDescending(lp => lp.ChangedOn).Select(lp => lp.LicensePlate).FirstOrDefault(),
-        //            IsPaid = !of.Fine.IsActive,
-        //            Amount = of.Fine.Amount
-        //        }).ToListAsync();
-
-        //    return offences;
-        //}
-
-        //public async Task<IEnumerable<OffenceListItemDto>> GetVehiclesOffencesAsync(int vehicleId)
-        //{
-        //    // TODO 
-        //    var offences = await _context.Offences
-        //        .Where(of => of.VehicleId == vehicleId && of.IsApproved && of.IsValid)
-        //        .Include(of => of.OffenceOnVehicle)
-        //        .Include(of => of.OffenceOnVehicle.LicensePlates)
-        //        .Select(of => new OffenceListItemDto
-        //        {
-        //            OffenceId = of.OffenceId,
-        //            //OffenceType = of.OffenceType, // TODO
-        //            ReportedOn = of.ReportedOn,
-        //            //VIN = of.OffenceOnVehicle.VIN,
-        //            LicensePlate = of.OffenceOnVehicle.LicensePlates.OrderByDescending(lp => lp.ChangedOn).Select(lp => lp.LicensePlate).FirstOrDefault(),
-        //            IsPaid = !of.Fine.IsActive,
-        //            Amount = of.Fine.Amount
-        //        }).ToListAsync();
-
-        //    return offences;
-        //}
+        public OffenceRepository(AppDbContext context)
+        {
+            _context = context;
+        }
 
         public IQueryable<OffenceListItemDto> QueryAllOffences()
         {
@@ -143,7 +86,7 @@ namespace TransportRegister.Server.Repositories.Implementations
 
         public IQueryable<OffenceListItemDto> QueryOffences(bool unresolved)
         {
-            var query = context.Offences
+            var query = _context.Offences
                 .AsNoTracking()
                 .Include(of => of.OffenceType)
                 .Include(of => of.CommitedBy);
@@ -289,26 +232,6 @@ namespace TransportRegister.Server.Repositories.Implementations
             return offenceTypes;
         }
 
-        //public async Task<bool> AssignOffenceToOfficialAsync(Offence offence) //(int offenceId)
-        //{
-        //    var official = (await _context.Officials.Where(of => of.IsValid && of.IsActive)
-        //        .Select(o => new
-        //        {
-        //            Official = o,
-        //            OffencesCount = o.ProcessedOffences.Count(off => !off.IsApproved && off.IsValid)
-        //        }).OrderBy(x => x.OffencesCount).FirstOrDefaultAsync())?.Official;
-
-        //    if (official == null)
-        //    {
-        //        // TODO -> assign to some default official or to official who is on vacation
-        //        return false;
-        //    }
-
-        //    offence.OfficialId = official.Id;
-
-        //    return await _context.SaveChangesAsync() > 0;
-        //}
-
         public async Task<bool> AssignPoints(int driverId, int points)
         {
             var driver = await _context.Drivers.FindAsync(driverId);
@@ -378,12 +301,32 @@ namespace TransportRegister.Server.Repositories.Implementations
                 offence.IsApproved = true; // Automatically processing offence when no fine is assigned
             }
 
+
             _context.Offences.Add(offence);
             var res = await _context.SaveChangesAsync();
             if (res == 0)
             {
                 return null;
             }
+
+            if(offenceDto.Photos != null)
+            {
+                foreach (var photo in offenceDto.Photos)
+                {
+                    if(!string.IsNullOrEmpty(photo))
+                    {
+                        var image = Convert.FromBase64String(photo);
+                        var offencePhoto = new OffencePhoto
+                        {
+                            Image = image,
+                            OffenceId = offence.OffenceId
+                        };
+                        _context.OffencePhotos.Add(offencePhoto);
+                    }
+                }
+            }
+
+            await _context.SaveChangesAsync();
 
             return offence;
         }
@@ -413,6 +356,11 @@ namespace TransportRegister.Server.Repositories.Implementations
             {
                 offenceDto.IsApproved = offence.IsApproved;
                 offenceDto.IsValid = offence.IsValid;
+                offenceDto.Official = new UserSimpleDto
+                {
+                    Id = officialId,
+                    FullName = offence.ProcessedByOfficial.FirstName + " " + offence.ProcessedByOfficial.LastName
+                };
                 if(offenceDto.Fine != null)
                 {
                     offenceDto.Fine.IsPaid = !offence.Fine.IsActive;

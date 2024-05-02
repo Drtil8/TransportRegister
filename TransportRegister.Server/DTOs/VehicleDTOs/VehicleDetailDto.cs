@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using TransportRegister.Server.DTOs.LicensePlateHistoryDTOs;
 
 namespace TransportRegister.Server.DTOs.VehicleDTOs
 {
@@ -26,6 +27,7 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
         public string OfficialFullName { get; set; }    // todo add to VehicleDtoConverter
 
         // TODO maybe add list of Thefts and Fines (need TheftDto and FineDto)
+        public ICollection<LicensePlateHistoryDto> LicensePlates { get; set; }
     }
 
     public class TruckDto : VehicleDetailDto

@@ -119,9 +119,17 @@ namespace TransportRegister.Server.Controllers
             {
                 TheftId = t.TheftId,
                 ReportedOn = t.ReportedOn,
-                VehicleId = t.VehicleId,
-                VIN = t.StolenVehicle.VIN,
-                LicensePlate = t.StolenVehicle.LicensePlates.FirstOrDefault().LicensePlate,
+                Vehicle = new VehicleSimpleDto
+                {
+                    Manufacturer = t.StolenVehicle.Manufacturer,
+                    Model = t.StolenVehicle.Model,
+                    VehicleId = t.VehicleId,
+                    VIN = t.StolenVehicle.VIN,
+                    LicensePlate = t.StolenVehicle.LicensePlates.FirstOrDefault().LicensePlate,
+                },
+                //VehicleId = t.VehicleId,
+                //VIN = t.StolenVehicle.VIN,
+                //LicensePlate = t.StolenVehicle.LicensePlates.FirstOrDefault().LicensePlate,
                 StolenOn = t.StolenOn,
                 FoundOn = t.FoundOn,
                 IsFound = t.FoundOn != null,
@@ -158,9 +166,9 @@ namespace TransportRegister.Server.Controllers
             {
                 return BadRequest();
             }
-            
+
             await _personRepository.SavePersonAsync(PersonDtoTransformer.TransformPersonUpdateToEntity(person));
-           
+
             return Ok();
 
         }
@@ -197,12 +205,12 @@ namespace TransportRegister.Server.Controllers
             {
                 return BadRequest($"Person {driverId} is not a driver.");
             }
-            if (driver.HasSuspendedLicense) 
+            if (driver.HasSuspendedLicense)
             {
                 driver.HasSuspendedLicense = false;
                 driver.DrivingSuspendedUntil = null;
                 await _personRepository.SavePersonAsync(driver);
-                return Ok(); 
+                return Ok();
             }
 
             return BadRequest("Driver does not have suspended license.");
@@ -213,7 +221,7 @@ namespace TransportRegister.Server.Controllers
         // POST: api/Persons
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("{driverId}/AddDriversLicense")]
-        public async Task<IActionResult>PostDriversLicense(int driverId, DriversLicenseCreateDto license)
+        public async Task<IActionResult> PostDriversLicense(int driverId, DriversLicenseCreateDto license)
         {
             if (!ModelState.IsValid)    /// what about bad vehicle type?
             {

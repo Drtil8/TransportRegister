@@ -61,7 +61,7 @@ const TheftReportModal: React.FC<TheftReportModalProps> = () => {
   return (
     <div>
       <Button color="danger" onClick={toggle}>Nahlásit krádež vozidla</Button>
-      <Modal isOpen={modal} toggle={toggle}>
+      <Modal isOpen={modal} toggle={toggle} backdrop="static">
         <ModalHeader toggle={toggle}>Nahlášení krádeže vozidla</ModalHeader>
         <Form onSubmit={handleSubmit}>
           <ModalBody>
@@ -138,7 +138,7 @@ const TheftReportModal: React.FC<TheftReportModalProps> = () => {
             <Row>
               <FormGroup>
                 <Label>
-                  <b>Vlastník:</b>
+                  <b>Ukradeno osobě:</b>
                 </Label>
                 <Row>
                   <Col>
