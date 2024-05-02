@@ -149,6 +149,11 @@ dl dt {
     width: 60px;
 }
 
+.licenceSpan .form-check {
+    width: 80px;
+}
+
+
 
 
 #pac-input {
@@ -163,4 +168,12 @@ dl dt {
 /*map attempt*/
 #map {
     height: 200px;
+}
+
+label {
+    margin-top: 10px;
+}
+
+ul li.nav-item {
+    cursor: pointer;
 }

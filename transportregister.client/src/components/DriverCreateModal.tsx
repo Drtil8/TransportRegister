@@ -1,6 +1,5 @@
 ﻿import React, { FormEvent, useState } from "react";
 import { Button, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row } from "reactstrap";
-import { IPerson } from "./interfaces/IPersonDetail";
 
 interface DriverCreateModalProps {
   person: IPerson;
@@ -10,15 +9,22 @@ interface DriverCreateModalProps {
 const DriverCreateModal: React.FC<DriverCreateModalProps> = ({ person }) => {
   const [modal, setModal] = useState(false);
   //const [person, setPerson] = useState(person);
-  const initialFormData = {
-    licensesStrings: [],
+  
+  const [formData, setFormData] = useState<{ licensesStrings: string[], driversLicenseNumber: string }>({
+    licensesStrings: [], // Specify the type as an array of strings
     driversLicenseNumber: "",
-  }
-  const [formData, setFormData] = useState(initialFormData);
+  });
+
   const toggle = () => setModal(!modal);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const licenseNumberPattern = /^[A-Z]{2}\d{6}$/; // Example format: AB123456
+    if (!licenseNumberPattern.test(formData.driversLicenseNumber)) {
+      alert("Nevalidní formát. (dvě velká písmena a šest číslic)\n Příklad: AB123456");
+      return; // Return early if the format is invalid
+    }
+
     //try {
     //  const response = await fetch("/api/Theft/ReportTheft", {
     //    method: "POST",
@@ -42,24 +48,41 @@ const DriverCreateModal: React.FC<DriverCreateModalProps> = ({ person }) => {
     //}
     //console.log(formData);
     console.log('submioging');
-    toggle();
+    console.log(person);
+    //const driver: IDriver = {
+
+    //}
+    //toggle();
   };
 
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    console.log('change');
     const { name, value } = event.target;
     console.log(name, value);
     setFormData({ ...formData, [name]: value });
-  }
 
-  const licenseListAll = ['AM', 'A1', 'A2', 'A', 'B1', 'B', 'C1', 'C', 'D1', 'D', 'BE', 'C1E', 'CE', 'D1E', 'DE', 'T'];
+  
+  }
+  const handleChangeCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+    setFormData(prevState => {
+      let updatedLicenses = [...prevState.licensesStrings];
+      if (checked) {
+        updatedLicenses.push(name);
+      } else {
+        updatedLicenses = updatedLicenses.filter(license => license !== name);
+      }
+      return { ...prevState, licensesStrings: updatedLicenses };
+    });
+  };
+
+  const licenseListAll: string[] = ['AM', 'A1', 'A2', 'A', 'B1', 'B', 'C1', 'C', 'D1', 'D', 'BE', 'C1E', 'CE', 'D1E', 'DE', 'T'];
   const licenseBreakpointList = ['A', 'B', 'C', 'D', 'DE'];
 
 
   return (
     <div>
-      <Button color="primary" onClick={toggle}>Vytvořit řidický průkaz</Button>
+      <Button color="primary" onClick={toggle}>Vytvořit řidičský průkaz</Button>
       <Modal isOpen={modal} toggle={toggle} backdrop="static">
         <ModalHeader toggle={toggle}>Nahlášení krádeže vozidla</ModalHeader>
         <Form onSubmit={handleSubmit}>
@@ -75,24 +98,26 @@ const DriverCreateModal: React.FC<DriverCreateModalProps> = ({ person }) => {
                     <Input id="driversLicenseNumber" name="driversLicenseNumber" type="text" value={formData.driversLicenseNumber} onChange={handleChange} />
                   </Col>
                 </Row>
-                <Row >
                   <dt>Oprávněn řídit:</dt>
                   {licenseListAll.map((license) => (
                     <React.Fragment key={license}>
+                      <span className="licenceSpan">
                       <FormGroup check inline key={license}>
                         <Input
                           type="checkbox"
                           id={license}
                           name={license}
+                          checked={formData.licensesStrings.includes(license)}
+                          onChange={handleChangeCheckbox}
                         />
                         <Label check htmlFor={license}>
                           {license}
                         </Label>
                       </FormGroup>
+                      </span>
                       {licenseBreakpointList.includes(license) ? <br></br> : null}
                     </React.Fragment>
                   ))}
-                </Row>
               </FormGroup>
             </Row>
             <Row>

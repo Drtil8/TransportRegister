@@ -1,13 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Dynamic.Core;
+using Microsoft.EntityFrameworkCore;
 using TransportRegister.Server.Data;
 using TransportRegister.Server.Models;
 using TransportRegister.Server.DTOs.DriversLicenseDTOs;
 using TransportRegister.Server.DTOs.PersonDTOs;
-using System;
-using TransportRegister.Server.DTOs.VehicleDTOs;
 using TransportRegister.Server.DTOs.DatatableDTOs;
-using System.Security.Permissions;
-using System.Security.Claims;
+using System;
 
 namespace TransportRegister.Server.Repositories.Implementations
 {
@@ -48,54 +46,6 @@ namespace TransportRegister.Server.Repositories.Implementations
                 .Where(o => o.PersonId == personId)
                 .ToListAsync();
         }
-
-        public async Task<Tuple<List<PersonSimpleListDto>,List<DriverSimpleListDto>>> GetAllPersons()
-        {
-            var query = from person in _context.Persons
-                        join driver in _context.Drivers
-                        on person.PersonId equals driver.PersonId into driverJoin
-                        from driverData in driverJoin.DefaultIfEmpty()
-                        select new
-                        {
-                            Person = person,
-                            Driver = driverData,
-                            DriverLicenses = driverData != null ? driverData.Licenses : null,
-                        };
-
-            var personDtos = new List<PersonSimpleListDto>();
-            var driverDtos = new List<DriverSimpleListDto>();
-
-            foreach (var tuple in await query.ToListAsync())
-            {
-                if (tuple.Driver != null)
-                {
-                    var driverDto = new DriverSimpleListDto
-                    {
-                        DriversLicenseNumber = tuple.Driver.DriversLicenseNumber,
-                        PersonId = tuple.Person.PersonId,
-                        FirstName = tuple.Person.FirstName,
-                        LastName = tuple.Person.LastName,
-                        BirthNumber = tuple.Person.BirthNumber,
-                    };
-                    driverDtos.Add(driverDto);
-                }
-                else 
-                {
-                    var personDto = new PersonSimpleListDto
-                    {
-                        PersonId = tuple.Person.PersonId,
-                        FirstName = tuple.Person.FirstName,
-                        LastName = tuple.Person.LastName,
-                        BirthNumber = tuple.Person.BirthNumber,
-                    // Add other common properties here
-                    };
-                    personDtos.Add(personDto); 
-                }
-
-            }
-            return Tuple.Create(personDtos, driverDtos);
-        }
-
 
         public async Task<Person> GetPersonByIdAsync(int personId)
         {
@@ -251,7 +201,8 @@ namespace TransportRegister.Server.Repositories.Implementations
             if (dtParams.Sorting.Any())
             {
                 Sorting sorting = dtParams.Sorting.First();
-                return query.OrderByDescending(v => v.PersonId);
+                return query.OrderBy($"{sorting.Id} {sorting.Dir}")
+                    .ThenByDescending(v => v.PersonId);
             }
             else
             {
@@ -288,7 +239,8 @@ namespace TransportRegister.Server.Repositories.Implementations
             if (dtParams.Sorting.Any())
             {
                 Sorting sorting = dtParams.Sorting.First();
-                return query.OrderByDescending(v => v.PersonId);
+                return query.OrderBy($"{sorting.Id} {sorting.Dir}")
+                    .ThenByDescending(v => v.PersonId);
             }
             else
             {
@@ -320,25 +272,23 @@ namespace TransportRegister.Server.Repositories.Implementations
             return query;
         }
 
-
-        public (IQueryable<PersonSimpleListDto>, IQueryable<DriverSimpleListDto>) QueryPersonAndDriverSearch(DtParamsDto dtParams)
+        public IQueryable<DriverSimpleListDto> QueryAllPersons(DtParamsDto dtParams)
         {
-            var query = GetAllPersons();
-            var personsQuery = query.Result.Item1.AsQueryable();
-            var driversQuery = query.Result.Item2.AsQueryable(); // Assuming you have a method to get all drivers
-
-            // Apply filters and sorting to persons
-            var filteredPersons = ApplyFilterPersonSearch(personsQuery, dtParams);
-            var sortedPersons = ApplySortingPersonSearch(filteredPersons, dtParams);
-
-            // Apply filters and sorting to drivers
-            var filteredDrivers = ApplyFilterDriverSearch(driversQuery, dtParams); // Implement ApplyFilterDriverSearch method
-            var sortedDrivers = ApplySortingDriverSearch(filteredDrivers, dtParams); // Implement ApplySortingDriverSearch method
-
-            return (sortedPersons, sortedDrivers);
+            var query = from person in _context.Persons
+                join driver in _context.Drivers
+                on person.PersonId equals driver.PersonId into driverJoin
+                from driverData in driverJoin.DefaultIfEmpty()
+                select new DriverSimpleListDto
+                {
+                    PersonId = person.PersonId,
+                    FirstName = person.FirstName,
+                    LastName = person.LastName,
+                    BirthNumber = person.BirthNumber,
+                    DriversLicenseNumber = driverData != null ? driverData.DriversLicenseNumber : null
+                };
+            query = ApplyFilterDriverSearch(query, dtParams);
+            query = ApplySortingDriverSearch(query, dtParams);
+            return query;
         }
-
-
-
     }
 }
