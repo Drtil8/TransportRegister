@@ -1,16 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
 using TransportRegister.Server.DTOs.DatatableDTOs;
-using TransportRegister.Server.DTOs.LicensePlateHistoryDTOs;
 using TransportRegister.Server.DTOs.VehicleDTOs;
 using TransportRegister.Server.Models;
 using TransportRegister.Server.Repositories;
 using TransportRegister.Server.DTOs.PersonDTOs;
-using TransportRegister.Server.Repositories.Implementations;
 using TransportRegister.Server.DTOs.TheftDTOs;
 using TransportRegister.Server.DTOs.OffenceDTOs;
-using Microsoft.IdentityModel.Tokens;
 using TransportRegister.Server.Data;
 using TransportRegister.Server.DTOs.DriversLicenseDTOs;
 using Microsoft.AspNetCore.Authorization;
@@ -32,12 +28,18 @@ namespace TransportRegister.Server.Controllers
             _context = context;
         }
 
+        /// POST: api/PersonSearch
+        /// <summary>
+        /// Search for persons and drivers based on DataTable parameters.
+        /// </summary>
+        /// <param name="dtParams">DataTable parameters for search.</param>
+        /// <returns>A JSON result containing the search results.</returns>
         [HttpPost("/api/PersonSearch")]
         [Produces("application/json")]
         public async Task<IActionResult> PersonAndDriverSearch([FromBody] DtParamsDto dtParams)
         {
             var query = _personRepository.QueryPersonAndDriverSearch(dtParams);
-            var combinedData = query.Item1
+            var combinedData =  query.Item1
                 .Select(person => new DriverSimpleListDto
                 {
                     PersonId = person.PersonId,
@@ -65,17 +67,12 @@ namespace TransportRegister.Server.Controllers
             return new JsonResult(result);
         }
 
-
-        // GET: all persons with driver and owner dto data
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<dynamic>>> GetAllPersons()
-        {
-            var persons = await _personRepository.GetAllPersons();
-
-            return Ok(persons);
-        }
-
-        // GET: api/Persons/5
+        /// GET: api/Persons/5
+        /// <summary>
+        /// Get a person by ID.
+        /// </summary>
+        /// <param name="id">The ID of the person to retrieve.</param>
+        /// <returns>An ActionResult containing the person information.</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<PersonDto>> GetPerson(int id)
         {
@@ -88,7 +85,12 @@ namespace TransportRegister.Server.Controllers
             var personDto = PersonDtoTransformer.TransformToDto(person);
             return personDto;
         }
-
+        /// GET: api/Persons/{id}/SetPersonToDriver
+        /// <summary>
+        /// Set a person as a driver.
+        /// </summary>
+        /// <param name="personId">The ID of the person to set as a driver.</param>
+        /// <returns>An ActionResult indicating success or failure.</returns>
         [HttpGet("{personId}/SetToDriver")]
         [Authorize(Roles = "Official")]
         public async Task<IActionResult> SetPersonToDriver(int personId)
@@ -103,7 +105,12 @@ namespace TransportRegister.Server.Controllers
 
             return Ok();
         }
-
+        /// GET: api/Persons/5/ReportedThefts
+        /// <summary>
+        /// Get reported thefts associated with a person.
+        /// </summary>
+        /// <param name="id">The ID of the person to retrieve thefts for.</param>
+        /// <returns>An ActionResult containing reported theft information.</returns>
         [HttpGet("{id}/ReportedThefts")]
         public async Task<ActionResult<TheftListItemDto>> GetReportedThefts(int id)
         {
@@ -125,16 +132,18 @@ namespace TransportRegister.Server.Controllers
                     VIN = t.StolenVehicle.VIN,
                     LicensePlate = t.StolenVehicle.LicensePlates.FirstOrDefault().LicensePlate,
                 },
-                //VehicleId = t.VehicleId,
-                //VIN = t.StolenVehicle.VIN,
-                //LicensePlate = t.StolenVehicle.LicensePlates.FirstOrDefault().LicensePlate,
                 StolenOn = t.StolenOn,
                 FoundOn = t.FoundOn,
                 IsFound = t.FoundOn != null,
             });
             return Ok(theftListDto);
         }
-
+        /// GET: api/Persons/5/CommitedOffences
+        /// <summary>
+        /// Get offences committed by a person.
+        /// </summary>
+        /// <param name="id">The ID of the person to retrieve offences for.</param>
+        /// <returns>An ActionResult containing offence information.</returns>
         [HttpGet("{id}/CommitedOffences")]
         public async Task<ActionResult<TheftListItemDto>> GetCommitedOffences(int id)
         {
@@ -155,8 +164,13 @@ namespace TransportRegister.Server.Controllers
             return Ok(offencesListDto);
         }
 
-        // PUT: api/Persons/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// PUT: api/Persons/5
+        /// <summary>
+        /// Update a person's information.
+        /// </summary>
+        /// <param name="id">The ID of the person to update.</param>
+        /// <param name="person">The updated person information.</param>
+        /// <returns>An ActionResult indicating success or failure.</returns>
         [HttpPost("{id}")]
         [Authorize(Roles = "Official")]
         public async Task<ActionResult> PutPerson(int id, PersonUpdateDto person)
@@ -172,7 +186,13 @@ namespace TransportRegister.Server.Controllers
             return Ok();
 
         }
-
+        /// POST: api/Persons/Drivers/{id}
+        /// <summary>
+        /// Update a driver's information.
+        /// </summary>
+        /// <param name="id">The ID of the driver to update.</param>
+        /// <param name="driver">The updated driver information.</param>
+        /// <returns>An ActionResult indicating success or failure.</returns>
         [HttpPost("Drivers/{id}")]
         [Authorize(Roles = "Official")]
         public async Task<ActionResult> PutDriver(int id, DriverUpdateDto driver)
@@ -196,8 +216,12 @@ namespace TransportRegister.Server.Controllers
             return Ok();
 
         }
-
-
+        /// PUT: api/Persons/5/RemoveLicenseSuspension
+        /// <summary>
+        /// Remove license suspension for a driver.
+        /// </summary>
+        /// <param name="driverId">The ID of the driver to remove suspension for.</param>
+        /// <returns>An ActionResult indicating success or failure.</returns>
         [HttpPut("{driverId}/RemoveLicenseSuspension")]
         [Authorize(Roles = "Official")]
         public async Task<ActionResult> RemoveLicenseSuspenison(int driverId)
@@ -222,8 +246,13 @@ namespace TransportRegister.Server.Controllers
 
         }
 
-        // POST: api/Persons
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// POST: api/Persons
+        /// <summary>
+        /// Add driver's licenses for a person.
+        /// </summary>
+        /// <param name="driverId">The ID of the driver to add licenses for.</param>
+        /// <param name="new_licenses">A list of new licenses to add.</param>
+        /// <returns>An ActionResult indicating success or failure.</returns>
         [HttpPost("{driverId}/AddDriversLicense")]
         [Authorize(Roles = "Official")]
         public async Task<IActionResult> PostDriversLicense(int driverId, List<string> new_licenses)
@@ -282,12 +311,18 @@ namespace TransportRegister.Server.Controllers
                 "D1E" => "Řidičák na malé autobusy s přívěsem",
                 "DE" => "Řidičák na autobusy s přívěsem",
                 "T" => "Řidičák na traktor",
-                _ => "Unknown License Type" // Default case
+                _ => "Unknown License Type"
             };
         }
 
 
-
+        /// Post "{personId}/UploadImage"
+        /// <summary>
+        /// Upload an image for a person.
+        /// </summary>
+        /// <param name="personId">The ID of the person to upload an image for.</param>
+        /// <param name="file">The image file to upload.</param>
+        /// <returns>An ActionResult indicating success or failure.</returns>
         [HttpPost("{personId}/UploadImage")]
         public async Task<IActionResult> UploadImage(int personId, IFormFile file)
         {
@@ -314,6 +349,11 @@ namespace TransportRegister.Server.Controllers
         }
 
         // DELETE: api/Persons/5
+        /// <summary>
+        /// Delete a person by ID.
+        /// </summary>
+        /// <param name="id">The ID of the person to delete.</param>
+        /// <returns>An ActionResult indicating success or failure.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePerson(int id)
         {
