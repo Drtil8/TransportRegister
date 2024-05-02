@@ -10,10 +10,21 @@ using TransportRegister.Server.Models;
 
 namespace TransportRegister.Server.Repositories.Implementations;
 
+/// <summary>
+/// Repository for handling thefts. Implements ITheftRepository.
+/// </summary>
+/// <author> David Drtil </author>
+/// <author> Dominik Pop </author>
 public class TheftRepository(AppDbContext context) : ITheftRepository
 {
     private readonly AppDbContext _context = context;
 
+    ////////////////// QUERIES //////////////////
+
+    /// <summary>
+    /// Query all thefts from the database
+    /// </summary>
+    /// <returns> Retruns query of thefts as DTOs. </returns>
     public IQueryable<TheftListItemDto> QueryAllThefts()
     {
         return _context.Thefts
@@ -43,6 +54,10 @@ public class TheftRepository(AppDbContext context) : ITheftRepository
             });
     }
 
+    /// <summary>
+    /// Query all active thefts from the database.
+    /// </summary>
+    /// <returns> Retruns query of thefts as DTOs. </returns>
     public IQueryable<TheftListItemDto> QueryActiveThefts()
     {
         return _context.Thefts
@@ -73,6 +88,14 @@ public class TheftRepository(AppDbContext context) : ITheftRepository
             });
     }
 
+    ////////////////// FILTER //////////////////
+
+    /// <summary>
+    /// Apply filters to the query of thefts.
+    /// </summary>
+    /// <param name="query"> Query we apply filter to. </param>
+    /// <param name="dtParams"> Datatable parametres. </param>
+    /// <returns> Returns query with applied filter. </returns>
     public IQueryable<TheftListItemDto> ApplyFilterQueryThefts(IQueryable<TheftListItemDto> query, DtParamsDto dtParams)
     {
         foreach (var filter in dtParams.Filters)
@@ -112,6 +135,12 @@ public class TheftRepository(AppDbContext context) : ITheftRepository
         }
     }
 
+    ////////////////// GETTERS //////////////////
+
+    /// <summary>
+    /// Get active thefts from the database.
+    /// </summary>
+    /// <returns> Returns list of thefts as DTOs. </returns>
     public async Task<IEnumerable<TheftListItemDto>> GetActiveThefts()
     {
         return await _context.Thefts
@@ -143,6 +172,11 @@ public class TheftRepository(AppDbContext context) : ITheftRepository
             .ToListAsync();
     }
 
+    /// <summary>
+    /// Get theft by id from the database.
+    /// </summary>
+    /// <param name="theftId"> Id of theft. </param>
+    /// <returns> Returns theft as DTO for detail. </returns>
     public async Task<TheftDetailDto> GetTheftById(int theftId)
     {
         return await _context.Thefts
@@ -198,6 +232,14 @@ public class TheftRepository(AppDbContext context) : ITheftRepository
             .FirstOrDefaultAsync();
     }
 
+    ////////////////// ACTIONS //////////////////
+
+    /// <summary>
+    /// Create theft in the database.
+    /// </summary>
+    /// <param name="theftDto"> DTO containing info about new theft. </param>
+    /// <param name="officerId"> Id of officer who reported theft. </param>
+    /// <returns></returns>
     public async Task<int> CreateTheft(TheftCreateDto theftDto, string officerId)
     {
         var newTheft = new Theft
@@ -223,6 +265,11 @@ public class TheftRepository(AppDbContext context) : ITheftRepository
         return newTheft.TheftId;
     }
 
+    /// <summary>
+    /// Sets theft to state where vehicle was found.
+    /// </summary>
+    /// <param name="theftId"> Theft id. </param>
+    /// <param name="officerId"> Id of officer who reported finding vehicle. </param>
     public async Task ReportTheftDiscovery(int theftId, string officerId)
     {
         var theft = await _context.Thefts
@@ -234,6 +281,11 @@ public class TheftRepository(AppDbContext context) : ITheftRepository
         await _context.SaveChangesAsync();
     }
 
+    /// <summary>
+    /// Sets theft to state where vehicle was returned to owner.
+    /// </summary>
+    /// <param name="theftId"> Theft id.  </param>
+    /// <param name="officialId"> Id of official which reported vehicle as returned. </param>
     public async Task ReportTheftReturn(int theftId, string officialId)
     {
         var theft = await _context.Thefts

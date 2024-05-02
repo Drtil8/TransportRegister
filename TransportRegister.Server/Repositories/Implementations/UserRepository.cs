@@ -8,11 +8,32 @@ using TransportRegister.Server.Models;
 
 namespace TransportRegister.Server.Repositories.Implementations
 {
+    /// <summary>
+    /// Repository for user management.
+    /// </summary>
+    /// <author> Dominik Pop </author>
     public class UserRepository(AppDbContext context, UserManager<User> userManager) : IUserRepository
     {
         private readonly AppDbContext _context = context;
         private readonly UserManager<User> _userManager = userManager;
 
+        /// <summary>
+        /// Checks if user with given email exists.
+        /// </summary>
+        /// <param name="email"> Email of user. </param>
+        /// <returns> Returns true if user exists. </returns>
+        public async Task<bool> UserExistsAsync(string email)
+        {
+            return await _context.Users.AnyAsync(u => u.Email == email);
+        }
+
+        ////////////////// GETTERS //////////////////
+
+        /// <summary>
+        /// Gets user by id from the database.
+        /// </summary>
+        /// <param name="userId"> Users id. </param>
+        /// <returns> Returns user as DTO. </returns>
         public async Task<UserDetailDto> GetUserByIdAsync(string userId)
         { 
             var user = await _context.Users
@@ -42,28 +63,11 @@ namespace TransportRegister.Server.Repositories.Implementations
             return userDto;
         }
 
-        public async Task<UserDetailDto> GetUserByEmailAsync(string email)
-        {
-            //var user = await _context.Users
-            //    .FirstOrDefaultAsync(u => u.Email == email);
-
-            //return user == null ? null : new UserDetailDto
-            //{
-            //    UserId = user.PersonId,
-            //    Email = user.Email,
-            //    FirstName = user.FirstName,
-            //    LastName = user.LastName,
-            //    PhoneNumber = user.PhoneNumber,
-            //    Role = user.Role
-            //};
-            return null; // TODO
-        }
-
-        public async Task<bool> UserExistsAsync(string email)
-        {
-            return await _context.Users.AnyAsync(u => u.Email == email);
-        }
-
+        /// <summary>
+        /// Returns role of the user.
+        /// </summary>
+        /// <param name="userType"> User type from db. </param>
+        /// <returns> Returns string representing users role. </returns>
         public static string GetUserRole(string userType)
         {
             if(userType == "User")
@@ -82,6 +86,10 @@ namespace TransportRegister.Server.Repositories.Implementations
             return "Neznámý";
         }
 
+        /// <summary>
+        /// Returns all users from the database.
+        /// </summary>
+        /// <returns> Returns query of user DTOs. </returns>
         public IQueryable<UserListItemDto> GetAllUsers()
         {
             return _context.Users.AsNoTracking()
@@ -100,6 +108,14 @@ namespace TransportRegister.Server.Repositories.Implementations
                 });
         }
 
+        ////////////////// FILTER //////////////////
+
+        /// <summary>
+        /// Applies filters to the query of users.
+        /// </summary>
+        /// <param name="query"> Query. </param>
+        /// <param name="dtParams"> Datatable parametres. </param>
+        /// <returns> Returns query with applied filters. </returns>
         public IQueryable<UserListItemDto> ApplyFilterQueryUsers(IQueryable<UserListItemDto> query, DtParamsDto dtParams)
         {
             foreach(var filter in dtParams.Filters)
@@ -125,6 +141,15 @@ namespace TransportRegister.Server.Repositories.Implementations
             }
         }
 
+        ////////////////// ACTIONS //////////////////
+
+        /// <summary>
+        /// Saves user to the database.
+        /// </summary>
+        /// <typeparam name="TUser"> Generic which intakes any type of role user can be. </typeparam>
+        /// <param name="userDto"> DTO containing info about new user. </param>
+        /// <param name="role"> Users role. </param>
+        /// <returns> Returns newly created user. </returns>
         public async Task<TUser> SaveUserAsync<TUser>(UserCreateDto userDto, string role) where TUser : User, new()
         {
             var newUser = new TUser
@@ -154,25 +179,12 @@ namespace TransportRegister.Server.Repositories.Implementations
             return newUser;
         }
 
-        public async Task EditUserAsync(string userId, UserCreateDto userDto)
-        {
-            //var user = await _context.Users
-            //    .FirstOrDefaultAsync(u => u.PersonId == userId);
-
-            //if (user == null)
-            //{
-            //    throw new Exception("User not found");
-            //}
-
-            //user.Email = userDto.Email;
-            //user.FirstName = userDto.FirstName;
-            //user.LastName = userDto.LastName;
-            //user.PhoneNumber = userDto.PhoneNumber;
-            //user.Role = userDto.Role;
-
-            //await _context.SaveChangesAsync();
-        }
-
+        /// <summary>
+        /// Restores user to the database. Sets IsValid to true.
+        /// User can log in again.
+        /// </summary>
+        /// <param name="userId"> Id of user. </param>
+        /// <returns> Returns true if user was restored. </returns>
         public async Task<bool> RestoreUserAsync(string userId)
         {
             var user = await _context.Users.Where(u => u.Id == userId).FirstOrDefaultAsync();
@@ -185,6 +197,13 @@ namespace TransportRegister.Server.Repositories.Implementations
             user.IsValid = true;
             return await _context.SaveChangesAsync() > 0;
         }
+
+        /// <summary>
+        /// Deletes user from the database. Sets IsValid to false. 
+        /// User is not removed from the database, but cannot log in.
+        /// </summary>
+        /// <param name="userId"> Id of user. </param>
+        /// <returns> Returns true if user was "deleted". </returns>
         public async Task<bool> DeleteUserAsync(string userId)
         {
 
