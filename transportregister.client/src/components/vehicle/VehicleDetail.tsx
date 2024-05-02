@@ -197,6 +197,14 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
           </Row>
 
           {licensePlatesTable}
+
+          {/* todo add officialFullName */}
+          <Row>
+            <Col>
+              <dt>Naposledy upraveno:</dt>
+              <dd>{`${vehicleDetail.officialFullName}`}</dd>
+            </Col>
+          </Row>
         </>
       );
 
