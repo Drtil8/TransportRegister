@@ -70,7 +70,7 @@ export class DriverDetail extends Component<object, DriverDetailState> {
         throw new Error(`Failed to load PersonById.`);
       }
       const person = await response.json();
-      let parsedPerson: IPerson;
+      let parsedPerson: IPerson = person as IPerson;
       this.setState(prevState => ({
         form: {
           ...prevState.form,
@@ -85,9 +85,8 @@ export class DriverDetail extends Component<object, DriverDetailState> {
       }));
       switch (person.personType) {
         case 'Driver':
-          parsedPerson = person as IDriver;
-          let driver: IDriver = parsedPerson as IDriver;
-          //console.log('driver', parsedPerson);
+          //parsedPerson = person as IOwner;
+          let driver: IDriver = person as IDriver;
           this.setState(prevState => ({
             form: {
               ...prevState.form,
@@ -100,15 +99,15 @@ export class DriverDetail extends Component<object, DriverDetailState> {
               disableInput: true,
             }
           }));
+          this.setState({ personDetail: driver });
           break;
         case 'Owner':
           parsedPerson = person as IOwner;
+          this.setState({ personDetail: parsedPerson });
           break;
         default:
           throw new Error(`Unknown person type: ${person.personType}`);
       }
-      //console.log(parsedPerson);    // todo delete
-      this.setState({ personDetail: parsedPerson });
     }
     catch (error) {
       console.error('Error fetching person data:', error);
@@ -148,6 +147,16 @@ export class DriverDetail extends Component<object, DriverDetailState> {
     //console.log('switching state', this.state.form.disableInput);
   }
 
+  putPersonData= () => {
+    this.setState(prevState => ({
+      form: {
+        ...prevState.form,
+        disableInput: !prevState.form.disableInput // Toggle the value of edit
+      }
+    }));
+    //console.log('switching state', this.state.form.disableInput);
+  }
+
 
 
 
@@ -158,6 +167,10 @@ export class DriverDetail extends Component<object, DriverDetailState> {
     //console.log("logging person", person);
     const isDriver: boolean = (person != null && person.personType == 'Driver');
     //console.log("is driver", isDriver);
+    let driver: IDriver | undefined = undefined;
+    if (isDriver)
+      driver = person as IDriver;
+
 
 
     const hardoffences: IOffenceListSimple[] = [
@@ -187,8 +200,8 @@ export class DriverDetail extends Component<object, DriverDetailState> {
 
     let infoButtons =
       <div>
-        <Button onClick={this.switchEditState} color="primary">Zrušit</Button>
-        <Button color="primary">Potvrdit</Button>
+        <Button onClick={this.switchEditState} color="danger">Zrušit</Button>
+        <Button onClick={this.putPersonData} color="primary">Potvrdit</Button>
         {/*TODO Put*/}
       </div>
     if (this.state.form.disableInput) {
@@ -247,7 +260,7 @@ export class DriverDetail extends Component<object, DriverDetailState> {
           </Table>
         );
 
-    console.log(person?.sex_Male);
+    //console.log(person?.sex_Male);
 
     const imgsrcString = "data:image/png;base64," + person?.imageBase64;
     const contents = (
@@ -292,9 +305,9 @@ export class DriverDetail extends Component<object, DriverDetailState> {
                       <FormGroup>
                         <Label for="birthNumber">Rodné číslo:</Label>
                         <div className="birthNumberInput">
-                          <Input type="number" id="birthNumber1" name="birthNumber1" maxLength={6} value={form.birthNumber1} onChange={this.handleChange} required disabled={form.disableInput} />
+                          <Input type="number" id="birthNumber1" name="birthNumber1" maxLength={6} value={form.birthNumber1} onChange={this.handleChange} required disabled={true} />
                           <h4>/</h4>
-                          <Input type="number" id="birthNumber2" name="birthNumber2" min={0} max={99999} value={form.birthNumber2} onChange={this.handleChange} required disabled={form.disableInput} />
+                          <Input type="number" id="birthNumber2" name="birthNumber2" min={0} max={99999} value={form.birthNumber2} onChange={this.handleChange} required disabled={true} />
                         </div>
                       </FormGroup>
 
@@ -304,10 +317,10 @@ export class DriverDetail extends Component<object, DriverDetailState> {
                       {/*    Muž*/}
                       {/*  </Label>*/}
                       {/*</FormGroup>*/}
-                      {person?.sex_Male ? 
+                      {person?.sex_Male ?
                         (<p>Muž</p>)
                         :
-                        (<p>Žena</p>) }
+                        (<p>Žena</p>)}
                       {/*TODO adresa*/}
                       {/*TODO Image*/}
 
@@ -369,39 +382,84 @@ export class DriverDetail extends Component<object, DriverDetailState> {
                   <Row>
                     <Col>
                       <br></br>
-                      <Form>
-                        <FormGroup floating>
-                          <Input id="driversLicenseNumber" name="driversLicenseNumber" placeholder="driversLicenseNumber" type="text" maxLength={8} value={form.driversLicenseNumber} onChange={this.handleChange} required disabled={form.disableInput} />
-                          <Label for="driversLicenseNumber">Číslo řidičského průkazu</Label>
+                      <Form id="licenceForm">
+                        <FormGroup floating className={driver?.hasSuspendedLicense ? "suspendedLicence" : ""}>
+                          {/*<div >*/}
+                            <Input id="driversLicenseNumber" name="driversLicenseNumber" placeholder="driversLicenseNumber" type="text" maxLength={8} value={form.driversLicenseNumber} onChange={this.handleChange} required disabled={form.disableInput} />
+                            <Label for="driversLicenseNumber">Číslo řidičského průkazu</Label>
+                          {/*</div>*/}
                         </FormGroup>
 
                         <p>Oprávněn řídit:</p>
                         <FormGroup check inline>
                           <Input type="checkbox" id="AM" name="AM" value="false" disabled={form.disableInput} />
-                          <Label check>AM</Label>
+                          <Label check htmlFor="AM">AM</Label>
                         </FormGroup>
                         <FormGroup check inline>
                           <Input type="checkbox" id="A1" name="A1" value="false" disabled={form.disableInput} />
-                          <Label check>A1</Label>
+                          <Label check htmlFor="A1">A1</Label>
                         </FormGroup>
                         <FormGroup check inline>
                           <Input type="checkbox" id="A2" name="A2" value="false" disabled={form.disableInput} />
-                          <Label check>A2</Label>
+                          <Label check htmlFor="A2">A2</Label>
                         </FormGroup>
                         <FormGroup check inline>
                           <Input type="checkbox" id="A" name="A" value="false" disabled={form.disableInput} />
-                          <Label check>A</Label>
+                          <Label check htmlFor="A">A</Label>
                         </FormGroup>
                         <br></br>
                         <FormGroup check inline>
                           <Input type="checkbox" id="B1" name="B1" value="false" disabled={form.disableInput} />
-                          <Label check>B1</Label>
+                          <Label check htmlFor="B1">B1</Label>
                         </FormGroup>
                         <FormGroup check inline>
                           <Input type="checkbox" id="B" name="B" value="false" disabled={form.disableInput} />
-                          <Label check>B</Label>
-                        </FormGroup >
-
+                          <Label check htmlFor="B">B</Label>
+                        </FormGroup>
+                        <br></br>
+                        <FormGroup check inline>
+                          <Input type="checkbox" id="C1" name="C1" value="false" disabled={form.disableInput} />
+                          <Label check htmlFor="C1">C1</Label>
+                        </FormGroup>
+                        <FormGroup check inline>
+                          <Input type="checkbox" id="C" name="C" value="false" disabled={form.disableInput} />
+                          <Label check htmlFor="C">C</Label>
+                        </FormGroup>
+                        <br></br>
+                        <FormGroup check inline>
+                          <Input type="checkbox" id="D1" name="D1" value="false" disabled={form.disableInput} />
+                          <Label check htmlFor="D1">D1</Label>
+                        </FormGroup>
+                        <FormGroup check inline>
+                          <Input type="checkbox" id="D" name="D" value="false" disabled={form.disableInput} />
+                          <Label check htmlFor="D">D</Label>
+                        </FormGroup>
+                        <br></br>
+                        <FormGroup check inline>
+                          <Input type="checkbox" id="BE" name="BE" value="false" disabled={form.disableInput} />
+                          <Label check htmlFor="BE">BE</Label>
+                        </FormGroup>
+                        <FormGroup check inline>
+                          <Input type="checkbox" id="C1E" name="C1E" value="false" disabled={form.disableInput} />
+                          <Label check htmlFor="C1E">C1E</Label>
+                        </FormGroup>
+                        <FormGroup check inline>
+                          <Input type="checkbox" id="CE" name="CE" value="false" disabled={form.disableInput} />
+                          <Label check htmlFor="CE">CE</Label>
+                        </FormGroup>
+                        <FormGroup check inline>
+                          <Input type="checkbox" id="D1E" name="D1E" value="false" disabled={form.disableInput} />
+                          <Label check htmlFor="D1E">D1E</Label>
+                        </FormGroup>
+                        <FormGroup check inline>
+                          <Input type="checkbox" id="DE" name="DE" value="false" disabled={form.disableInput} />
+                          <Label check htmlFor="DE">DE</Label>
+                        </FormGroup>
+                        <br></br>
+                        <FormGroup check inline>
+                          <Input type="checkbox" id="T" name="T" value="false" disabled={form.disableInput} />
+                          <Label check htmlFor="T">T</Label>
+                        </FormGroup>
                         <div>
                           {infoButtons}
                         </div>
