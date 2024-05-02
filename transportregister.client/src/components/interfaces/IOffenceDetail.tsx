@@ -19,6 +19,7 @@ interface IOffenceDetail {
   fine: IFineDetail | null;
   //photos: string[]; // todo
   isResponsibleOfficial: boolean;
+  offencePhotos64: string[];
 }
 
 export default IOffenceDetail;

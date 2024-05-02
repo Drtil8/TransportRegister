@@ -1,4 +1,5 @@
 ﻿using TransportRegister.Server.DTOs.TheftDTOs;
+using TransportRegister.Server.Models;
 
 namespace TransportRegister.Server.Repositories
 {
@@ -6,7 +7,7 @@ namespace TransportRegister.Server.Repositories
     {
         Task<IEnumerable<TheftListItemDto>> GetActiveThefts();
         Task<TheftDetailDto> GetTheftById(int theftId);
-        Task<int> CreateTheft(TheftDetailDto theft);
+        Task<int> CreateTheft(TheftCreateDto theft, string officerId);
         Task ReportTheftDiscovery(int theftId);
     }
 }

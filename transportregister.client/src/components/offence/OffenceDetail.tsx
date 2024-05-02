@@ -9,6 +9,9 @@ import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import DetailIcon from '@mui/icons-material/VisibilityOutlined';
 import { Link } from 'react-router-dom';
+import ImageGallery from '../ImageGallery';
+
+//var Carousel = require('react-responsive-carousel').Carousel;
 
 interface IOffenceDetailProps {
   offenceDetail: IOffenceDetail | null;
@@ -269,7 +272,7 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
                 <Row>
                   <Col>
                     <dt>Fotky z místa činu:</dt>
-                    <dd>TODO - galerie</dd>
+                    <ImageGallery images={offenceDetail.offencePhotos64}></ImageGallery>
                   </Col>
                 </Row>
                 {offenceDetail.fine !== null && (
@@ -325,7 +328,7 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
               <hr />
               <Col>
                 <Row>
-                  <Col>
+                  <Col >
                     <h4>Osoba</h4>
                   </Col>
                   <Col>
@@ -335,11 +338,11 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
                   </Col>
                 </Row>
                 <Row>
-                  <Col>
+                  <Col sm="6">
                     <dt>Celé jméno</dt>
                     <dd>{offenceDetail.person.fullName}</dd>
                   </Col>
-                  <Col>
+                  <Col sm="6">
                     <dt>Rodné číslo</dt>
                     <dd>{offenceDetail.person.birthNumber}</dd>
                   </Col>
@@ -368,21 +371,21 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
                     </Col>
                   </Row>
                   <Row>
-                    <Col>
+                    <Col sm="6">
                       <dt>VIN</dt>
                       <dd>{offenceDetail.vehicle.vin}</dd>
                     </Col>
-                    <Col>
+                    <Col sm="6">
                       <dt>SPZ</dt>
                       <dd>{offenceDetail.vehicle.licensePlate}</dd>
                     </Col>
                   </Row>
                   <Row>
-                    <Col>
+                    <Col sm="6">
                       <dt>Výrobce</dt>
                       <dd>{offenceDetail.vehicle.manufacturer}</dd>
                     </Col>
-                    <Col>
+                    <Col sm="6">
                       <dt>Model</dt>
                       <dd>{offenceDetail.vehicle.model}</dd>
                     </Col>

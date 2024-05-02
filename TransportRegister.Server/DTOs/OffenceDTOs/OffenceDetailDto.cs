@@ -25,5 +25,6 @@ namespace TransportRegister.Server.DTOs.OffenceDTOs
         public int PenaltyPoints { get; set; }
         public FineDetailDto Fine { get; set; }
         public bool IsResponsibleOfficial { get; set; }
+        public ICollection<string> OffencePhotos64 { get; set; } = new List<string>();
     }
 }

@@ -21,5 +21,7 @@
         public Official ProcessedByOfficial { get; set; }
         public int PersonId { get; set; }
         public Person CommitedBy { get; set; }
+
+        public ICollection<OffencePhoto> Photos { get; set; }
     }
 }

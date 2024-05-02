@@ -25,5 +25,6 @@ public static class DbSeeder
         FineSeed.Seed(context);
         DriversLicenseSeed.Seed(context);
         LicensePlateHistorySeed.Seed(context);
+        OffencePhotoSeed.Seed(context);
     }
 }

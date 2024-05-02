@@ -254,6 +254,19 @@ namespace TransportRegister.Server.Repositories.Implementations
                 offenceDto.Fine = fine;
             }
 
+            var photos = await _context.OffencePhotos
+                .Where(op => op.OffenceId == offenceId)
+                .Select(op => op.Image)
+                .ToListAsync();
+
+            if (photos != null)
+            {
+                foreach (var photo in photos)
+                {
+                    offenceDto.OffencePhotos64.Add(Convert.ToBase64String(photo));
+                }
+            }
+
             if (offenceDto == null)
             {
                 return null;
