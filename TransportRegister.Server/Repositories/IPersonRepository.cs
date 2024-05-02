@@ -1,4 +1,6 @@
-﻿using TransportRegister.Server.DTOs.DriversLicenseDTOs;
+﻿using Microsoft.AspNetCore.Mvc;
+using TransportRegister.Server.DTOs.DatatableDTOs;
+using TransportRegister.Server.DTOs.DriversLicenseDTOs;
 using TransportRegister.Server.DTOs.PersonDTOs;
 using TransportRegister.Server.Models;
 namespace TransportRegister.Server.Repositories
@@ -19,5 +21,6 @@ namespace TransportRegister.Server.Repositories
         Task<List<Theft>> GetPersonReportedTheftsByIdAsync(int personId);
         Task<List<Offence>> GetPersonCommitedOffencesByIdAsync(int personId);
         Task AddDriversLicense(int driverId, DriversLicenseCreateDto license);
+        (IQueryable<PersonSimpleListDto>, IQueryable<DriverSimpleListDto>) QueryPersonAndDriverSearch(DtParamsDto dtParams);
     }
 }

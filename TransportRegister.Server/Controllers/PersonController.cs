@@ -31,6 +31,44 @@ namespace TransportRegister.Server.Controllers
             _context = context;
         }
 
+        [HttpPost("/api/PersonSearch")]
+        [Produces("application/json")]
+        public async Task<IActionResult> PersonAdnDriverSearch([FromBody] DtParamsDto dtParams)
+        {
+            var query = _personRepository.QueryPersonAndDriverSearch(dtParams);
+            int totalPersonRowCount = await query.Item1.CountAsync();
+            int totalDriversRowCount = await query.Item2.CountAsync();
+            var filteredPersonData = await query.Item1
+                .Skip(dtParams.Start)
+                .Take(dtParams.Size)
+                .ToListAsync();
+
+            var filteredDriverData = await query.Item2
+                .Skip(dtParams.Start)
+                .Take(dtParams.Size)
+                .ToListAsync();
+            var resultPerson = new DtResultDto<PersonSimpleListDto>
+            {
+                Data = filteredPersonData,
+                TotalRowCount = totalPersonRowCount
+            };
+
+            var resultDriver = new DtResultDto<DriverSimpleListDto>
+            {
+                Data = filteredDriverData,
+                TotalRowCount = totalDriversRowCount
+            };
+
+            var combinedResult = new
+            {
+                Persons = resultPerson,
+                Drivers = resultDriver
+            };
+
+            return new JsonResult(combinedResult);
+        }
+
+
         // GET: all persons with driver and owner dto data
         [HttpGet]
         public async Task<ActionResult<IEnumerable<dynamic>>> GetAllPersons()

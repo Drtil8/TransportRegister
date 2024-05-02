@@ -5,6 +5,8 @@ using TransportRegister.Server.DTOs.DriversLicenseDTOs;
 using TransportRegister.Server.DTOs.PersonDTOs;
 using System;
 using TransportRegister.Server.DTOs.VehicleDTOs;
+using TransportRegister.Server.DTOs.DatatableDTOs;
+using System.Security.Permissions;
 
 namespace TransportRegister.Server.Repositories.Implementations
 {
@@ -231,5 +233,104 @@ namespace TransportRegister.Server.Repositories.Implementations
 
             return result;
         }
+
+
+        // Person search
+
+        private static IQueryable<PersonSimpleListDto> ApplySortingPersonSearch(
+    IQueryable<PersonSimpleListDto> query, DtParamsDto dtParams)
+        {
+            if (dtParams.Sorting.Any())
+            {
+                Sorting sorting = dtParams.Sorting.First();
+                return query.OrderByDescending(v => v.PersonId);
+            }
+            else
+            {
+                return query.OrderByDescending(v => v.PersonId);
+            }
+        }
+
+        private static IQueryable<PersonSimpleListDto> ApplyFilterPersonSearch(
+            IQueryable<PersonSimpleListDto> query, DtParamsDto dtParams)
+        {
+            foreach (var filter in dtParams.Filters)
+            {
+                // todo string properties can be filtered by Contains or StartsWith
+                query = filter.PropertyName switch
+                {
+                    nameof(PersonSimpleListDto.PersonId) =>
+                        query.Where(v => v.PersonId.ToString().StartsWith(filter.Value)), // numeric property
+                    nameof(PersonSimpleListDto.FirstName) =>
+                        query.Where(v => v.FirstName.StartsWith(filter.Value)),
+                    nameof(PersonSimpleListDto.LastName) =>
+                        query.Where(v => v.LastName.StartsWith(filter.Value)),
+                    nameof(PersonSimpleListDto.BirthNumber) =>
+                        query.Where(v => v.BirthNumber.StartsWith(filter.Value)),
+                    _ => query      // Default case - do not apply any filter    // Default case - do not apply any filter
+                };
+            }
+            return query;
+        }
+
+        // Driver Search
+        private static IQueryable<DriverSimpleListDto> ApplySortingDriverSearch(
+        IQueryable<DriverSimpleListDto> query, DtParamsDto dtParams)
+        {
+            if (dtParams.Sorting.Any())
+            {
+                Sorting sorting = dtParams.Sorting.First();
+                return query.OrderByDescending(v => v.PersonId);
+            }
+            else
+            {
+                return query.OrderByDescending(v => v.PersonId);
+            }
+        }
+
+        private static IQueryable<DriverSimpleListDto> ApplyFilterDriverSearch(
+            IQueryable<DriverSimpleListDto> query, DtParamsDto dtParams)
+        {
+            foreach (var filter in dtParams.Filters)
+            {
+                // todo string properties can be filtered by Contains or StartsWith
+                query = filter.PropertyName switch
+                {
+                    nameof(DriverSimpleListDto.PersonId) =>
+                        query.Where(v => v.PersonId.ToString().StartsWith(filter.Value)), // numeric property
+                    nameof(DriverSimpleListDto.DriversLicenseNumber) =>
+                        query.Where(v => v.DriversLicenseNumber.StartsWith(filter.Value)),
+                    nameof(DriverSimpleListDto.FirstName) =>
+                        query.Where(v => v.FirstName.StartsWith(filter.Value)),
+                    nameof(DriverSimpleListDto.LastName) =>
+                        query.Where(v => v.LastName.StartsWith(filter.Value)),
+                    nameof(DriverSimpleListDto.BirthNumber) =>
+                        query.Where(v => v.BirthNumber.StartsWith(filter.Value)),
+                    _ => query      // Default case - do not apply any filter
+                };
+            }
+            return query;
+        }
+
+
+        public (IQueryable<PersonSimpleListDto>, IQueryable<DriverSimpleListDto>) QueryPersonAndDriverSearch(DtParamsDto dtParams)
+        {
+            var query = GetAllPersons();
+            var personsQuery = query.Result.Item1.AsQueryable();
+            var driversQuery = query.Result.Item2.AsQueryable(); // Assuming you have a method to get all drivers
+
+            // Apply filters and sorting to persons
+            var filteredPersons = ApplyFilterPersonSearch(personsQuery, dtParams);
+            var sortedPersons = ApplySortingPersonSearch(filteredPersons, dtParams);
+
+            // Apply filters and sorting to drivers
+            var filteredDrivers = ApplyFilterDriverSearch(driversQuery, dtParams); // Implement ApplyFilterDriverSearch method
+            var sortedDrivers = ApplySortingDriverSearch(filteredDrivers, dtParams); // Implement ApplySortingDriverSearch method
+
+            return (sortedPersons, sortedDrivers);
+        }
+
+
+
     }
 }
