@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Humanizer;
+using Microsoft.EntityFrameworkCore;
 using TransportRegister.Server.Data;
 using TransportRegister.Server.DTOs.DatatableDTOs;
 using TransportRegister.Server.DTOs.FineDTOs;
@@ -378,12 +379,32 @@ namespace TransportRegister.Server.Repositories.Implementations
                 offence.IsApproved = true; // Automatically processing offence when no fine is assigned
             }
 
+
             _context.Offences.Add(offence);
             var res = await _context.SaveChangesAsync();
             if (res == 0)
             {
                 return null;
             }
+
+            if(offenceDto.Photos != null)
+            {
+                foreach (var photo in offenceDto.Photos)
+                {
+                    if(!string.IsNullOrEmpty(photo))
+                    {
+                        var image = Convert.FromBase64String(photo);
+                        var offencePhoto = new OffencePhoto
+                        {
+                            Image = image,
+                            OffenceId = offence.OffenceId
+                        };
+                        _context.OffencePhotos.Add(offencePhoto);
+                    }
+                }
+            }
+
+            await _context.SaveChangesAsync();
 
             return offence;
         }
@@ -413,6 +434,11 @@ namespace TransportRegister.Server.Repositories.Implementations
             {
                 offenceDto.IsApproved = offence.IsApproved;
                 offenceDto.IsValid = offence.IsValid;
+                offenceDto.Official = new UserSimpleDto
+                {
+                    Id = officialId,
+                    FullName = offence.ProcessedByOfficial.FirstName + " " + offence.ProcessedByOfficial.LastName
+                };
                 if(offenceDto.Fine != null)
                 {
                     offenceDto.Fine.IsPaid = !offence.Fine.IsActive;
