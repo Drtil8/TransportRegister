@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
@@ -41,16 +42,6 @@ namespace TransportRegister.Server
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IPersonRepository, PersonRepository>();
 
-
-            // todo convertors create unreadable array objects from client side
-            // Convertors
-            //builder.Services.AddControllers().AddJsonOptions(options =>
-            //{
-            //    options.JsonSerializerOptions.Converters.Add(new VehicleDtoConverter());
-            //    // Preventing cyclic dependencies
-            //    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-            //});
-
             // Cookies settings
             builder.Services.ConfigureApplicationCookie(options =>
             {
@@ -66,6 +57,13 @@ namespace TransportRegister.Server
             builder.Services.AddQuartzConfiguration();
 
             var app = builder.Build();
+
+            // Enable to apply changes to db in Azure hosting
+            //await using (AppDbContext db = app.Services.CreateScope().ServiceProvider.GetService<AppDbContext>())
+            //{
+            //    //await db.Database.MigrateAsync();
+            //    //await DbSeeder.SeedAll(app.Services);
+            //}
 
             // For seed data use cmd: dotnet run seed
             if (args.Length > 0)
@@ -86,7 +84,6 @@ namespace TransportRegister.Server
                 }
             }
 
-
             // Set Cors
             app.UseCors(corsBuilder =>
             {
@@ -105,9 +102,15 @@ namespace TransportRegister.Server
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
+                app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            //else
+            //{
+            //    app.UseExceptionHandler("/error");
+            //    app.UseHsts();
+            //}
 
             app.UseHttpsRedirection();
 
