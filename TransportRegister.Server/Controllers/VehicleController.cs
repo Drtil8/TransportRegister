@@ -5,6 +5,7 @@ using System.Linq.Dynamic.Core;
 using System.Security.Claims;
 using TransportRegister.Server.DTOs.DatatableDTOs;
 using TransportRegister.Server.DTOs.LicensePlateHistoryDTOs;
+using TransportRegister.Server.DTOs.UserDTOs;
 using TransportRegister.Server.DTOs.VehicleDTOs;
 using TransportRegister.Server.Models;
 using TransportRegister.Server.Repositories;
@@ -23,11 +24,13 @@ namespace TransportRegister.Server.Controllers
     {
         private readonly IVehicleRepository _vehicleRepository;
         private readonly IPersonRepository _personRepository;
-
-        public VehicleController(IVehicleRepository vehicleRepository, IPersonRepository ownerRepository)
+        private readonly IUserRepository _userRepository;
+        
+        public VehicleController(IVehicleRepository vehicleRepository, IPersonRepository ownerRepository, IUserRepository userRepository)
         {
             _vehicleRepository = vehicleRepository;
             _personRepository = ownerRepository;
+            _userRepository = _userRepository;
         }
 
         /// <summary>
@@ -93,35 +96,26 @@ namespace TransportRegister.Server.Controllers
             }
 
             vehicle.OfficialId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
+            
             vehicle.Owner = await _personRepository.GetPersonByIdAsync(vehicleDto.OwnerId);
             if (vehicle.Owner is null)
                 return BadRequest("Owner not found.");
 
-            var licensePlates = await _vehicleRepository.GetLicensePlateHistoryAsync(vehicle.VehicleId);
-            var newLicensePlate = new LicensePlateHistory
+            var existingPlateHistoryDto = await _vehicleRepository.GetLicensePlateHistoryAsync(vehicle.VehicleId);
+            var existingPlateHistory = LicenseHistoryDtoTransformer.ConvertDtoToLicensePlateHistory(existingPlateHistoryDto);
+            if (!existingPlateHistory.Any() || existingPlateHistory.Last().LicensePlate != vehicleDto.CurrentLicensePlate)
             {
-                LicensePlate = vehicleDto.CurrentLicensePlate,
-                ChangedOn = DateTime.Now
-            };
-            if (licensePlates.Count == 0)
-            {
-                // Create new record of license plate history
-                vehicle.LicensePlates = [newLicensePlate];
-            }
-            else
-            {
-                vehicle.LicensePlates = [newLicensePlate];
-                if (licensePlates.Last().LicensePlate != vehicleDto.CurrentLicensePlate)
+                var newLicensePlate = new LicensePlateHistory
                 {
-                    // todo fix licenses plate history
-                    // Update record of license plate history
-                    //vehicle.LicensePlates = [newLicensePlate];
-                    //licensePlates.Add(newLicensePlate);
-                    //vehicle.LicensePlates = licensePlates;
-                    //vehicle.LicensePlates.Add(newLicensePlate);     // cannot be this way
-                }
+                    LicensePlate = vehicleDto.CurrentLicensePlate,
+                    ChangedOn = DateTime.Now,
+                    Vehicle = vehicle
+                };
+                existingPlateHistory.Add(newLicensePlate);
             }
+
+            vehicle.LicensePlates = existingPlateHistory;
+
             await _vehicleRepository.SaveVehicleAsync(vehicle);
 
             VehicleDetailDto updatedDto = VehicleDtoTransformer.TransformToDto(vehicle);
@@ -129,7 +123,11 @@ namespace TransportRegister.Server.Controllers
             {
                 return NotFound("Failed to update vehicle data.");
             }
-
+            updatedDto.LicensePlates = await _vehicleRepository.GetLicensePlateHistoryAsync(updatedDto.VehicleId);
+            
+            var vehicleTmp = await _vehicleRepository.GetVehicleByIdAsync(vehicle.VehicleId);
+            updatedDto.OfficialFullName = vehicleTmp.AddedByOfficial.FirstName + " " + vehicleTmp.AddedByOfficial.LastName;
+            
             return Ok(updatedDto);
         }
 

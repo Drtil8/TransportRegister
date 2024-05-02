@@ -43,8 +43,12 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
                 dto.WidthCM = vehicle.Width_CM;
                 dto.HeightCM = vehicle.Height_CM;
                 dto.LoadCapacityKG = vehicle.LoadCapacity_KG;
+                dto.OwnerId = vehicle.OwnerId;
+                dto.OwnerFullName = vehicle.Owner?.FirstName + " " + vehicle.Owner?.LastName;
+                dto.OfficialId = vehicle.OfficialId;
+                dto.OfficialFullName = vehicle.AddedByOfficial?.FirstName + " " + vehicle.AddedByOfficial?.LastName;
                 dto.ImageBase64 = vehicle.Image != null ? Convert.ToBase64String(vehicle.Image) : null;
-                dto.CurrentLicensePlate = vehicle.LicensePlates?.FirstOrDefault()?.LicensePlate;
+                dto.CurrentLicensePlate = vehicle.LicensePlates?.LastOrDefault()?.LicensePlate;
             }
             return dto;
         }

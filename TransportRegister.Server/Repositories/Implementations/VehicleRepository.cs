@@ -46,6 +46,8 @@ namespace TransportRegister.Server.Repositories.Implementations
         {
             return await _context.Vehicles
                 .Include(v => v.LicensePlates)
+                .Include(v => v.Owner)
+                .Include(v => v.AddedByOfficial)
                 .Include(v => v.Offences)
                 .Include(v => v.Thefts)
                 .FirstOrDefaultAsync(v => v.VehicleId == vehicleId);
@@ -59,10 +61,21 @@ namespace TransportRegister.Server.Repositories.Implementations
             }
             else
             {
-                var existingVehicle = await _context.Vehicles.FindAsync(vehicle.VehicleId);
+                var existingVehicle = await _context.Vehicles
+                    .Include(v => v.LicensePlates)
+                    .Include(v => v.Owner)
+                    .Include(v => v.AddedByOfficial)
+                    .FirstOrDefaultAsync(v => v.VehicleId == vehicle.VehicleId);
+
                 if (existingVehicle != null)
                 {
                     _context.Entry(existingVehicle).CurrentValues.SetValues(vehicle);
+
+                    existingVehicle.LicensePlates.Clear();
+                    foreach (var licensePlate in vehicle.LicensePlates)
+                    {
+                        existingVehicle.LicensePlates.Add(licensePlate);
+                    }
                 }
                 else
                 {
@@ -71,6 +84,7 @@ namespace TransportRegister.Server.Repositories.Implementations
             }
             await _context.SaveChangesAsync();
         }
+
 
         public async Task DeleteVehicleAsync(int vehicleId)
         {
