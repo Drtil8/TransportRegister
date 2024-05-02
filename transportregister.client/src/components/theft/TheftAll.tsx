@@ -17,7 +17,6 @@ export class TheftAll extends Component<object> {
           </Col>
         </Row>
         <Row>
-        {/*TODO*/}
           <TheftDatatable fetchUrl="/api/Thefts" fetchDataRef={this.fetchDataRef}></TheftDatatable>
         </Row>
       </div>

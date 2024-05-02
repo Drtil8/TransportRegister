@@ -93,7 +93,7 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
     }
   }
 
-  async handleDecline() { // TODO -> modal
+  async handleDecline() {
     console.log("Decline");
     try {
       const response = await fetch(`/api/Offence/${this.state.offenceDetail?.offenceId}/Decline`, {
@@ -165,13 +165,9 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
       }
       else if (!data.isApproved && data.isValid) {
         this.setState({ offenceStateText: "Rozpracován", offenceStateColor: "workedOn" });
-        if (this.context?.isOfficial) { // TODO -> here any official can process the offence
+        if (this.context?.isOfficial) {
           this.setState({ showButtons: true });
         }
-
-        //if (data.isResponsibleOfficial) {
-        //  this.setState({ showButtons: true });
-        //}
       }
       else {
         this.setState({ offenceStateText: "Neschválen", offenceStateColor: "no" });
@@ -204,20 +200,15 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
               {this.state.showButtons && (
                 <Col className="rightSide">
                   <Row>
-                    {/*TODO ->errors in dev mode in browser console*/}
                     <Col id="editButton">
-                      {/*<Tooltip title="Upravit přestupek">*/}
                       <IconButton color="primary" size="large" className="pt-0 pe-0" onClick={this.handleEditButton}>
                         <EditIcon fontSize="inherit" />
                       </IconButton>
-                      {/*</Tooltip>*/}
                     </Col>
                     <Col className="hidden" id="saveButton">
-                      {/*<Tooltip title="Uložit úpravy">*/}
                       <IconButton color="primary" size="large" className="pt-0 pe-0" onClick={this.handleSaveButton}>
                         <SaveIcon />
                       </IconButton>
-                      {/*</Tooltip>*/}
                     </Col>
                   </Row>
                 </Col>
@@ -347,16 +338,6 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
                     <dd>{offenceDetail.person.birthNumber}</dd>
                   </Col>
                 </Row>
-                {/*<Row>*/}
-                {/*  <Col>*/}
-                {/*    <dt>todo</dt>*/}
-                {/*    <dd>TODO</dd>*/}
-                {/*  </Col>*/}
-                {/*  <Col>*/}
-                {/*    <dt>todo</dt>*/}
-                {/*    <dd>TODO</dd>*/}
-                {/*  </Col>*/}
-                {/*</Row>*/}
               </Col>
               {offenceDetail.vehicle && (
                 <Col>

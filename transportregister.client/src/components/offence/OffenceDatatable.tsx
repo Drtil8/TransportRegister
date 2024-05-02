@@ -129,7 +129,6 @@ export const OffenceDatatable: React.FC<{
         accessorFn: (row) => row.vehicle?.licensePlate ?? 'N/A', // Access the plate property of the vehicle object
         header: 'SPZ',
       },
-      // TODO
     ],
     []
   );

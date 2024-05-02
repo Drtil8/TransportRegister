@@ -134,7 +134,7 @@ export const VehicleDatatable: React.FC<{
         accessorKey: 'vehicleType',
         header: 'Typ vozidla',
         filterVariant: 'select',
-        filterSelectOptions: ['Car', 'Motorcycle', 'Truck', 'Bus'],   // todo fix sorting and filtering
+        filterSelectOptions: ['Car', 'Motorcycle', 'Truck', 'Bus'],
       },
       {
         id: 'manufacturer',
@@ -164,8 +164,6 @@ export const VehicleDatatable: React.FC<{
     []
   );
 
-  // todo rework
-  // todo probably should perform on component mount
   useEffect(() => {
     const actionTableHeader = document.querySelector('th:last-child') as HTMLElement;
     const existingButton = actionTableHeader.querySelector('button');

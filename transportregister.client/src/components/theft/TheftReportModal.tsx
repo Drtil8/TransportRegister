@@ -15,8 +15,6 @@ const TheftReportModal: React.FC<TheftReportModalProps> = ({vehicleDetail }) => 
     reportTheftVehicleId: vehicleDetail?.vehicleId,
     reportTheftStolenOn: "",
     reportTheftDescription: "",
-    //reportTheftAddress: "todo",
-    //reportTheftPhotos: "todo",
     reportTheftVIN: vehicleDetail?.vin,
     reportTheftSPZ: vehicleDetail?.currentLicensePlate,
     reportTheftBrand: vehicleDetail?.manufacturer,
@@ -24,8 +22,6 @@ const TheftReportModal: React.FC<TheftReportModalProps> = ({vehicleDetail }) => 
     reportTheftOwnerId: vehicleDetail?.ownerId,
     reportTheftOwnerFirstName: vehicleDetail?.ownerFullName.split(" ")[0],
     reportTheftOwnerLastName: vehicleDetail?.ownerFullName.split(" ")[1],
-    //reportTheftOwnerBirthNumber: "fetch z detailu",
-    //reportTheftOwnerBirthDate: "fetch z detailu",
   }
   const [formData, setFormData] = useState(initialFormData);
   const toggle = () => setModal(!modal);

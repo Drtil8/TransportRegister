@@ -38,7 +38,7 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
       }
       const vehicle = await response.json();
       if (vehicle.imageBase64)
-        vehicle.imageBase64 = "data:image/jpeg;base64," + vehicle.imageBase64;    // todo set proper image extension
+        vehicle.imageBase64 = "data:image/jpeg;base64," + vehicle.imageBase64;
 
       let parsedVehicle: IVehicleDetail;
       switch (vehicle.vehicleType) {
@@ -167,7 +167,6 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
                     </Col>
                   </Row>
 
-                  {/* todo should be collapsable */}
                   <dt>Dodatečné informace:</dt>
                   <Row id="basicVehicleInfo">
                     <Col>
@@ -215,7 +214,6 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
 
           {licensePlatesTable}
 
-          {/* todo add officialFullName */}
           <Row>
             <Col className="col-3">
               <dt>Naposledy upraveno:</dt>

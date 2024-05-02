@@ -5,16 +5,12 @@ using TransportRegister.Server.DTOs.VehicleDTOs;
 
 namespace TransportRegister.Server.DTOs.OffenceDTOs
 {
-    /// <summary>
-    /// TODO - comment
-    /// </summary>
-    /// <author> Dominik Pop </author>
     public class OffenceDetailDto
     {
         public int OffenceId { get; set; }
         public DateTime ReportedOn { get; set; }
         public string Address { get; set; }
-        public string Type { get; set; } // TODO -> enum or new table in db
+        public string Type { get; set; }
         public bool IsValid { get; set; }
         public bool IsApproved { get; set; }
         public string Description { get; set; }

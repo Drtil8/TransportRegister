@@ -555,7 +555,7 @@ namespace TransportRegister.Server.Repositories.Implementations
         /// <param name="offenceId"> If of offence. </param>
         /// <param name="offenceDto"></param>
         /// <returns></returns>
-        public async Task<int> EditOffenceAsync(int offenceId, OffenceDetailDto offenceDto) // TODO
+        public async Task<int> EditOffenceAsync(int offenceId, OffenceDetailDto offenceDto)
         {
             var offence = await _context.Offences.FindAsync(offenceId);
             if (offence == null)
@@ -564,9 +564,9 @@ namespace TransportRegister.Server.Repositories.Implementations
             }
 
             offence.Description = offenceDto.Description;
-            //offence.PenaltyPoints = offenceDto.PenaltyPoints; // TODO
+            //offence.PenaltyPoints = offenceDto.PenaltyPoints;
             offence.Fine.Amount = offenceDto.Fine.Amount;
-            //offence.Fine.IsActive = !offenceDto.Fine.IsPaid; // TODO
+            //offence.Fine.IsActive = !offenceDto.Fine.IsPaid;
             return -1;
         }
 
