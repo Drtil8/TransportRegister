@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using System.Globalization;
 using TransportRegister.Server.Configurations;
 using TransportRegister.Server.Data;
@@ -59,10 +60,11 @@ namespace TransportRegister.Server
             var app = builder.Build();
 
             // Enable to apply changes to db in Azure hosting
-            //await using (AppDbContext db = app.Services.CreateScope().ServiceProvider.GetService<AppDbContext>())
+            //await using (AppDbContext context = app.Services.CreateScope().ServiceProvider.GetService<AppDbContext>())
             //{
-            //    //await db.Database.MigrateAsync();
-            //    //await DbSeeder.SeedAll(app.Services);
+            //    context.Database.EnsureDeleted();
+            //    await context.Database.MigrateAsync();
+            //    await DbSeeder.SeedAll(app.Services);
             //}
 
             // For seed data use cmd: dotnet run seed
