@@ -6,7 +6,6 @@ import { formatDate } from '../../common/DateFormatter';
 import ILicensePlateHistory from '../interfaces/ILicensePlateHistory';
 import AuthContext from '../../auth/AuthContext';
 import OffenceReportVehicleModal from '../offence/OffenceReportVehicleModal';
-import OffenceReportDriverModal from '../offence/OffenceReportDriverModal';
 import TheftReportModal from '../theft/TheftReportModal';
 
 interface IVehicleDetailProps {
