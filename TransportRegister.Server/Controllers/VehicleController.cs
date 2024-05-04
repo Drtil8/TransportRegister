@@ -73,7 +73,7 @@ namespace TransportRegister.Server.Controllers
         {
             Vehicle vehicle = await _vehicleRepository.GetVehicleByIdAsync(vehicleId);
             if (vehicle == null)
-                return NotFound();
+                return BadRequest();
 
             VehicleDetailDto vehicleDto = VehicleDtoTransformer.TransformToDto(vehicle);
             if (vehicleDto == null)
@@ -106,7 +106,7 @@ namespace TransportRegister.Server.Controllers
             }
 
             vehicle.OfficialId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            
+
             vehicle.Owner = await _personRepository.GetPersonByIdAsync(vehicleDto.OwnerId);
             if (vehicle.Owner is null)
                 return BadRequest("Owner not found.");
@@ -134,10 +134,10 @@ namespace TransportRegister.Server.Controllers
                 return NotFound("Failed to update vehicle data.");
             }
             updatedDto.LicensePlates = await _vehicleRepository.GetLicensePlateHistoryAsync(updatedDto.VehicleId);
-            
+
             var vehicleTmp = await _vehicleRepository.GetVehicleByIdAsync(vehicle.VehicleId);
             updatedDto.OfficialFullName = vehicleTmp.AddedByOfficial.FirstName + " " + vehicleTmp.AddedByOfficial.LastName;
-            
+
             return Ok(updatedDto);
         }
 
