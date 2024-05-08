@@ -1,4 +1,5 @@
 ﻿import { useEffect, useMemo, useState } from 'react';
+import { createRoot } from 'react-dom/client';
 import { useNavigate } from 'react-router-dom';
 import {
   MaterialReactTable, useMaterialReactTable,
@@ -12,6 +13,7 @@ import IDtFetchData from '../interfaces/datatables/IDtFetchData';
 import IVehicleListItem from '../interfaces/IVehicleListItem';
 import IDtParams from '../interfaces/datatables/IDtParams';
 import DetailIcon from '@mui/icons-material/VisibilityOutlined';
+import DtSearchButton from '../DtSearchButton';
 
 interface IAdvancedFeatures {
   enableSorting: boolean;
@@ -172,19 +174,22 @@ export const VehicleDatatable: React.FC<{
     []
   );
 
-  useEffect(() => {
+  const renderSearchButton = () => {
     const actionTableHeader = document.querySelector('th:last-child') as HTMLElement;
     const existingButton = actionTableHeader.querySelector('button');
     if (!existingButton) {
-      let searchButton = document.createElement('button');
-      searchButton.classList.add('btn');
-      searchButton.classList.add('btn-primary');
-      searchButton.textContent = 'Vyhledat';
-      searchButton.addEventListener('click', () => { fetchDataRef.current?.() });
-      actionTableHeader.appendChild(searchButton);
+      // Add search button
+      const buttonContainer = document.createElement('div');
+      actionTableHeader.appendChild(buttonContainer);
+      const root = createRoot(buttonContainer);
+      root.render(<DtSearchButton fetchDataRef={fetchDataRef} />);
     }
     const tableBody = document.querySelector('tbody') as HTMLElement;
     tableBody.style.display = 'none';
+  }
+
+  useEffect(() => {
+    renderSearchButton();
   }, []);
 
   const table = useMaterialReactTable({

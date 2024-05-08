@@ -1,5 +1,6 @@
 ﻿import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { createRoot } from 'react-dom/client';
 import {
   MaterialReactTable,
   useMaterialReactTable,
@@ -15,6 +16,13 @@ import IDtFetchData from './interfaces/datatables/IDtFetchData';
 import IDtParams from './interfaces/datatables/IDtParams';
 import DetailIcon from '@mui/icons-material/VisibilityOutlined';
 import IDriverSimpleList from './interfaces/IDriverSimpleList';
+import DtSearchButton from './DtSearchButton';
+
+interface IAdvancedFeatures {
+  enableSorting: boolean;
+  enablePagination: boolean;
+  enableTopToolbar: boolean;
+}
 
 export const DriverDatatable: React.FC<{
   fetchDataRef: React.MutableRefObject<IDtFetchData | null>,
@@ -37,6 +45,19 @@ export const DriverDatatable: React.FC<{
     pageIndex: 0,
     pageSize: 10,
   });
+
+  const disableFeaturesObj: IAdvancedFeatures = {
+    enableSorting: false,
+    enablePagination: false,
+    enableTopToolbar: false,
+  };
+  const enableFeaturesObj: IAdvancedFeatures = {
+    enableSorting: true,
+    enablePagination: true,
+    enableTopToolbar: true,
+  };
+  const [enableAdvancedFeatures, setEnableAdvancedFeatures] = useState<IAdvancedFeatures>(
+    autoFetch ? enableFeaturesObj : disableFeaturesObj);
 
   const fetchData = async () => {
     if (!data.length) {
@@ -63,8 +84,10 @@ export const DriverDatatable: React.FC<{
       });
       if (response.ok) {
         const json: IDtResult<IDriverSimpleList> = await response.json();
-        //if (json.data.length === 1)
-        //  navigate(`/Person/${json.data[0].id}`);
+        if (json.data.length === 1)
+          navigate(`/driver/${json.data[0].personId}`);
+        setEnableAdvancedFeatures(enableFeaturesObj);
+
         setData(json.data);
         setRowCount(json.totalRowCount);
       }
@@ -85,10 +108,9 @@ export const DriverDatatable: React.FC<{
   fetchDataRef.current = fetchData;
 
   useEffect(() => {
-    if (autoFetch)
+    if (autoFetch || enableAdvancedFeatures.enableSorting)
       fetchDataRef.current?.();
   }, [
-    columnFilters,
     pagination.pageIndex,
     pagination.pageSize,
     sorting,
@@ -124,9 +146,22 @@ export const DriverDatatable: React.FC<{
     []
   );
 
-  useEffect(() => {
+  const renderSearchButton = () => {
+    const actionTableHeader = document.querySelector('th:last-child') as HTMLElement;
+    const existingButton = actionTableHeader.querySelector('button');
+    if (!existingButton) {
+      // Add search button
+      const buttonContainer = document.createElement('div');
+      actionTableHeader.appendChild(buttonContainer);
+      const root = createRoot(buttonContainer);
+      root.render(<DtSearchButton fetchDataRef={fetchDataRef} />);
+    }
     const tableBody = document.querySelector('tbody') as HTMLElement;
     tableBody.style.display = 'none';
+  }
+
+  useEffect(() => {
+    renderSearchButton();
   }, []);
 
   const table = useMaterialReactTable({
@@ -147,9 +182,7 @@ export const DriverDatatable: React.FC<{
       showProgressBars: isRefetching,
       sorting,
     },
-    enableSorting: true,
-    enablePagination: true,
-    enableTopToolbar: false,
+    ...enableAdvancedFeatures,
     enableRowActions: true,       // Display row actions
     renderRowActions: ({ row }) => (
       <Box sx={{ display: 'flex', gap: '1rem' }}>
