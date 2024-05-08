@@ -2,12 +2,15 @@
 import { Button, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap';
 import { ICar, IVehicleDetail } from '../interfaces/IVehicleDetail';
 import { useNavigate } from 'react-router-dom';
+//import DriverDatatable from '../DriverDatatable';
+//import IDtFetchData from '../interfaces/datatables/IDtFetchData';
 
 export const VehicleForm: React.FC<{ fetchedVehicle: IVehicleDetail | null }> = ({ fetchedVehicle }) => {
   const [selectedVehicleType, setSelectedVehicleType] = useState<string>(
     fetchedVehicle?.vehicleType ?? 'Car');
   const [image, setImage] = useState<string | null>(null);
   const navigate = useNavigate();
+  //const fetchDataRef: React.MutableRefObject<IDtFetchData | null> = { current: null };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -258,6 +261,14 @@ export const VehicleForm: React.FC<{ fetchedVehicle: IVehicleDetail | null }> = 
             onChange={handleImageChange} />
         </FormGroup>
       </Row>
+
+      {/* todo */}
+      {/*<Row>*/}
+      {/*  <Label>*/}
+      {/*    <b>Výběr vlastníka vozidla</b>*/}
+      {/*  </Label>*/}
+      {/*  <DriverDatatable fetchDataRef={fetchDataRef} autoFetch={false} />*/}
+      {/*</Row>*/}
 
       <Row className="my-3">
         <Col className="d-flex justify-content-center">
