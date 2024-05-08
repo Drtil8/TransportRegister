@@ -3,7 +3,7 @@ import { Col, Row } from 'reactstrap';
 import IDtFetchData from './interfaces/datatables/IDtFetchData';
 import DriverDatatable from './DriverDatatable';
 
-export class DriverSearch extends Component<object> {
+export class DriverList extends Component<object> {
   constructor(props: object) {
     super(props);
   }
@@ -14,15 +14,15 @@ export class DriverSearch extends Component<object> {
       <div>
         <Row>
           <Col>
-            <h4>Vyhledat řidiče</h4>
+            <h4>Všichni řidiči</h4>
           </Col>
         </Row>
         <Row>
-          <DriverDatatable fetchDataRef={this.fetchDataRef} autoFetch={false} />
+          <DriverDatatable fetchDataRef={this.fetchDataRef} autoFetch={true} />
         </Row>
       </div>
     );
   }
 }
 
-export default DriverSearch;
+export default DriverList;

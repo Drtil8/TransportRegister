@@ -15,6 +15,7 @@ import { MyAccount } from "./components/user/MyAccount";
 import { TheftDetail } from "./components/theft/TheftDetail";
 import { TheftAll } from "./components/theft/TheftAll";
 import { TheftActive } from "./components/theft/TheftActive";
+import DriverList from "./components/DriverList";
 
 const AppRoutes = [
   {
@@ -27,6 +28,11 @@ const AppRoutes = [
     path: '/login',
     element: <Login />,
     isProtected: false
+  },
+  {
+    path: '/driverAll',
+    element: <DriverList />,
+    isProtected: true
   },
   {
     path: '/driverSearch',
