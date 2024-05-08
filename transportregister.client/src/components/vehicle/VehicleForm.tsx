@@ -102,13 +102,17 @@ export const VehicleForm: React.FC<{ fetchedVehicle: IVehicleDetail | null }> = 
         <Col>
           <FormGroup>
             <Label for="VIN">VIN:</Label>
-            <Input type="text" name="VIN" defaultValue={fetchedVehicle?.vin} required />
+            <Input type="text" name="VIN" defaultValue={fetchedVehicle?.vin}
+              pattern="[A-Z0-9]{17}" title="Zadejte prosím platný 17-znakový VIN kód, ve tvaru např. '1234567890ABCDEFG'"
+              required />
           </FormGroup>
         </Col>
         <Col>
           <FormGroup>
             <Label for="SPZ">SPZ:</Label>
-            <Input type="text" name="SPZ" defaultValue={fetchedVehicle?.currentLicensePlate} required />
+            <Input type="text" name="SPZ" defaultValue={fetchedVehicle?.currentLicensePlate}
+              pattern="[A-Z0-9]{3}\s?[A-Z0-9]{4}" title="Zadejte prosím platnou SPZ, ve tvaru např. '1A2 1234'"
+              required />
           </FormGroup>
         </Col>
       </Row>
