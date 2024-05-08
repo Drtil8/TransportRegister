@@ -34,7 +34,7 @@ export const TheftDatatable: React.FC<{
     stolenOn: 'equals',
     foundOn: 'equals'
   };
-  const dateFilterOptions = ['equals', 'lessThan', 'greaterThan'];
+  const dateFilterOptions = ['equals', 'lessThan', 'greaterThan'];    // try 'between'
   const [columnFilterOptions, setColumnFilterOptions] = useState<MRT_ColumnFilterFnsState>(initialFilterOptions);
   const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([]);
 
@@ -112,7 +112,6 @@ export const TheftDatatable: React.FC<{
         accessorFn: (row) => new Date(row.reportedOn),
         header: 'Nahlášeno',
         filterVariant: 'date',
-        filterFn: columnFilterOptions['reportedOn'],
         sortingFn: 'datetime',
         columnFilterModeOptions: dateFilterOptions,
         Cell: ({ cell }) => formatDate(cell.getValue<Date>()),
@@ -122,7 +121,6 @@ export const TheftDatatable: React.FC<{
         accessorFn: (row) => new Date(row.stolenOn),
         header: 'Ukradeno',
         filterVariant: 'date',
-        filterFn: columnFilterOptions['stolenOn'],
         sortingFn: 'datetime',
         columnFilterModeOptions: dateFilterOptions,
         Cell: ({ cell }) => formatDate(cell.getValue<Date>()),
@@ -132,7 +130,6 @@ export const TheftDatatable: React.FC<{
         accessorFn: (row) => row.foundOn !== null ? new Date(row.foundOn) : null,
         header: 'Nalezeno',
         filterVariant: 'date',
-        filterFn: columnFilterOptions['foundOn'],
         sortingFn: 'datetime',
         columnFilterModeOptions: dateFilterOptions,
         Cell: ({ cell }) => cell.getValue<Date>() !== null ? formatDate(cell!.getValue<Date>()) : 'Nenalezeno',
@@ -156,7 +153,7 @@ export const TheftDatatable: React.FC<{
         enableColumnFilterModes: false,
       },
     ],
-    [columnFilterOptions]
+    []
   );
 
   const goTo = (theftId: number) => {
@@ -182,6 +179,7 @@ export const TheftDatatable: React.FC<{
       showAlertBanner: isError,
       showProgressBars: isRefetching,
       sorting,
+      columnFilterFns: columnFilterOptions,
     },
     enableRowActions: true,        // Display row actions
     renderRowActions: ({ row }) =>
