@@ -14,12 +14,19 @@
         public string Dir => Desc ? "desc" : "asc";
     }
 
+    public class ColumnFilterOption
+    {
+        public string Id { get; set; }
+        public string Option { get; set; }
+    }
+
     public class DtParamsDto
     {
         public int Start { get; set; }
         public int Size { get; set; }
         public IEnumerable<ColumnFilter> Filters { get; set; }
         public IEnumerable<Sorting> Sorting { get; set; }
+        public IEnumerable<ColumnFilterOption> FilterOptions { get; set; }
 
         internal static DateTime ParseClientDate(string date, DateTime defaultValue)
         {

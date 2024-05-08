@@ -13,14 +13,12 @@ import IDtFetchData from '../interfaces/datatables/IDtFetchData';
 import IDtParams from '../interfaces/datatables/IDtParams';
 import IOffenceListItem from '../interfaces/IOffenceListItem';
 import DetailIcon from '@mui/icons-material/VisibilityOutlined';
-//import AuthContext from '../../auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 export const OffenceDatatable: React.FC<{
   fetchUrl: string,
   fetchDataRef: React.MutableRefObject<IDtFetchData | null>,
 }> = ({ fetchUrl, fetchDataRef }) => {
-  //const authContext = useContext(AuthContext);
   const navigate = useNavigate();
 
   // Data and fetching state
@@ -104,9 +102,9 @@ export const OffenceDatatable: React.FC<{
         id: 'reportedOn',
         accessorFn: (row) => new Date(row.reportedOn),
         header: 'Spáchán',
-        /*filterVariant: 'date',*/
-        //filterFn: 'greaterThan',
-        //sortingFn: 'datetime',
+        filterVariant: 'date',
+        filterFn: 'greaterThan',
+        sortingFn: 'datetime',
         Cell: ({ cell }) => formatDate(cell.getValue<Date>()),
       },
       {

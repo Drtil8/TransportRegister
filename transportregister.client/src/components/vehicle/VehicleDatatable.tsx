@@ -109,6 +109,13 @@ export const VehicleDatatable: React.FC<{
     sorting,
   ]);
 
+  const localizedVehicleTypeMap: { [key: string]: string } = {
+    'Car': 'Auto',
+    'Truck': 'Nákladní auto',
+    'Motorcycle': 'Motocykl',
+    'Bus': 'Autobus'
+  };
+
   const columns = useMemo<MRT_ColumnDef<IVehicleListItem>[]>(
     () => [
       {
@@ -134,7 +141,8 @@ export const VehicleDatatable: React.FC<{
         accessorKey: 'vehicleType',
         header: 'Typ vozidla',
         filterVariant: 'select',
-        filterSelectOptions: ['Car', 'Motorcycle', 'Truck', 'Bus'],
+        filterSelectOptions: Object.values(localizedVehicleTypeMap),
+        Cell: ({ cell }) => localizedVehicleTypeMap[cell.getValue<string>()],
       },
       {
         id: 'manufacturer',

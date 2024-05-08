@@ -1,4 +1,5 @@
 ﻿using System.Linq.Dynamic.Core;
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using TransportRegister.Server.Data;
 using TransportRegister.Server.DTOs.DatatableDTOs;
@@ -90,6 +91,33 @@ public class TheftRepository(AppDbContext context) : ITheftRepository
 
     ////////////////// FILTER //////////////////
 
+    private static IQueryable<TheftListItemDto> ApplyDateFilter(
+        IQueryable<TheftListItemDto> query, DtParamsDto dtParams, ColumnFilter filter)
+    {
+        string propertyName = filter.PropertyName;
+        DateTime selectedDate = DtParamsDto.ParseClientDate(filter.Value, DateTime.MinValue);
+        string filterOption = dtParams.FilterOptions.First(f => f.Id == filter.Id).Option;
+
+        var propertyInfo = typeof(TheftListItemDto).GetProperty(propertyName)
+            ?? throw new ArgumentException($"Property '{propertyName}' does not exist on type TheftListItemDto.");
+
+        // Create parameters expressions
+        var parameter = Expression.Parameter(typeof(TheftListItemDto), "t");
+        var property = Expression.Property(parameter, propertyName);
+        var selectedDateConstant = Expression.Constant(selectedDate);
+        Expression<Func<TheftListItemDto, bool>> predicate = filterOption switch
+        {
+            "equals" => Expression.Lambda<Func<TheftListItemDto, bool>>(
+                Expression.Equal(property, selectedDateConstant), parameter),
+            "greaterThan" => Expression.Lambda<Func<TheftListItemDto, bool>>(
+                Expression.GreaterThan(property, selectedDateConstant), parameter),
+            "lessThan" => Expression.Lambda<Func<TheftListItemDto, bool>>(
+                Expression.LessThan(property, selectedDateConstant), parameter),
+            _ => throw new ApplicationException("Unknown filter option"),
+        };
+        return query.Where(predicate);
+    }
+
     /// <summary>
     /// Apply filters to the query of thefts.
     /// </summary>
@@ -105,14 +133,11 @@ public class TheftRepository(AppDbContext context) : ITheftRepository
                 nameof(TheftListItemDto.TheftId) =>
                     query.Where(t => t.TheftId.ToString().StartsWith(filter.Value)),
                 nameof(TheftListItemDto.StolenOn) =>
-                    query.Where(t => t.StolenOn <= DtParamsDto
-                        .ParseClientDate(filter.Value, DateTime.MinValue)),
+                    ApplyDateFilter(query, dtParams, filter),
                 nameof(TheftListItemDto.ReportedOn) =>
-                    query.Where(t => t.ReportedOn <= DtParamsDto
-                        .ParseClientDate(filter.Value, DateTime.MinValue)),
+                    ApplyDateFilter(query, dtParams, filter),
                 nameof(TheftListItemDto.FoundOn) =>
-                    query.Where(t => t.FoundOn <= DtParamsDto
-                        .ParseClientDate(filter.Value, DateTime.MinValue)),
+                    ApplyDateFilter(query, dtParams, filter),
                 "Vehicle.LicensePlate" =>
                     query.Where(t => t.Vehicle.LicensePlate.StartsWith(filter.Value)),
                 "Vehicle.Manufacturer" =>

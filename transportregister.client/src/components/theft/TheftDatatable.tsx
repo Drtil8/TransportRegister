@@ -2,7 +2,7 @@
 import {
   MaterialReactTable, useMaterialReactTable,
   type MRT_ColumnDef, type MRT_ColumnFiltersState,
-  type MRT_PaginationState, type MRT_SortingState
+  type MRT_PaginationState, type MRT_SortingState, type MRT_ColumnFilterFnsState
 } from 'material-react-table';
 import { Box, Tooltip, IconButton } from '@mui/material';
 import { ColumnSort } from '@tanstack/react-table';
@@ -29,10 +29,19 @@ export const TheftDatatable: React.FC<{
   const [rowCount, setRowCount] = useState(0);
 
   // Table state
-  const initialColumnSort: ColumnSort = { id: 'theftId', desc: true };
+  const initialFilterOptions: MRT_ColumnFilterFnsState = {
+    reportedOn: 'equals',
+    stolenOn: 'equals',
+    foundOn: 'equals'
+  };
+  const dateFilterOptions = ['equals', 'lessThan', 'greaterThan'];
+  const [columnFilterOptions, setColumnFilterOptions] = useState<MRT_ColumnFilterFnsState>(initialFilterOptions);
   const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([]);
-  const [globalFilter, setGlobalFilter] = useState('');
+
+  const initialColumnSort: ColumnSort = { id: 'theftId', desc: true };
   const [sorting, setSorting] = useState<MRT_SortingState>([initialColumnSort]);
+
+  const [globalFilter, setGlobalFilter] = useState('');
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
     pageSize: 10,
@@ -52,7 +61,10 @@ export const TheftDatatable: React.FC<{
       size: pagination.pageSize,
       filters: columnFilters ?? [],
       sorting: sorting ?? [],
+      filterOptions: Object.entries(columnFilterOptions).map(([id, option]) => ({ id, option })),
     };
+    console.log(searchParams);
+
     try {
       const response = await fetch(fetchUrl, {
         method: 'POST',
@@ -84,8 +96,8 @@ export const TheftDatatable: React.FC<{
     pagination.pageIndex,
     pagination.pageSize,
     sorting,
+    columnFilterOptions
   ]);
-
 
   const columns = useMemo<MRT_ColumnDef<ITheftListItem>[]>(
     () => [
@@ -93,51 +105,58 @@ export const TheftDatatable: React.FC<{
         id: 'theftId',
         accessorKey: 'theftId',
         header: 'T.ID',
+        enableColumnFilterModes: false,
       },
       {
         id: 'reportedOn',
         accessorFn: (row) => new Date(row.reportedOn),
         header: 'Nahlášeno',
-        /*filterVariant: 'date',*/
-        //filterFn: 'greaterThan',
-        //sortingFn: 'datetime',
+        filterVariant: 'date',
+        filterFn: columnFilterOptions['reportedOn'],
+        sortingFn: 'datetime',
+        columnFilterModeOptions: dateFilterOptions,
         Cell: ({ cell }) => formatDate(cell.getValue<Date>()),
       },
       {
         id: 'stolenOn',
         accessorFn: (row) => new Date(row.stolenOn),
         header: 'Ukradeno',
-        /*filterVariant: 'date',*/
-        //filterFn: 'greaterThan',
-        //sortingFn: 'datetime',
+        filterVariant: 'date',
+        filterFn: columnFilterOptions['stolenOn'],
+        sortingFn: 'datetime',
+        columnFilterModeOptions: dateFilterOptions,
         Cell: ({ cell }) => formatDate(cell.getValue<Date>()),
       },
       {
         id: 'foundOn',
         accessorFn: (row) => row.foundOn !== null ? new Date(row.foundOn) : null,
         header: 'Nalezeno',
-        /*filterVariant: 'date',*/
-        //filterFn: 'greaterThan',
-        //sortingFn: 'datetime',
+        filterVariant: 'date',
+        filterFn: columnFilterOptions['foundOn'],
+        sortingFn: 'datetime',
+        columnFilterModeOptions: dateFilterOptions,
         Cell: ({ cell }) => cell.getValue<Date>() !== null ? formatDate(cell!.getValue<Date>()) : 'Nenalezeno',
       },
       {
         id: 'Vehicle.LicensePlate', // Use a unique id for the column
-        accessorFn: (row) => row.vehicle?.licensePlate ?? 'N/A', // Access the plate property of the vehicle object
+        accessorFn: (row) => row.vehicle?.licensePlate ?? 'N/A',
         header: 'SPZ',
+        enableColumnFilterModes: false,
       },
       {
-        id: 'Vehicle.Manufacturer', // Use a unique id for the column
-        accessorFn: (row) => row.vehicle?.manufacturer ?? 'N/A', // Access the plate property of the vehicle object
+        id: 'Vehicle.Manufacturer',
+        accessorFn: (row) => row.vehicle?.manufacturer ?? 'N/A',
         header: 'Výrobce',
+        enableColumnFilterModes: false,
       },
       {
-        id: 'Vehicle.Model', // Use a unique id for the column
-        accessorFn: (row) => row.vehicle?.model ?? 'N/A', // Access the plate property of the vehicle object
+        id: 'Vehicle.Model',
+        accessorFn: (row) => row.vehicle?.model ?? 'N/A',
         header: 'Model',
+        enableColumnFilterModes: false,
       },
     ],
-    []
+    [columnFilterOptions]
   );
 
   const goTo = (theftId: number) => {
@@ -146,12 +165,14 @@ export const TheftDatatable: React.FC<{
 
   const table = useMaterialReactTable({
     ...MUITableCommonOptions<ITheftListItem>(), // Add common and basic options
+    enableColumnFilterModes: true,
     columns,
     data,
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
+    onColumnFilterFnsChange: setColumnFilterOptions,
     rowCount,
     state: {
       columnFilters,
@@ -174,14 +195,15 @@ export const TheftDatatable: React.FC<{
       </Box>
     ),
     muiTableBodyRowProps: (table) => ({
-      className: (!table.row.original.isFound ? 'invalid-item' : (table.row.original.isReturned ? 'valid-item' : "workedOn-item")),
+      className: (!table.row.original.isFound ?
+        'invalid-item'
+        :
+        (table.row.original.isReturned ? 'valid-item' : "workedOn-item")),
     }),
   });
 
   return (
-    <>
-      <MaterialReactTable table={table} />
-    </>
+    <MaterialReactTable table={table} />
   );
 };
 
