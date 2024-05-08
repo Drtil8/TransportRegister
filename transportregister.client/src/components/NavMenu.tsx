@@ -109,7 +109,7 @@ export class NavMenu extends Component<object, NavMenuState> {
                     <DropdownMenu>
                       <DropdownItem header>Řidiči</DropdownItem>
                       <DropdownItem tag={Link} to="/driverSearch">Vyhledat</DropdownItem>
-                      {/*<DropdownItem>?Zobrazit včechny</DropdownItem>*/}
+                      <DropdownItem tag={Link} to="/driverAll">Zobrazit všechny</DropdownItem>
                     </DropdownMenu>
                   </Dropdown>
 
@@ -120,7 +120,7 @@ export class NavMenu extends Component<object, NavMenuState> {
                     <DropdownMenu>
                       <DropdownItem header>Vozidla</DropdownItem>
                       <DropdownItem tag={Link} to="/vehicle/search">Vyhledat</DropdownItem>
-                      <DropdownItem tag={Link} to="/">Zobrazit včechny</DropdownItem>
+                      <DropdownItem tag={Link} to="/">Zobrazit všechny</DropdownItem>
                       {this.context.isOfficial && (
                         <DropdownItem tag={Link} to="/vehicle/create">Registrovat vozidlo</DropdownItem>
                       )}
@@ -134,7 +134,7 @@ export class NavMenu extends Component<object, NavMenuState> {
                     <DropdownMenu>
                       <DropdownItem header>Přestupky</DropdownItem>
                       <DropdownItem tag={Link} to="/offencePending">Zobrazit nevyřešené</DropdownItem>
-                      <DropdownItem tag={Link} to="/offenceAll">Zobrazit včechny</DropdownItem>
+                      <DropdownItem tag={Link} to="/offenceAll">Zobrazit všechny</DropdownItem>
                     </DropdownMenu>
                   </Dropdown>
 
