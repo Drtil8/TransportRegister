@@ -104,15 +104,26 @@ public class TheftRepository(AppDbContext context) : ITheftRepository
         // Create parameters expressions
         var parameter = Expression.Parameter(typeof(TheftListItemDto), "t");
         var property = Expression.Property(parameter, propertyName);
-        var selectedDateConstant = Expression.Constant(selectedDate);
+        if (property.Type.IsGenericType && property.Type.GetGenericTypeDefinition() == typeof(Nullable<>))
+        {
+            // Check if the property is nullable, if so get the value property
+            property = Expression.Property(property, "Value");
+        }
+        var selectedDateConstant = Expression.Constant(selectedDate.Date);
         Expression<Func<TheftListItemDto, bool>> predicate = filterOption switch
         {
             "equals" => Expression.Lambda<Func<TheftListItemDto, bool>>(
-                Expression.Equal(property, selectedDateConstant), parameter),
+                Expression.Equal(
+                    Expression.Property(property, "Date"),
+                    Expression.Property(selectedDateConstant, "Date")), parameter),
             "greaterThan" => Expression.Lambda<Func<TheftListItemDto, bool>>(
-                Expression.GreaterThan(property, selectedDateConstant), parameter),
+                Expression.GreaterThan(
+                    Expression.Property(property, "Date"),
+                    Expression.Property(selectedDateConstant, "Date")), parameter),
             "lessThan" => Expression.Lambda<Func<TheftListItemDto, bool>>(
-                Expression.LessThan(property, selectedDateConstant), parameter),
+                Expression.LessThan(
+                    Expression.Property(property, "Date"),
+                    Expression.Property(selectedDateConstant, "Date")), parameter),
             _ => throw new ApplicationException("Unknown filter option"),
         };
         return query.Where(predicate);
