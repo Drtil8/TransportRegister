@@ -14,7 +14,7 @@ namespace TransportRegister.Server.Seeds
                 {
                     FirstName = "Jiøí",
                     LastName = "Kostka",
-                    BirthNumber = "0208124356",
+                    BirthNumber = "020812/4356",
                     DateOfBirth = DateOnly.Parse("2020-08-12"),
                     Address = new Address
                     {
@@ -33,7 +33,7 @@ namespace TransportRegister.Server.Seeds
                 {
                     FirstName = "Lucie",
                     LastName = "Kolarczyková",
-                    BirthNumber = "9456154103",
+                    BirthNumber = "945615/4103",
                     DateOfBirth = DateOnly.Parse("1994-06-15"),
                     Address = new Address
                     {
@@ -73,7 +73,7 @@ namespace TransportRegister.Server.Seeds
                 {
                     FirstName = "Andrea",
                     LastName = "Jehlíková",
-                    BirthNumber = "9453154103",
+                    BirthNumber = "945315/4103",
                     DateOfBirth = DateOnly.Parse("1994-03-15"),
                     Address = new Address
                     {
@@ -93,7 +93,7 @@ namespace TransportRegister.Server.Seeds
                 {
                     FirstName = "Marie",
                     LastName = "Rejtharová",
-                    BirthNumber = "0154248490",
+                    BirthNumber = "015424/8490",
                     DateOfBirth = DateOnly.Parse("2001-04-24"),
                     Address = new Address
                     {
@@ -113,7 +113,7 @@ namespace TransportRegister.Server.Seeds
                 {
                     FirstName = "Karel",
                     LastName = "Bušek",
-                    BirthNumber = "7708219629",
+                    BirthNumber = "770821/9629",
                     DateOfBirth = DateOnly.Parse("1977-08-21"),
                     Address = new Address
                     {
@@ -136,7 +136,7 @@ namespace TransportRegister.Server.Seeds
                 {
                     FirstName = "Petr",
                     LastName = "Jetmar",
-                    BirthNumber = "0109067739",
+                    BirthNumber = "010906/7739",
                     DateOfBirth = DateOnly.Parse("2001-09-06"),
                     DriversLicenseNumber ="ABC1234",
                     BadPoints = 5,
@@ -154,14 +154,14 @@ namespace TransportRegister.Server.Seeds
                         PostalCode = 12345
                     },
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = null,
+                    Image = File.ReadAllBytes("Seeds/Images/Drivers/ridicsky_prukaz2.jpg"),
                     Sex_Male = true
                 },
                 new()
                 {
                     FirstName = "Denisa",
                     LastName = "Macháèková",
-                    BirthNumber = "9460087670",
+                    BirthNumber = "946008/7670",
                     DateOfBirth = DateOnly.Parse("1994-10-08"),
                     DriversLicenseNumber ="DEF5678",
                     BadPoints = 3,
@@ -178,7 +178,7 @@ namespace TransportRegister.Server.Seeds
                         PostalCode = 54321
                     },
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = null,
+                    Image = File.ReadAllBytes("Seeds/Images/Drivers/ridicsky_prukaz1.png"),
                     Sex_Male = false
                 },
 
@@ -186,7 +186,7 @@ namespace TransportRegister.Server.Seeds
                 {
                     FirstName = "David",
                     LastName = "Páleník",
-                    BirthNumber = "9103157756",
+                    BirthNumber = "910315/7756",
                     DateOfBirth = DateOnly.Parse("1991-03-15"),
                     DriversLicenseNumber ="GHI5678",
                     BadPoints = 2,
@@ -203,7 +203,7 @@ namespace TransportRegister.Server.Seeds
                         PostalCode = 98765
                     },
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = null,
+                    Image = File.ReadAllBytes("Seeds/Images/Drivers/ridicsky_prukaz2.jpg"),
                     Sex_Male = true
                 },
 
@@ -211,7 +211,7 @@ namespace TransportRegister.Server.Seeds
                 {
                     FirstName = "Ludmila",
                     LastName = "Benková",
-                    BirthNumber = "7660052081",
+                    BirthNumber = "766005/2081",
                     DateOfBirth = DateOnly.Parse("1976-10-05"),
                     DriversLicenseNumber ="JKL5678",
                     BadPoints = 4,
@@ -228,7 +228,7 @@ namespace TransportRegister.Server.Seeds
                         PostalCode = 54321
                     },
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = null,
+                    Image = File.ReadAllBytes("Seeds/Images/Drivers/ridicsky_prukaz1.png"),
                     Sex_Male = false
                 },
 
@@ -236,7 +236,7 @@ namespace TransportRegister.Server.Seeds
                 {
                     FirstName = "Pavel",
                     LastName = "Labaè",
-                    BirthNumber = "8208126124",
+                    BirthNumber = "820812/6124",
                     DateOfBirth = DateOnly.Parse("1982-08-12"),
                     DriversLicenseNumber ="STU5678",
                     BadPoints = 1,
@@ -253,7 +253,7 @@ namespace TransportRegister.Server.Seeds
                         PostalCode = 54321
                     },
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = null,
+                    Image = File.ReadAllBytes("Seeds/Images/Drivers/ridicsky_prukaz2.jpg"),
                     Sex_Male = true
                 }
             };

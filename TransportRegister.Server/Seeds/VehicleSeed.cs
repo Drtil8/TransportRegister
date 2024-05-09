@@ -17,14 +17,14 @@ namespace TransportRegister.Server.Seeds
                     Horsepower_KW = 100.0,
                     EngineVolume_CM3 = 2000.0,
                     ManufacturedYear = 2020,
-                    Color = "Černá metalýza",
+                    Color = "Černá",
                     Length_CM = 437.0,
                     Width_CM = 179.0,
                     Height_CM = 143.0,
                     OwnerId = 6,
                     NumberOfDoors = 5,
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = null
+                    Image = File.ReadAllBytes("Seeds/Images/Cars/mazda_miata.jpg")
                 },
 
                 new()
@@ -42,7 +42,7 @@ namespace TransportRegister.Server.Seeds
                     OwnerId = 7,
                     NumberOfDoors = 4,
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = null
+                    Image = File.ReadAllBytes("Seeds/Images/Cars/mazda_miata.jpg")
                 },
 
                 new()
@@ -60,7 +60,7 @@ namespace TransportRegister.Server.Seeds
                     OwnerId = 8,
                     NumberOfDoors = 4,
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = null
+                    Image = File.ReadAllBytes("Seeds/Images/Cars/mazda_miata.jpg")
                 }
             };
 
@@ -74,14 +74,14 @@ namespace TransportRegister.Server.Seeds
                     Horsepower_KW = 35.0,
                     EngineVolume_CM3 = 471.0,
                     ManufacturedYear = 2023,
-                    Color = "ČernÁ",
+                    Color = "Černá",
                     Length_CM = 208.0,
                     Width_CM = 80.0,
                     Height_CM = 106.0,
                     OwnerId = 9,
                     Constraints = "<50cm3",
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = null
+                    Image = File.ReadAllBytes("Seeds/Images/Cars/mazda_miata.jpg")
                 },
 
                 new()
@@ -99,7 +99,7 @@ namespace TransportRegister.Server.Seeds
                     OwnerId = 10,
                     Constraints = "<100cm3>",
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = null
+                    Image = File.ReadAllBytes("Seeds/Images/Cars/mazda_miata.jpg")
                 },
 
                 new()
@@ -117,7 +117,7 @@ namespace TransportRegister.Server.Seeds
                     OwnerId = 11,
                     Constraints = "žádné",
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = null
+                    Image = File.ReadAllBytes("Seeds/Images/Cars/mazda_miata.jpg")
                 }
             };
 
@@ -139,7 +139,7 @@ namespace TransportRegister.Server.Seeds
                     SeatCapacity = 70,
                     StandingCapacity = 100,
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = null
+                    Image = File.ReadAllBytes("Seeds/Images/Cars/mazda_miata.jpg")
                 },
 
                 new()
@@ -158,7 +158,7 @@ namespace TransportRegister.Server.Seeds
                     SeatCapacity = 60,
                     StandingCapacity = 80,
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = null
+                    Image = File.ReadAllBytes("Seeds/Images/Cars/mazda_miata.jpg")
                 },
 
                 new()
@@ -177,7 +177,7 @@ namespace TransportRegister.Server.Seeds
                     SeatCapacity = 45,
                     StandingCapacity = 60,
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = null
+                    Image = File.ReadAllBytes("Seeds/Images/Cars/mazda_miata.jpg")
                 }
             };
 
@@ -197,7 +197,7 @@ namespace TransportRegister.Server.Seeds
                     Height_CM = 200.0,
                     OwnerId = 9,
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = null
+                    Image = File.ReadAllBytes("Seeds/Images/Cars/mazda_miata.jpg")
                 },
 
                 new()
@@ -214,7 +214,7 @@ namespace TransportRegister.Server.Seeds
                     Height_CM = 280.0,
                     OwnerId = 10,
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = null
+                    Image = File.ReadAllBytes("Seeds/Images/Cars/mazda_miata.jpg")
                 },
 
                 new()
@@ -231,7 +231,7 @@ namespace TransportRegister.Server.Seeds
                     Height_CM = 290.0,
                     OwnerId = 11,
                     OfficialId = "d6f46418-2c21-43f8-b167-162fb5e3a999",
-                    Image = null
+                    Image = File.ReadAllBytes("Seeds/Images/Cars/mazda_miata.jpg")
                 }
             };
 

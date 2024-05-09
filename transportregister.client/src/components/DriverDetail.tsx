@@ -260,7 +260,7 @@ export class DriverDetail extends Component<object, DriverDetailState> {
                 infoButtons
               )
               :
-              (this.context?.isOfficial && 
+              (this.context?.isOfficial &&
                 <DriverCreateModal person={person as IPerson}></DriverCreateModal>
               )
             }
@@ -326,18 +326,12 @@ export class DriverDetail extends Component<object, DriverDetailState> {
                         </Col>
                         {driver.hasSuspendedLicense && (
                           <Col sm="6" lg="4">
-                            <dt>Řidický púrůkaz zadržen do:</dt>
+                            <dt>Řidický průkaz zadržen do:</dt>
                             <dd>{formatDate(driver.drivingSuspendedUntil!)}</dd>
                           </Col>
                         )}
                       </Row>
                     )}
-                    <h1></h1>
-                    <div className="licenceImage">
-                      {(person?.imageBase64 != undefined) && (
-                        <img src={imgsrcString} alt={`Fotka: ${person?.firstName} ${person?.lastName}`} />
-                      )}
-                    </div>
                   </Col>
                 </Row>
               </TabPane>
@@ -410,6 +404,20 @@ export class DriverDetail extends Component<object, DriverDetailState> {
                         ))}
                         <br></br>
                       </Form>
+                    </Col>
+                    <Col>
+                      {(person?.imageBase64 != undefined) && (
+                        <>
+                          <br></br>
+                          <dt>Řidičský průkaz</dt>
+                          <img
+                            src={imgsrcString}
+                            alt={`Fotka: ${person?.firstName} ${person?.lastName}`}
+                            className="driversLicenseImage"
+                          />
+                        </>
+                      )}
+
                     </Col>
                   </Row>
                 </TabPane>

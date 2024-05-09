@@ -11,12 +11,12 @@ namespace TransportRegister.Server.Seeds
             {
                 new()
                 {
-                    Image = null,
+                    Image = File.ReadAllBytes("Seeds/Images/Offences/istockphoto-471089928-612x612.jpg"),
                     OffenceId = 2
                 },
                 new()
                 {
-                    Image = null,
+                    Image = File.ReadAllBytes("Seeds/Images/Offences/prestupek-parkovani-praha-policie.jpg"),
                     OffenceId = 2
                 }
             };
