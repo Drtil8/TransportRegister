@@ -25,6 +25,8 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
         public string OwnerFullName { get; set; }
         public string OfficialId { get; set; }
         public string OfficialFullName { get; set; }
+        public bool CurrentlyStolen { get; set; }
+        public int? CurrentlyStolenId { get; set; }
         public ICollection<LicensePlateHistoryDto> LicensePlates { get; set; }
     }
 

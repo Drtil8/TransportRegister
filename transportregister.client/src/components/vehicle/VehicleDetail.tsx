@@ -77,6 +77,7 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
       }
       this.setState({ vehicleDetail: parsedVehicle });
       this.fetchOffences(parsedVehicle.ownerId);
+      console.log(vehicle.currentlyStolen);
     }
     catch (error) {
       console.error('Error fetching vehicle data:', error);
@@ -164,16 +165,22 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
         <>
           <Row className="mb-3">
             <Col xs="12" sm="6">
-              <h4>Detail {localizedVehicleTypeMap[vehicleDetail.vehicleType]}</h4>
+              <h4>Detail {localizedVehicleTypeMap[vehicleDetail.vehicleType]}
+                {vehicleDetail.currentlyStolen && (<b className="no"> - Aktuálně ukradené</b>)}</h4>
             </Col>
             {this.context?.isOfficial && (
               <Col className="d-flex justify-content-end">
+                {vehicleDetail.currentlyStolen && (
+                  <Button tag={Link} to={`/theft/${vehicleDetail.currentlyStolenId}`} color="secondary" className="me-2">
+                    Zobrazit detail krádeže
+                  </Button>
+                )}
                 <Button tag={Link} to={`/vehicle/edit/${vehicleDetail.vehicleId}`} color="primary">
                   Upravit vozidlo
                 </Button>
               </Col>
             )}
-            {this.context?.isOfficer && (
+            {this.context?.isOfficer && !vehicleDetail.currentlyStolen && (
               <Col className="d-flex justify-content-center justify-content-sm-end me-sm-2" >
                 <OffenceReportVehicleModal vehicleDetail={vehicleDetail} />
                 <TheftReportModal vehicleDetail={vehicleDetail}></TheftReportModal>
