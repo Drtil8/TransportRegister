@@ -37,6 +37,7 @@ namespace TransportRegister.Server.DTOs.PersonDTOs
             personDto.LastName = person.LastName;
             personDto.BirthNumber = person.BirthNumber;
             personDto.Sex_Male = person.Sex_Male;
+            personDto.DateOfBirth = person.DateOfBirth;
             personDto.ImageBase64 = person.Image != null ? Convert.ToBase64String(person.Image) : null;
             personDto.OfficialId = person.OfficialId;
             personDto.PersonType = person.GetType().Name;
