@@ -183,7 +183,7 @@ namespace TransportRegister.Server.Controllers
         /// <param name="offenceDto"> Offence containing information to be updated. </param>
         /// <returns> Returns if action was successful or not. </returns>
         [HttpPut("{id}")]
-        [Authorize(Roles = "Official")]
+        //[Authorize(Roles = "Official")]
         public async Task<IActionResult> PutOffence(int id, OffenceCreateDto offenceDto)
         {
             var offence = await _context.Offences.Where(of => of.OffenceId == id).Include(of => of.Fine).FirstOrDefaultAsync();
@@ -197,6 +197,7 @@ namespace TransportRegister.Server.Controllers
             {
                 offence.Fine.Amount = offenceDto.FineAmount;
             }
+            offence.Description = offenceDto.Description;
 
             await _context.SaveChangesAsync();
             return Ok();

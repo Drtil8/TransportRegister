@@ -1,6 +1,6 @@
 ﻿import { Component, ContextType } from "react";
 import ITheftDetail from "../interfaces/ITheftDetail";
-import { Alert, Button, Col, Row } from "reactstrap";
+import { Alert, Button, Col, Input, Row } from "reactstrap";
 import { IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
@@ -42,6 +42,8 @@ export class TheftDetail extends Component<object, ITheftDetailProps> {
     this.setAlert = this.setAlert.bind(this);
     this.setFound = this.setFound.bind(this);
     this.setReturn = this.setReturn.bind(this);
+    this.handleEditButton = this.handleEditButton.bind(this);
+    this.handleSaveButton = this.handleSaveButton.bind(this);
   }
 
   toggleAlert() {
@@ -54,6 +56,35 @@ export class TheftDetail extends Component<object, ITheftDetailProps> {
     this.setState({ alertTitle: title, alertMessage: message });
     this.setState({ doSomething: doSomething });
     this.toggleAlert();
+  }
+
+  async handleSaveButton() {
+    const description = (document.getElementById("theftDetailDescription") as HTMLInputElement).value;
+    const id = this.state.theftDetail?.theftId;
+
+    try {
+      const response = await fetch(`/api/Theft/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          //theftId: this.state.theftDetail?.theftId,
+          description: description
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    }
+    catch (error) {
+      console.error(error);
+    }
+
+    document.getElementById("editButton")?.classList.remove("hidden");
+    document.getElementById("saveButton")?.classList.add("hidden");
+    document.getElementById("theftDetailDescription")?.setAttribute("readonly", "true");
   }
 
   async setFound() {
@@ -136,6 +167,12 @@ export class TheftDetail extends Component<object, ITheftDetailProps> {
     }
   }
 
+  handleEditButton() {
+    document.getElementById("editButton")?.classList.add("hidden");
+    document.getElementById("saveButton")?.classList.remove("hidden");
+    document.getElementById("theftDetailDescription")?.removeAttribute("readonly");
+  }
+
   componentDidMount() {
     this.populateTheftData();
   }
@@ -159,14 +196,14 @@ export class TheftDetail extends Component<object, ITheftDetailProps> {
               <Col className="rightSide col-2">
                 <Row>
                   <Col id="editButton">
-                    {/*<IconButton color="primary" size="large" onClick={this.handleEditButton}>*/}
-                    <IconButton color="primary" size="large">
+                    <IconButton color="primary" size="large" onClick={this.handleEditButton}>
+                    {/*<IconButton color="primary" size="large">*/}
                       <EditIcon fontSize="inherit" />
                     </IconButton>
                   </Col>
                   <Col className="hidden" id="saveButton">
-                    <IconButton color="primary" size="large">
-                      {/*<IconButton color="primary" size="large" onClick={this.handleSaveButton}>*/}
+                    {/*<IconButton color="primary" size="large">*/}
+                      <IconButton color="primary" size="large" onClick={this.handleSaveButton}>
                       <SaveIcon />
                     </IconButton>
                   </Col>
@@ -177,7 +214,10 @@ export class TheftDetail extends Component<object, ITheftDetailProps> {
               <dl>
                 <Row>
                   <dt>Popis:</dt>
-                  <dd><textarea readOnly value={theftDetail.description ? theftDetail.description : ""} className="form-control" /></dd>
+                  <dd>
+                    <Input id="theftDetailDescription" readOnly defaultValue={theftDetail.description ? theftDetail.description : ""} type="textarea"></Input>
+                    {/*<textarea id="theftDetailDescription" readOnly value={theftDetail.description ? theftDetail.description : ""} className="form-control" />*/}
+                  </dd>
                 </Row>
                 <Row>
                   <Col>
@@ -297,7 +337,6 @@ export class TheftDetail extends Component<object, ITheftDetailProps> {
                 <Row>
                   <hr />
                 <Col className="rightSide pe-0">
-                  {/*<Button color="success" className="me-2" onClick={this.setAlert("Nahlášení nálezu", "sdadads", this.handleFound)}>Nahlásit nález v2</Button>*/}
                     <Button color="success" className="me-2" onClick={this.handleFound}>Nahlásit nález</Button>
                   </Col>
                 </Row>

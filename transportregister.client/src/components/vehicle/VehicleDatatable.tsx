@@ -139,14 +139,6 @@ export const VehicleDatatable: React.FC<{
         filterFn: 'startsWith',
       },
       {
-        id: 'vehicleType',
-        accessorKey: 'vehicleType',
-        header: 'Typ vozidla',
-        filterVariant: 'select',
-        filterSelectOptions: Object.values(localizedVehicleTypeMap),
-        Cell: ({ cell }) => localizedVehicleTypeMap[cell.getValue<string>()],
-      },
-      {
         id: 'manufacturer',
         accessorKey: 'manufacturer',
         header: 'Výrobce',
@@ -170,9 +162,21 @@ export const VehicleDatatable: React.FC<{
         header: 'Rok výroby',
         filterFn: 'startsWith',
       },
+      {
+        id: 'vehicleType',
+        accessorKey: 'vehicleType',
+        header: 'Typ vozidla',
+        filterVariant: 'select',
+        filterSelectOptions: Object.values(localizedVehicleTypeMap),
+        Cell: ({ cell }) => localizedVehicleTypeMap[cell.getValue<string>()],
+      },
     ],
     []
   );
+
+  const onSearchClick = () => {
+    fetchDataRef.current?.();
+  }
 
   const renderSearchButton = () => {
     const actionTableHeader = document.querySelector('th:last-child') as HTMLElement;
@@ -182,7 +186,7 @@ export const VehicleDatatable: React.FC<{
       const buttonContainer = document.createElement('div');
       actionTableHeader.appendChild(buttonContainer);
       const root = createRoot(buttonContainer);
-      root.render(<DtSearchButton fetchDataRef={fetchDataRef} />);
+      root.render(<DtSearchButton onSearchClick={onSearchClick} />);
     }
     const tableBody = document.querySelector('tbody') as HTMLElement;
     tableBody.style.display = 'none';

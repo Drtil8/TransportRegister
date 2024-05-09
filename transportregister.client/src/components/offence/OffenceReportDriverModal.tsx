@@ -231,6 +231,7 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = ({ per
     }
     else {
       setFormData({ ...formData, [name]: value });
+      console.log("hiii");
     }
 
     if (name === "reportDriverType") {
