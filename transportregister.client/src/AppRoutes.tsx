@@ -65,7 +65,7 @@ const AppRoutes = [
     isProtected: true
   },
   {
-    path: '/vehicle/all',
+    path: '/vehicles',
     element: <VehicleList />,
     isProtected: true,
   },

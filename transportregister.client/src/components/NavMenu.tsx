@@ -120,7 +120,7 @@ export class NavMenu extends Component<object, NavMenuState> {
                     <DropdownMenu>
                       <DropdownItem header>Vozidla</DropdownItem>
                       <DropdownItem tag={Link} to="/vehicle/search">Vyhledat</DropdownItem>
-                      <DropdownItem tag={Link} to="/">Zobrazit všechny</DropdownItem>
+                      <DropdownItem tag={Link} to="/vehicles">Zobrazit všechny</DropdownItem>
                       {this.context.isOfficial && (
                         <DropdownItem tag={Link} to="/vehicle/create">Registrovat vozidlo</DropdownItem>
                       )}
