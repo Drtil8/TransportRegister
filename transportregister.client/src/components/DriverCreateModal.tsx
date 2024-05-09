@@ -73,7 +73,7 @@ const DriverCreateModal: React.FC<DriverCreateModalProps> = ({ person }) => {
       if (response.ok) {
         console.log("Driver licences ok");
         toggle();
-        navigate("/driver/" + person.personId);
+        window.location.reload();
       }
       else {
         console.error("Driver licences failed");
