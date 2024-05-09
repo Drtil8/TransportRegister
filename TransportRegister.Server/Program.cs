@@ -62,7 +62,7 @@ namespace TransportRegister.Server
             // Enable to apply changes to db in Azure hosting
             //await using (AppDbContext context = app.Services.CreateScope().ServiceProvider.GetService<AppDbContext>())
             //{
-            //    context.Database.EnsureDeleted();
+            //    await context.Database.EnsureDeletedAsync();
             //    await context.Database.MigrateAsync();
             //    await DbSeeder.SeedAll(app.Services);
             //}
@@ -81,7 +81,7 @@ namespace TransportRegister.Server
                     // For database delete use cmd: dotnet run delete-db
                     using var scope = app.Services.CreateScope();
                     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                    DbCleaner.DeleteEntireDb(dbContext);
+                    await DbCleaner.DeleteEntireDb(dbContext);
                     return;
                 }
             }

@@ -8,8 +8,8 @@ public static class DbCleaner
     /// Deletes the entire database
     /// </summary>
     /// <param name="context">DbContext</param>
-    public static void DeleteEntireDb(AppDbContext context)
+    public static async Task DeleteEntireDb(AppDbContext context)
     {
-        context.Database.EnsureDeleted();
+        await context.Database.EnsureDeletedAsync();
     }
 }
