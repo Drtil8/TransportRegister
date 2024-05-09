@@ -15,6 +15,7 @@ import AuthContext from '../auth/AuthContext';
 interface DriverDetailState {
   activeTab: string;
   personDetail: IPerson | null;
+  offences: IOffenceListSimple[];
   form: IDriverFormState;
   hadLicenses: string[];
 }
@@ -27,6 +28,7 @@ export class DriverDetail extends Component<object, DriverDetailState> {
     this.state = {
       activeTab: 'detail',
       personDetail: null,
+      offences: [],
       hadLicenses: [],
       form: {
         driversLicenseNumber: '0',
@@ -103,6 +105,19 @@ export class DriverDetail extends Component<object, DriverDetailState> {
     catch (error) {
       console.error('Error fetching person data:', error);
     }
+
+    try {
+      const response = await fetch(`/api/Persons/${id}/CommitedOffences`);
+      if (!response.ok) {
+        throw new Error(`Failed to load CommitedOffences.`);
+      }
+      const jsonOffenses = await response.json();
+      let offList = jsonOffenses as IOffenceListSimple[];
+      this.setState({ offences: offList });
+    }
+    catch (error) {
+      console.error('Error fetching offenses data:', error);
+    }
   }
 
   handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -140,7 +155,7 @@ export class DriverDetail extends Component<object, DriverDetailState> {
         disableInput: !prevState.form.disableInput
       }
     }));
-    this.setState({activeTab : 'license'});
+    this.setState({ activeTab: 'license' });
   }
 
   putPersonData = async () => {
@@ -184,32 +199,6 @@ export class DriverDetail extends Component<object, DriverDetailState> {
     const form = this.state.form;
     const person = this.state.personDetail;
     const isDriver: boolean = (person != null && person.personType == 'Driver');
-
-
-    const hardoffences: IOffenceListSimple[] = [
-      {
-        offenceId: 1,
-        reportedOn: new Date('2024-04-30'),
-        description: 'Speeding',
-        penaltyPoints: 3,
-        fineAmount: 100
-      },
-      {
-        offenceId: 2,
-        reportedOn: new Date('2024-04-25'),
-        description: 'Running a red light',
-        penaltyPoints: 5,
-        fineAmount: 150
-      },
-      {
-        offenceId: 3,
-        reportedOn: new Date('2024-04-20'),
-        description: 'Illegal parking',
-        penaltyPoints: 2,
-        fineAmount: 50
-      }
-    ];
-
 
     let infoButtons =
       <div>
@@ -276,7 +265,7 @@ export class DriverDetail extends Component<object, DriverDetailState> {
           </Col>
           <Col className="rightSide">
             {isDriver ?
-              (this.context?.isOfficer ? 
+              (this.context?.isOfficer ?
                 <OffenceReportDriverModal personDetail={this.state.personDetail}></OffenceReportDriverModal>
                 :
                 infoButtons
@@ -296,10 +285,9 @@ export class DriverDetail extends Component<object, DriverDetailState> {
                 (<NavItem>
                   <NavLink active={activeTab === 'license'} onClick={() => this.toggleTab('license')}> Řidičský průkaz </NavLink>
                 </NavItem>)}
-              {isDriver &&
-                (<NavItem>
-                  <NavLink active={activeTab === 'offences'} onClick={() => this.toggleTab('offences')}> Přestupky </NavLink>
-                </NavItem>)}
+              <NavItem>
+                <NavLink active={activeTab === 'offences'} onClick={() => this.toggleTab('offences')}> Přestupky </NavLink>
+              </NavItem>
               <NavItem>
                 <NavLink active={activeTab === 'detail'} onClick={() => this.toggleTab('detail')}> Osobní informace </NavLink>
               </NavItem>
@@ -348,42 +336,40 @@ export class DriverDetail extends Component<object, DriverDetailState> {
                   </Col>
                 </Row>
               </TabPane>
-              {isDriver && (
-                <TabPane tabId="offences">
-                  <Row>
-                    <Col>
-                      <br></br>
-                      <h5>Přestupky</h5>
-                      <Table>
-                        <thead>
-                          <tr>
-                            <th>ID</th>
-                            <th>Přestupek</th>
-                            <th>Body</th>
-                            <th>Pokuta</th>
-                            <th>Zobrazit</th>
+              <TabPane tabId="offences">
+                <Row>
+                  <Col>
+                    <br></br>
+                    <h5>Přestupky</h5>
+                    <Table>
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Přestupek</th>
+                          <th>Body</th>
+                          <th>Pokuta</th>
+                          <th>Zobrazit</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {this.state.offences!.map((offence: IOffenceListSimple) => (
+                          <tr key={offence.offenceId}>
+                            <td>{offence.offenceId}</td>
+                            <td>{offence.description}</td>
+                            <td>{offence.penaltyPoints}</td>
+                            <td>{offence.fineAmount} Kč</td>
+                            <td>
+                              <Link to={`/offence/${offence.offenceId}`}>
+                                <DetailIcon />
+                              </Link>
+                            </td>
                           </tr>
-                        </thead>
-                        <tbody>
-                          {hardoffences!.map((offence: IOffenceListSimple) => (
-                            <tr key={offence.offenceId}>
-                              <td>{offence.offenceId}</td>
-                              <td>{offence.description}</td>
-                              <td>{offence.penaltyPoints}</td>
-                              <td>{offence.fineAmount} Kč</td>
-                              <td>
-                                <Link to={`/offence/${offence.offenceId}`}>
-                                  <DetailIcon />
-                                </Link>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </Table>
-                    </Col>
-                  </Row>
-                </TabPane>
-              )}
+                        ))}
+                      </tbody>
+                    </Table>
+                  </Col>
+                </Row>
+              </TabPane>
               {isDriver && (
                 <TabPane tabId="license">
                   <Row>
