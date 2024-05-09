@@ -199,6 +199,7 @@ export class DriverDetail extends Component<object, DriverDetailState> {
     const form = this.state.form;
     const person = this.state.personDetail;
     const isDriver: boolean = (person != null && person.personType == 'Driver');
+    const driver = person as IDriver;
 
     let infoButtons =
       <div>
@@ -329,6 +330,20 @@ export class DriverDetail extends Component<object, DriverDetailState> {
                         <dd>{person?.birthNumber}</dd>
                       </Col>
                     </Row>
+                    {isDriver && (
+                      <Row>
+                        <Col sm="6" lg="8">
+                          <dt>Trestné body</dt>
+                          <dd>{driver.badPoints}</dd>
+                        </Col>
+                        {driver.hasSuspendedLicense && (
+                          <Col sm="6" lg="4">
+                            <dt>Řidický púrůkaz zadržen do:</dt>
+                            <dd>{formatDate(driver.drivingSuspendedUntil!)}</dd>
+                          </Col>
+                        )}
+                      </Row>
+                    )}
                     <h1></h1>
                     <div className="licenceImage">
                       {(person?.imageBase64 != undefined) && (
@@ -377,6 +392,12 @@ export class DriverDetail extends Component<object, DriverDetailState> {
                   <Row>
                     <Col>
                       <br></br>
+                      {driver.hasSuspendedLicense && (
+                        <Col sm="6" lg="4">
+                          <dt>Řidický púrůkaz zadržen do:</dt>
+                          <dd>{formatDate(driver.drivingSuspendedUntil!)}</dd>
+                        </Col>
+                      )}
                       <dt>Číslo řidičského průkazu:</dt>
                       <dd>{form.driversLicenseNumber}</dd>
                       <Form id="licenceForm">
