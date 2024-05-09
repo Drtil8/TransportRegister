@@ -176,3 +176,61 @@ label {
 ul li.nav-item {
     cursor: pointer;
 }
+
+.mainRow {
+    margin-top: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+    .mainRow a {
+        text-decoration: none;
+        color: black;
+    }
+
+.mainCard:hover {
+    transform: scale(1.05);
+    transition: transform 0.6s ease-in-out;
+    color: cornflowerblue;
+}
+
+.mainCol-left {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.mainCol-right {
+    margin-right: 1rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.mainCard {
+    width: 325px;
+    min-height: 150px;
+    max-height: 300px;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    margin-bottom: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .mainCol-right {
+        justify-content: center;
+        margin-right: 0;
+    }
+
+    .mainCol-left {
+        justify-content: center;
+    }
+
+    .mainCard {
+        margin-bottom: 2rem;
+    }
+}

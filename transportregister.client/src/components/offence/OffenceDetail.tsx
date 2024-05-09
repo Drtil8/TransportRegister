@@ -9,6 +9,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import DetailIcon from '@mui/icons-material/VisibilityOutlined';
 import { Link } from 'react-router-dom';
 import ImageGallery from '../ImageGallery';
+import AlertModal from '../AlertModal';
 
 interface IOffenceDetailProps {
   offenceDetail: IOffenceDetail | null;
@@ -18,6 +19,10 @@ interface IOffenceDetailProps {
   editMode: boolean;
   editPenaltyPoints: number;
   editFineAmount: number;
+  showAlert: boolean;
+  alertTitle: string;
+  alertMessage: string;
+  doSomething: () => void;
 }
 
 export class OffenceDetail extends Component<object, IOffenceDetailProps> {
@@ -33,13 +38,32 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
       showButtons: false,
       editMode: false,
       editFineAmount: 0,
-      editPenaltyPoints: 0
+      editPenaltyPoints: 0,
+      showAlert: false,
+      alertTitle: "",
+      alertMessage: "",
+      doSomething: () => { }
     }
     this.handleDecline = this.handleDecline.bind(this);
     this.handleApprove = this.handleApprove.bind(this);
     this.handleEditButton = this.handleEditButton.bind(this);
     this.handleSaveButton = this.handleSaveButton.bind(this);
     this.handleEmptyInput = this.handleEmptyInput.bind(this);
+    this.setApprove = this.setApprove.bind(this);
+    this.setDecline = this.setDecline.bind(this);
+    this.toggleAlert = this.toggleAlert.bind(this);
+  }
+
+  toggleAlert() {
+    this.setState(prevState => ({
+      showAlert: !prevState.showAlert
+    }));
+  }
+
+  setAlert(title: string, message: string, doSomething: () => void) {
+    this.setState({ alertTitle: title, alertMessage: message });
+    this.setState({ doSomething: doSomething });
+    this.toggleAlert();
   }
 
   async handleSaveButton() {
@@ -93,7 +117,7 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
     }
   }
 
-  async handleDecline() {
+  async setDecline() {
     try {
       const response = await fetch(`/api/Offence/${this.state.offenceDetail?.offenceId}/Decline`, {
         method: 'PUT',
@@ -107,7 +131,7 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
       }
       else {
         this.setState({ showButtons: false, offenceStateText: "Neschválen", offenceStateColor: "no" });
-
+        this.toggleAlert();
       }
     }
     catch (error) {
@@ -115,7 +139,11 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
     }
   }
 
-  async handleApprove() {
+  async handleDecline() {
+    this.setAlert("Zamítnutí přestupku", "Opravdu chcete zamítnout tento přestupek? Tato akce se nedá vzít zpět.", this.setDecline);
+  }
+
+  async setApprove() {
     try {
       const response = await fetch(`/api/Offence/${this.state.offenceDetail?.offenceId}/Approve`, {
         method: 'PUT',
@@ -132,6 +160,7 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
         const data = await response.json();
         this.setState({ offenceDetail: data })
         this.setState({ showButtons: false, offenceStateText: "Schválen", offenceStateColor: "yes" });
+        this.toggleAlert();
       }
     }
     catch (error) {
@@ -139,6 +168,10 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
     }
 
     this.setState({ showButtons: false });
+  }
+
+  async handleApprove() {
+    this.setAlert("Schválení přestupku", "Opravdu chcete schválit tento přestupek? Tato akce se nedá vzít zpět.", this.setApprove);
   }
 
   componentDidMount() {
@@ -191,6 +224,7 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
       (
         <Row>
           {/*<Col xs="10">*/}
+          <AlertModal isOpen={this.state.showAlert} toggle={this.toggleAlert} title={this.state.alertTitle} message={this.state.alertMessage} doSomething={this.state.doSomething} ></AlertModal>
           <Col>
             <Row>
               <Col>
