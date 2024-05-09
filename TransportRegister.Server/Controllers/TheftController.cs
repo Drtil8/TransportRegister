@@ -6,6 +6,7 @@ using TransportRegister.Server.Models;
 using TransportRegister.Server.Repositories;
 using TransportRegister.Server.DTOs.TheftDTOs;
 using TransportRegister.Server.DTOs.DatatableDTOs;
+using TransportRegister.Server.Data;
 
 namespace TransportRegister.Server.Controllers;
 
@@ -19,11 +20,13 @@ namespace TransportRegister.Server.Controllers;
 [Authorize(Roles = "Officer, Official")]
 public class TheftController : ControllerBase
 {
+    private readonly AppDbContext _context;
     private readonly ITheftRepository _theftRepository;
     private readonly UserManager<User> _userManager;
 
-    public TheftController(ITheftRepository theftRepository, UserManager<User> userManager)
+    public TheftController(AppDbContext context, ITheftRepository theftRepository, UserManager<User> userManager)
     {
+        _context = context;
         _theftRepository = theftRepository;
         _userManager = userManager;
     }
@@ -110,6 +113,26 @@ public class TheftController : ControllerBase
     }
 
     ////////////////// PUT METHODS //////////////////
+
+    /// <summary>
+    /// Method for updating theft description.
+    /// </summary>
+    /// <param name="theftId"> Id of updated theft. </param>
+    /// <param name="theftDto"> DTO containing description to be updated. </param>
+    /// <returns> Returns if action was successful or not. </returns>
+    [HttpPut("{theftId}")]
+    public async Task<IActionResult> PutTheft(int theftId, TheftCreateDto theftDto)
+    {
+        var theft = await _context.Thefts.FindAsync(theftId);
+        if (theft == null)
+        {
+            return NotFound();
+        }
+
+        theft.Description = theftDto.Description;
+        await _context.SaveChangesAsync();
+        return Ok();
+    }
 
     /// <summary>
     /// Method for reporting that the vehicle was found.

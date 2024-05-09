@@ -67,11 +67,13 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
   }
 
   async handleSaveButton() {
-    this.setState({ offenceDetail: { ...this.state.offenceDetail!, penaltyPoints: this.state.editPenaltyPoints } });
+    this.setState({ offenceDetail: { ...this.state.offenceDetail!, penaltyPoints: this.state.editPenaltyPoints, } });
 
     if (this.state.offenceDetail?.fine !== null) {
       this.setState({ offenceDetail: { ...this.state.offenceDetail!, fine: { ...this.state.offenceDetail!.fine!, amount: this.state.editFineAmount } } });
     }
+
+    const description = (document.getElementById("offenceDetailTextArea") as HTMLTextAreaElement)?.value;
 
     try {
       const response = await fetch(`/api/Offence/${this.state.offenceDetail?.offenceId}`, {
@@ -79,7 +81,11 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ penaltyPoints: this.state.editPenaltyPoints, fineAmount: this.state.editFineAmount })
+        body: JSON.stringify({
+          penaltyPoints: this.state.editPenaltyPoints,
+          fineAmount: this.state.editFineAmount,
+          description: description
+        })
       });
 
       if (!response.ok) {
@@ -99,7 +105,9 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
   }
 
   handleEditButton() {
-    this.setState({ editMode: true });
+    if (this.context?.isOfficial) {
+      this.setState({ editMode: true });
+    }
     document.getElementById("editButton")?.classList.add("hidden");
     document.getElementById("saveButton")?.classList.remove("hidden");
     document.getElementById("offenceDetailTextArea")?.removeAttribute("readonly")
@@ -197,9 +205,9 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
       }
       else if (!data.isApproved && data.isValid) {
         this.setState({ offenceStateText: "Rozpracován", offenceStateColor: "workedOn" });
-        if (this.context?.isOfficial) {
-          this.setState({ showButtons: true });
-        }
+        //if (this.context?.isOfficial) {
+        this.setState({ showButtons: true });
+        //}
       }
       else {
         this.setState({ offenceStateText: "Neschválen", offenceStateColor: "no" });
@@ -251,7 +259,10 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
               <dl>
                 <Row>
                   <dt>Popis:</dt>
-                  <dd><textarea id="offenceDetailTextArea" readOnly value={offenceDetail.description ? offenceDetail.description : ""} className="form-control" /></dd>
+                  <dd>
+                    <Input id="offenceDetailTextArea" readOnly defaultValue={offenceDetail.description ? offenceDetail.description : ""} type="textarea"></Input>
+                    {/*<textarea  readOnly value={offenceDetail.description ? offenceDetail.description : ""} className="form-control" />*/}
+                  </dd>
                 </Row>
                 <Row>
                   <Col>
@@ -408,13 +419,16 @@ export class OffenceDetail extends Component<object, IOffenceDetailProps> {
               )}
             </Row>
             {this.state.showButtons ? (
-              <Row className="mt-4">
-                <hr />
-                <Col className="rightSide pe-0">
-                  <Button color="success" className="me-2" onClick={this.handleApprove}>Schválit</Button>
-                  <Button color="danger" className="me-0" onClick={this.handleDecline}>Zamítnout</Button>
-                </Col>
-              </Row>
+              this.context?.isOfficial && (
+                <Row className="mt-4">
+                  <hr />
+                  <Col className="rightSide pe-0">
+                    <Button color="success" className="me-2" onClick={this.handleApprove}>Schválit</Button>
+                    <Button color="danger" className="me-0" onClick={this.handleDecline}>Zamítnout</Button>
+                  </Col>
+                </Row>
+
+              )
             )
               :
               (
