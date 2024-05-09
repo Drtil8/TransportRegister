@@ -16,13 +16,13 @@ import { TheftDetail } from "./components/theft/TheftDetail";
 import { TheftAll } from "./components/theft/TheftAll";
 import { TheftActive } from "./components/theft/TheftActive";
 import DriverList from "./components/DriverList";
+import { MainPage } from "./components/MainPage";
 
 const AppRoutes = [
   {
     path: '/',
-    element: <VehicleList />,
+    element: <MainPage />,
     isProtected: true,
-    role: 'admin'
   },
   {
     path: '/login',
@@ -65,6 +65,11 @@ const AppRoutes = [
     isProtected: true
   },
   {
+    path: '/vehicle/all',
+    element: <VehicleList />,
+    isProtected: true,
+  },
+  {
     path: '/offencePending',
     element: <OffencePending />,
     isProtected: true
@@ -97,7 +102,7 @@ const AppRoutes = [
   {
     path: '/users',
     element: <UserList />,
-    isProtected: true
+    //isProtected: true
   },
   {
     path: '/user/:id',

@@ -17,9 +17,11 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     return <Navigate to="/login" replace />;
   }
 
-  //if (auth.isAdmin) {
-  //  return <Navigate to="/users" replace />;
-  //}
+  //console.log(children?.type.name);
+
+  if (auth.isAdmin) {
+    return <Navigate to="/users" replace />;
+  }
 
   return <>{children}</>;
 };

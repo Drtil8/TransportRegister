@@ -8,12 +8,17 @@ import DetailIcon from '@mui/icons-material/VisibilityOutlined';
 import { Link } from 'react-router-dom';
 import { formatDateTime } from "../../common/DateFormatter";
 import AuthContext from '../../auth/AuthContext';
+import AlertModal from "../AlertModal";
 
 
 interface ITheftDetailProps {
   theftDetail: ITheftDetail | null;
   showOfficerButtons: boolean;
   showOfficialButtons: boolean;
+  showAlert: boolean;
+  alertTitle: string;
+  alertMessage: string;
+  doSomething: () => void;
 }
 
 export class TheftDetail extends Component<object, ITheftDetailProps> {
@@ -25,13 +30,33 @@ export class TheftDetail extends Component<object, ITheftDetailProps> {
     this.state = {
       theftDetail: null,
       showOfficerButtons: false,
-      showOfficialButtons: false
+      showOfficialButtons: false,
+      showAlert: false,
+      alertTitle: "",
+      alertMessage: "",
+      doSomething: () => { }
     };
     this.handleFound = this.handleFound.bind(this);
     this.handleReturn = this.handleReturn.bind(this);
+    this.toggleAlert = this.toggleAlert.bind(this);
+    this.setAlert = this.setAlert.bind(this);
+    this.setFound = this.setFound.bind(this);
+    this.setReturn = this.setReturn.bind(this);
   }
 
-  async handleFound() {
+  toggleAlert() {
+    this.setState(prevState => ({
+      showAlert: !prevState.showAlert
+    }));
+  }
+
+  setAlert(title: string, message: string, doSomething: () => void) {
+    this.setState({ alertTitle: title, alertMessage: message });
+    this.setState({ doSomething: doSomething });
+    this.toggleAlert();
+  }
+
+  async setFound() {
     try {
       const response = await fetch(`/api/Theft/ReportTheftDiscovery/${this.state.theftDetail?.theftId}`, {
         method: 'PUT',
@@ -46,13 +71,18 @@ export class TheftDetail extends Component<object, ITheftDetailProps> {
 
       this.setState({ showOfficerButtons: false });
       this.populateTheftData();
+      this.toggleAlert();
     }
     catch (error) {
       console.error(error);
     }
   }
 
-  async handleReturn() {
+  handleFound() {
+    this.setAlert("Nahlášení nálezu", "Opravdu chcete nahlásit nález vozidla?", this.setFound);
+  }
+
+  async setReturn() {
     try {
       const response = await fetch(`/api/Theft/ReportTheftReturn/${this.state.theftDetail?.theftId}`, {
         method: 'PUT',
@@ -67,10 +97,15 @@ export class TheftDetail extends Component<object, ITheftDetailProps> {
 
       this.setState({ showOfficialButtons: false });
       this.populateTheftData();
+      this.toggleAlert();
     }
     catch (error) {
       console.error(error);
     }
+  }
+
+  handleReturn() {
+    this.setAlert("Potvrzení navrácení vozidla", "Opravdu chcete potvrdit, že vozidlo bylo navráceno majiteli?", this.setReturn);
   }
 
   async populateTheftData() {
@@ -115,6 +150,7 @@ export class TheftDetail extends Component<object, ITheftDetailProps> {
       :
       (
         <Row>
+          <AlertModal isOpen={this.state.showAlert} toggle={this.toggleAlert} title={this.state.alertTitle} message={this.state.alertMessage} doSomething={this.state.doSomething} ></AlertModal>
           <Col>
             <Row>
               <Col>
@@ -260,7 +296,8 @@ export class TheftDetail extends Component<object, ITheftDetailProps> {
               (
                 <Row>
                   <hr />
-                  <Col className="rightSide pe-0">
+                <Col className="rightSide pe-0">
+                  {/*<Button color="success" className="me-2" onClick={this.setAlert("Nahlášení nálezu", "sdadads", this.handleFound)}>Nahlásit nález v2</Button>*/}
                     <Button color="success" className="me-2" onClick={this.handleFound}>Nahlásit nález</Button>
                   </Col>
                 </Row>

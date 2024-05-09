@@ -5,12 +5,14 @@ import GoogleMapsAutocomplete from "../GoogleMapsAutocomplete";
 import IAddress from "../interfaces/IAddress";
 import { IPerson } from "../interfaces/IPersonDetail";
 import { formatDate } from "../../common/DateFormatter";
+import { useNavigate } from "react-router-dom";
 
 interface OffenceReportDriverModalProps {
   personDetail: IPerson | null;
 }
 
 const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = ({ personDetail }) => {
+  const navigate = useNavigate();
   const [modal, setModal] = useState(false);
   const [address, setAddress] = useState<IAddress | null>(null);
   const initialFormData = {
@@ -99,6 +101,8 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = ({ per
       else {
         setFormData(initialFormData);
         toggle();
+        const offenceId = await response.text();
+        navigate('/offence/' + offenceId);
       }
     }
     catch (error) {
@@ -292,14 +296,6 @@ const OffenceReportDriverModal: React.FC<OffenceReportDriverModalProps> = ({ per
                       Popis přestupku:
                     </Label>
                     <Input id="reportDriverDescription" name="reportDriverDescription" type="textarea" value={formData.reportDriverDescription} onChange={handleChange} />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <Label>
-                      Místo činu:
-                    </Label>
-                    <Input id="reportDriver" name="reportDriver" type="text" />
                   </Col>
                 </Row>
                 <Row>

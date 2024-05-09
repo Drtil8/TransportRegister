@@ -144,8 +144,8 @@ export class NavMenu extends Component<object, NavMenuState> {
                     </DropdownToggle>
                     <DropdownMenu>
                       <DropdownItem header>Kradená vozidla</DropdownItem>
-                      <DropdownItem tag={Link} to="/theftsActive">Aktuální krádeže</DropdownItem>
-                      <DropdownItem tag={Link} to="/thefts">Všechny krádeže</DropdownItem>
+                      <DropdownItem tag={Link} to="/theftsActive">Zobrazit aktuální</DropdownItem>
+                      <DropdownItem tag={Link} to="/thefts">Zobrazit všechny</DropdownItem>
                     </DropdownMenu>
                   </Dropdown>
                 </ul>
