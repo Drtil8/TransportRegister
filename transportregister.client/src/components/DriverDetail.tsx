@@ -63,18 +63,6 @@ export class DriverDetail extends Component<object, DriverDetailState> {
       }
       const person = await response.json();
       let parsedPerson: IPerson = person as IPerson;
-      this.setState(prevState => ({
-        form: {
-          ...prevState.form,
-          firstName: parsedPerson.firstName,
-          lastName: parsedPerson.lastName,
-          birthNumber1: 0,
-          birthNumber2: 0,
-          sex_Male: parsedPerson.sex_Male,
-          dateOfBirth: "",
-          image: ''
-        }
-      }));
       switch (person.personType) {
         case 'Driver':
           let driver: IDriver = person as IDriver;
