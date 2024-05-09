@@ -3,12 +3,14 @@ import { Button, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFoot
 import GoogleMapsAutocomplete from "../GoogleMapsAutocomplete";
 import IAddress from "../interfaces/IAddress";
 import { IVehicleDetail } from "../interfaces/IVehicleDetail";
+import { useNavigate } from "react-router-dom";
 
 interface TheftReportModalProps {
   vehicleDetail: IVehicleDetail | null;
 }
 
-const TheftReportModal: React.FC<TheftReportModalProps> = ({vehicleDetail }) => {
+const TheftReportModal: React.FC<TheftReportModalProps> = ({ vehicleDetail }) => {
+  const navigate = useNavigate();
   const [modal, setModal] = useState(false);
   const [address, setAddress] = useState<IAddress | null>(null);
   const initialFormData = {
@@ -50,6 +52,8 @@ const TheftReportModal: React.FC<TheftReportModalProps> = ({vehicleDetail }) => 
       }
       else {
         toggle();
+        const theftId = await response.text();
+        navigate('/theft/' + theftId);
       }
     }
     catch (error) {

@@ -102,7 +102,7 @@ public class TheftController : ControllerBase
     /// <returns> Returns if action was successful or not. </returns>
     [HttpPost("/api/Theft/ReportTheft")]
     [Authorize(Roles = "Officer")]
-    public async Task<IActionResult> ReportTheft(TheftCreateDto theft)
+    public async Task<ActionResult<int>> ReportTheft(TheftCreateDto theft)
     {
         var activeUser = await _userManager.GetUserAsync(User);
         int newTheftId = await _theftRepository.CreateTheft(theft, activeUser.Id);

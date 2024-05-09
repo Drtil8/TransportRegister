@@ -4,11 +4,14 @@ import IOffenceType from "../interfaces/IOffenceType";
 import IAddress from "../interfaces/IAddress";
 import GoogleMapsAutocomplete from "../GoogleMapsAutocomplete";
 import { IVehicleDetail } from "../interfaces/IVehicleDetail";
+import { useNavigate } from "react-router-dom";
+
 interface OffenceReportVehicleModalProps {
   vehicleDetail: IVehicleDetail | null;
 }
 
 const OffenceReportVehicleModal: React.FC<OffenceReportVehicleModalProps> = ({ vehicleDetail }) => {
+  const navigate = useNavigate();
   const [modal, setModal] = useState(false);
   const [address, setAddress] = useState<IAddress | null>(null);
   const initialFormData = {
@@ -101,6 +104,8 @@ const OffenceReportVehicleModal: React.FC<OffenceReportVehicleModalProps> = ({ v
       else {
         setFormData(initialFormData);
         toggle();
+        const offenceId = await response.text();
+        navigate('/offence/' + offenceId);
       }
     }
     catch (error) {
