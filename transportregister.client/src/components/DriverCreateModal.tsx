@@ -25,6 +25,11 @@ const DriverCreateModal: React.FC<DriverCreateModalProps> = ({ person }) => {
       return; // Return early if the format is invalid
     }
 
+    if (formData.licensesStrings.length == 0) {
+      alert("Vyberte alesoň jedno oprávnění");
+      return; // Return early if the format is invalid
+    }
+
     try {
       //const urlString: string = "/api/Persons/" + person.personId + "/SetToDriver?license=" + formData.driversLicenseNumber;
       const urlString: string = "/api/Persons/" + person.personId + "/SetToDriver";
