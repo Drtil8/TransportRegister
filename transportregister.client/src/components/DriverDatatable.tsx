@@ -89,7 +89,7 @@ export const DriverDatatable: React.FC<{
       });
       if (response.ok) {
         const json: IDtResult<IDriverSimpleList> = await response.json();
-        if (json.data.length === 1 && !selectable)
+        if (json.data.length === 1 && !selectable && clickedOnSearch)
           navigate(`/driver/${json.data[0].personId}`);   // todo only after onclick search
         setEnableAdvancedFeatures(enableFeaturesObj);
         setData(json.data);
@@ -123,18 +123,6 @@ export const DriverDatatable: React.FC<{
   const columns = useMemo<MRT_ColumnDef<IDriverSimpleList>[]>(
     () => [
       {
-        id: 'driversLicenseNumber',
-        accessorKey: 'driversLicenseNumber',
-        header: 'Řidický průkaz',
-        filterFn: 'startsWith',
-      },
-      {
-        id: 'birthNumber',
-        accessorKey: 'birthNumber',
-        header: 'Rodné číslo',
-        filterFn: 'startsWith',
-      },
-      {
         id: 'firstName',
         accessorKey: 'firstName',
         header: 'Jméno',
@@ -144,6 +132,18 @@ export const DriverDatatable: React.FC<{
         id: 'lastName',
         accessorKey: 'lastName',
         header: 'Příjmení',
+        filterFn: 'startsWith',
+      },
+      {
+        id: 'birthNumber',
+        accessorKey: 'birthNumber',
+        header: 'Rodné číslo',
+        filterFn: 'startsWith',
+      },
+      {
+        id: 'driversLicenseNumber',
+        accessorKey: 'driversLicenseNumber',
+        header: 'Řidický průkaz',
         filterFn: 'startsWith',
       },
     ],
@@ -163,8 +163,8 @@ export const DriverDatatable: React.FC<{
 
   useEffect(() => {
     if (clickedOnSearch) {
-      setClickedOnSearch(false);
       fetchDataRef.current?.();
+      setClickedOnSearch(false);
     }
   }, [clickedOnSearch, columnFilters]);
 

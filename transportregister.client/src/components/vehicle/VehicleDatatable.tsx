@@ -139,14 +139,6 @@ export const VehicleDatatable: React.FC<{
         filterFn: 'startsWith',
       },
       {
-        id: 'vehicleType',
-        accessorKey: 'vehicleType',
-        header: 'Typ vozidla',
-        filterVariant: 'select',
-        filterSelectOptions: Object.values(localizedVehicleTypeMap),
-        Cell: ({ cell }) => localizedVehicleTypeMap[cell.getValue<string>()],
-      },
-      {
         id: 'manufacturer',
         accessorKey: 'manufacturer',
         header: 'Výrobce',
@@ -169,6 +161,14 @@ export const VehicleDatatable: React.FC<{
         accessorKey: 'manufacturedYear',
         header: 'Rok výroby',
         filterFn: 'startsWith',
+      },
+      {
+        id: 'vehicleType',
+        accessorKey: 'vehicleType',
+        header: 'Typ vozidla',
+        filterVariant: 'select',
+        filterSelectOptions: Object.values(localizedVehicleTypeMap),
+        Cell: ({ cell }) => localizedVehicleTypeMap[cell.getValue<string>()],
       },
     ],
     []
