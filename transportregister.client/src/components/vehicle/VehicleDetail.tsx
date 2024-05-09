@@ -7,9 +7,12 @@ import ILicensePlateHistory from '../interfaces/ILicensePlateHistory';
 import AuthContext from '../../auth/AuthContext';
 import OffenceReportVehicleModal from '../offence/OffenceReportVehicleModal';
 import TheftReportModal from '../theft/TheftReportModal';
+import IOffenceListSimple from '../interfaces/IOffenceListSimple';
+import DetailIcon from '@mui/icons-material/VisibilityOutlined';
 
 interface IVehicleDetailProps {
   vehicleDetail: IVehicleDetail | null;
+  offences: IOffenceListSimple[];
 }
 
 export class VehicleDetail extends Component<object | IVehicleDetailProps> {
@@ -18,12 +21,28 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
   constructor(props: object) {
     super(props);
     this.state = {
-      vehicleDetail: null
+      vehicleDetail: null,
+      offences: [],
     }
   }
 
   componentDidMount() {
     this.populateVehicleData();
+  }
+
+  async fetchOffences(id: number) {
+    try {
+      const response = await fetch(`/api/Persons/${id}/CommitedOffences`);
+      if (!response.ok) {
+        throw new Error(`Failed to load CommitedOffences.`);
+      }
+      const jsonOffenses = await response.json();
+      let offList = jsonOffenses as IOffenceListSimple[];
+      this.setState({ offences: offList });
+    }
+    catch (error) {
+      console.error('Error fetching offenses data:', error);
+    }
   }
 
   async populateVehicleData() {
@@ -57,6 +76,7 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
           throw new Error(`Unknown vehicle type: ${vehicle.vehicleType}`);
       }
       this.setState({ vehicleDetail: parsedVehicle });
+      this.fetchOffences(parsedVehicle.ownerId);
     }
     catch (error) {
       console.error('Error fetching vehicle data:', error);
@@ -64,7 +84,7 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
   }
 
   render() {
-    const { vehicleDetail } = this.state as IVehicleDetailProps;
+    const { vehicleDetail, offences } = this.state as IVehicleDetailProps;
     const localizedVehicleTypeMap: { [key: string]: string } = {
       'Car': 'auta',
       'Truck': 'nákladního auta',
@@ -76,7 +96,7 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
       <>
         {(vehicleDetail?.licensePlateHistory && vehicleDetail!.licensePlateHistory.length > 1) && (
           <>
-            <h5>Historie přestupků</h5>
+            <h5>Historie SPZ</h5>
             <Table>
               <thead>
                 <tr>
@@ -94,6 +114,43 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
               </tbody>
             </Table>
           </>
+        )}
+      </>
+    );
+
+    const offencesTable = (
+      <>
+        <h5>Historie přestupků</h5>
+        {(offences.length === 0) && (
+          <p>Vozidlo nemá žádné přestupky.</p>
+        )}
+        {(offences.length > 1) && (
+          <Table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Přestupek</th>
+                <th>Body</th>
+                <th>Pokuta</th>
+                <th>Zobrazit</th>
+              </tr>
+            </thead>
+            <tbody>
+              {offences.map((offence: IOffenceListSimple) => (
+                <tr key={offence.offenceId}>
+                  <td>{offence.offenceId}</td>
+                  <td>{offence.description}</td>
+                  <td>{offence.penaltyPoints}</td>
+                  <td>{offence.fineAmount} Kč</td>
+                  <td>
+                    <Link to={`/offence/${offence.offenceId}`}>
+                      <DetailIcon />
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
         )}
       </>
     );
@@ -212,9 +269,11 @@ export class VehicleDetail extends Component<object | IVehicleDetailProps> {
 
           {licensePlatesTable}
 
+          {offencesTable}
+
           <Row>
             <Col className="col-3">
-              <dt>Naposledy upraveno:</dt>
+              <dt>Naposledy upraveno úředníkem:</dt>
               <dd>
                 <Link to={`/user/${vehicleDetail.officialId}`}>
                   {vehicleDetail.officialFullName}
