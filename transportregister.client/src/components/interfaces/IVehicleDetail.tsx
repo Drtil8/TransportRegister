@@ -17,6 +17,9 @@ export interface IVehicleDetail {
   loadCapacityKG: number;
   imageBase64?: string;
 
+  currentlyStolenId: number | null;
+  currentlyStolen: boolean;
+
   ownerId: number;
   ownerFullName: string;
   officialId: string;

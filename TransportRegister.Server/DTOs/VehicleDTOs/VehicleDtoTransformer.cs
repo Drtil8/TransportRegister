@@ -49,6 +49,10 @@ namespace TransportRegister.Server.DTOs.VehicleDTOs
                 dto.OfficialFullName = vehicle.AddedByOfficial?.FirstName + " " + vehicle.AddedByOfficial?.LastName;
                 dto.ImageBase64 = vehicle.Image != null ? Convert.ToBase64String(vehicle.Image) : null;
                 dto.CurrentLicensePlate = vehicle.LicensePlates?.LastOrDefault()?.LicensePlate;
+
+                var theft = vehicle.Thefts?.Where(t => t.FoundOn == null).FirstOrDefault();
+                dto.CurrentlyStolen = theft != null;
+                dto.CurrentlyStolenId = theft?.TheftId;
             }
             return dto;
         }
