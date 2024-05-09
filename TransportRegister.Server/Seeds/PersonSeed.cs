@@ -12,9 +12,10 @@ namespace TransportRegister.Server.Seeds
             {
                 new()
                 {
-                    FirstName = "John",
-                    LastName = "Doe",
-                    BirthNumber = "ABCD12345",
+                    FirstName = "Jiøí",
+                    LastName = "Kostka",
+                    BirthNumber = "0208124356",
+                    DateOfBirth = DateOnly.Parse("2020-08-12"),
                     Address = new Address
                     {
                         Street = "Sample Street",
@@ -30,9 +31,10 @@ namespace TransportRegister.Server.Seeds
                 },
                 new()
                 {
-                    FirstName = "Alice",
-                    LastName = "Smith",
-                    BirthNumber = "EFGH67890",
+                    FirstName = "Lucie",
+                    LastName = "Kolarczyková",
+                    BirthNumber = "9456154103",
+                    DateOfBirth = DateOnly.Parse("1994-06-15"),
                     Address = new Address
                     {
                         Street = "Main Street",
@@ -51,7 +53,8 @@ namespace TransportRegister.Server.Seeds
                 {
                     FirstName = "David",
                     LastName = "Drtil",
-                    BirthNumber = "WXYZ54321",
+                    BirthNumber = "7811010933",
+                    DateOfBirth = DateOnly.Parse("1978-11-01"),
                     Address = new Address
                     {
                         Street = "Green Street",
@@ -68,9 +71,10 @@ namespace TransportRegister.Server.Seeds
 
                 new()
                 {
-                    FirstName = "Emma",
-                    LastName = "Brown",
-                    BirthNumber = "JKLM12345",
+                    FirstName = "Andrea",
+                    LastName = "Jehlíková",
+                    BirthNumber = "9453154103",
+                    DateOfBirth = DateOnly.Parse("1994-03-15"),
                     Address = new Address
                     {
                         Street = "Brown Street",
@@ -87,9 +91,10 @@ namespace TransportRegister.Server.Seeds
 
                 new()
                 {
-                    FirstName = "Sophia",
-                    LastName = "Taylor",
-                    BirthNumber = "UVWX54321",
+                    FirstName = "Marie",
+                    LastName = "Rejtharová",
+                    BirthNumber = "0154248490",
+                    DateOfBirth = DateOnly.Parse("2001-04-24"),
                     Address = new Address
                     {
                         Street = "Red Street",
@@ -106,9 +111,10 @@ namespace TransportRegister.Server.Seeds
 
                 new()
                 {
-                    FirstName = "William",
-                    LastName = "Anderson",
-                    BirthNumber = "LMNO98765",
+                    FirstName = "Karel",
+                    LastName = "Bušek",
+                    BirthNumber = "7708219629",
+                    DateOfBirth = DateOnly.Parse("1977-08-21"),
                     Address = new Address
                     {
                         Street = "Anderson Street",
@@ -128,9 +134,10 @@ namespace TransportRegister.Server.Seeds
             {
                 new()
                 {
-                    FirstName = "Joseph",
-                    LastName = "Driver",
-                    BirthNumber = "ABCD99999",
+                    FirstName = "Petr",
+                    LastName = "Jetmar",
+                    BirthNumber = "0109067739",
+                    DateOfBirth = DateOnly.Parse("2001-09-06"),
                     DriversLicenseNumber ="ABC1234",
                     BadPoints = 5,
                     HasSuspendedLicense = true,
@@ -152,9 +159,10 @@ namespace TransportRegister.Server.Seeds
                 },
                 new()
                 {
-                    FirstName = "Emily",
-                    LastName = "Driver",
-                    BirthNumber = "EFGH12345",
+                    FirstName = "Denisa",
+                    LastName = "Macháèková",
+                    BirthNumber = "9460087670",
+                    DateOfBirth = DateOnly.Parse("1994-10-08"),
                     DriversLicenseNumber ="DEF5678",
                     BadPoints = 3,
                     HasSuspendedLicense = false,
@@ -177,8 +185,9 @@ namespace TransportRegister.Server.Seeds
                 new()
                 {
                     FirstName = "David",
-                    LastName = "Brown",
-                    BirthNumber = "PQRS67890",
+                    LastName = "Páleník",
+                    BirthNumber = "9103157756",
+                    DateOfBirth = DateOnly.Parse("1991-03-15"),
                     DriversLicenseNumber ="GHI5678",
                     BadPoints = 2,
                     HasSuspendedLicense = false,
@@ -200,9 +209,10 @@ namespace TransportRegister.Server.Seeds
 
                 new()
                 {
-                    FirstName = "Olivia",
-                    LastName = "Johnson",
-                    BirthNumber = "QRST98765",
+                    FirstName = "Ludmila",
+                    LastName = "Benková",
+                    BirthNumber = "7660052081",
+                    DateOfBirth = DateOnly.Parse("1976-10-05"),
                     DriversLicenseNumber ="JKL5678",
                     BadPoints = 4,
                     HasSuspendedLicense = false,
@@ -224,9 +234,10 @@ namespace TransportRegister.Server.Seeds
 
                 new()
                 {
-                    FirstName = "Ethan",
-                    LastName = "Williams",
-                    BirthNumber = "IJKL54321",
+                    FirstName = "Pavel",
+                    LastName = "Labaè",
+                    BirthNumber = "8208126124",
+                    DateOfBirth = DateOnly.Parse("1982-08-12"),
                     DriversLicenseNumber ="STU5678",
                     BadPoints = 1,
                     HasSuspendedLicense = false,
