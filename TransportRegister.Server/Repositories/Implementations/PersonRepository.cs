@@ -6,6 +6,7 @@ using TransportRegister.Server.DTOs.DriversLicenseDTOs;
 using TransportRegister.Server.DTOs.PersonDTOs;
 using TransportRegister.Server.DTOs.DatatableDTOs;
 using System;
+using Microsoft.Data.SqlClient;
 
 namespace TransportRegister.Server.Repositories.Implementations
 {
@@ -70,9 +71,11 @@ namespace TransportRegister.Server.Repositories.Implementations
         }
         public async Task<Driver> GetDriverAsync(string licenseNumber)
         {
-            return await _context.Drivers
+            var result = await _context.Drivers
 
                 .FirstOrDefaultAsync(v => v.DriversLicenseNumber == licenseNumber);
+
+            return result;
         }
         public async Task<Person> GetOwnerByVINAsync(string VIN_number)
         {
@@ -105,40 +108,18 @@ namespace TransportRegister.Server.Repositories.Implementations
 
         public async Task AddDriverAsync(int personId, string license)
         {
-            
-            var newDriver = new Driver
-            {
-                FirstName = "Name",
-                LastName = "Surname",
-                BirthNumber = "000000/0000",
-                DriversLicenseNumber = license,
-                BadPoints = 0,
-                HasSuspendedLicense = false,
-                LastCrimeCommited = null,
-                DrivingSuspendedUntil = null
-            };
+            // Construct the SQL command with parameters
+            string sql = @"
+    INSERT INTO Drivers (PersonID, DriversLicenseNumber, BadPoints, HasSuspendedLicense, LastCrimeCommited, DrivingSuspendedUntil)
+    VALUES (@PersonID, @License, 0, 0, NULL, NULL);";
 
-            var existingPerson = await _context.Persons.FirstOrDefaultAsync(p => p.PersonId == personId);
-            if (existingPerson != null)
-            {
-                newDriver.FirstName = existingPerson.FirstName;
-                newDriver.LastName = existingPerson.LastName;
-                newDriver.BirthNumber = existingPerson.BirthNumber;
-            
-                newDriver.Image = existingPerson.Image;
-                newDriver.PersonType = existingPerson.PersonType;
-                newDriver.OfficialId = existingPerson.OfficialId;
+            // Execute the SQL command with parameters
+            await _context.Database.ExecuteSqlRawAsync(
+                sql,
+                new SqlParameter("@License", license),
+                new SqlParameter("@PersonId", personId)
+            );
 
-
-
-                _context.Entry(existingPerson).State = EntityState.Deleted;
-                _context.Entry(newDriver).State = EntityState.Added;
-            }
-            else
-            {
-                newDriver.PersonId = personId;
-                _context.Drivers.Add(newDriver);
-            }
             await _context.SaveChangesAsync();
         }
 

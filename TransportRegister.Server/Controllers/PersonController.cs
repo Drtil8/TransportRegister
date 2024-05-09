@@ -87,14 +87,16 @@ namespace TransportRegister.Server.Controllers
                 return NotFound();
             }
 
+            if (person is Driver)
+            {
+                return BadRequest("Person is already a driver.");
+            }   
+
             person.OfficialId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             await _personRepository.AddDriverAsync(person.PersonId, personDto.DriversLicenseNumber);
 
-            var driver = _personRepository.GetDriverAsync(personDto.DriversLicenseNumber).Result;
+            return Ok();
 
-            return await PostDriversLicense(driver.PersonId, personDto.Licenses);
-
- 
         }
         /// GET: api/Persons/5/ReportedThefts
         /// <summary>
