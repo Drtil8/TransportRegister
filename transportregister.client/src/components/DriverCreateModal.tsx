@@ -26,16 +26,19 @@ const DriverCreateModal: React.FC<DriverCreateModalProps> = ({ person }) => {
     }
 
     try {
+      //const urlString: string = "/api/Persons/" + person.personId + "/SetToDriver?license=" + formData.driversLicenseNumber;
       const urlString: string = "/api/Persons/" + person.personId + "/SetToDriver";
+
       const response = await fetch(urlString, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          personId: person.personId,
+          //personId: person.personId,
           driversLicenseNumber: formData.driversLicenseNumber,
           licenses: formData.licensesStrings,
+          //0: formData.licensesStrings
         }),
       });
 
