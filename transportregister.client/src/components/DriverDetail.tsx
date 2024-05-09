@@ -171,11 +171,11 @@ export class DriverDetail extends Component<object, DriverDetailState> {
         this.setState({ hadLicenses: appended });
       }
       else {
-        console.error("Create vehicle failed");
+        console.error("Driver licences failed");
       }
     }
     catch (error) {
-      console.error('Create vehicle failed: ' + error);
+      console.error('Driver licences failed: ' + error);
     }
   }
 
