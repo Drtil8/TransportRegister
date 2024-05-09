@@ -282,7 +282,9 @@ export class DriverDetail extends Component<object, DriverDetailState> {
                 infoButtons
               )
               :
-              <DriverCreateModal person={person as IPerson}></DriverCreateModal>
+              (this.context?.isOfficial && 
+                <DriverCreateModal person={person as IPerson}></DriverCreateModal>
+              )
             }
           </Col>
         </Row>
