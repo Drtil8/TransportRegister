@@ -1,6 +1,7 @@
 ﻿import React, { FormEvent, useState } from "react";
 import { Button, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row } from "reactstrap";
 import { IPerson } from "./interfaces/IPersonDetail";
+import { useNavigate } from "react-router-dom";
 
 interface DriverCreateModalProps {
   person: IPerson;
@@ -9,6 +10,7 @@ interface DriverCreateModalProps {
 
 const DriverCreateModal: React.FC<DriverCreateModalProps> = ({ person }) => {
   const [modal, setModal] = useState(false);
+  const navigate = useNavigate();
   
   const [formData, setFormData] = useState<{ licensesStrings: string[], driversLicenseNumber: string }>({ 
     licensesStrings: [], 
@@ -32,6 +34,7 @@ const DriverCreateModal: React.FC<DriverCreateModalProps> = ({ person }) => {
 
     try {
       //const urlString: string = "/api/Persons/" + person.personId + "/SetToDriver?license=" + formData.driversLicenseNumber;
+      //const urlString: string = "/api/Persons/" + person.personId + "/SetToDriver";
       const urlString: string = "/api/Persons/" + person.personId + "/SetToDriver";
 
       const response = await fetch(urlString, {
@@ -40,10 +43,8 @@ const DriverCreateModal: React.FC<DriverCreateModalProps> = ({ person }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          //personId: person.personId,
           driversLicenseNumber: formData.driversLicenseNumber,
           licenses: formData.licensesStrings,
-          //0: formData.licensesStrings
         }),
       });
 
@@ -57,6 +58,31 @@ const DriverCreateModal: React.FC<DriverCreateModalProps> = ({ person }) => {
     catch (error) {
       console.error(error);
     }
+
+    const params = formData.licensesStrings;
+    try {
+      const urlstring: string = '/api/Persons/' + person.personId + '/AddDriversLicense';
+      const response = await fetch(urlstring, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(params)
+      });
+
+      if (response.ok) {
+        console.log("Driver licences ok");
+        toggle();
+        navigate("/driver/" + person.personId);
+      }
+      else {
+        console.error("Driver licences failed");
+      }
+    }
+    catch (error) {
+      console.error('Driver licences failed: ' + error);
+    }
+    console.log("finished")
   };
 
 
