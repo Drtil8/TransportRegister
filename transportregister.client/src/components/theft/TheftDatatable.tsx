@@ -30,9 +30,9 @@ export const TheftDatatable: React.FC<{
 
   // Table state
   const initialFilterOptions: MRT_ColumnFilterFnsState = {
-    reportedOn: 'equals',
-    stolenOn: 'equals',
-    foundOn: 'equals'
+    reportedOn: 'greaterThan',
+    stolenOn: 'greaterThan',
+    foundOn: 'greaterThan'
   };
   const dateFilterOptions = ['equals', 'lessThan', 'greaterThan'];    // try 'between'
   const [columnFilterOptions, setColumnFilterOptions] = useState<MRT_ColumnFilterFnsState>(initialFilterOptions);
