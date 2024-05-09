@@ -2,7 +2,7 @@
 import { useNavigate } from 'react-router-dom';
 import { createRoot } from 'react-dom/client';
 import {
-    MRT_RowSelectionState,
+  MRT_RowSelectionState,
   MaterialReactTable,
   useMaterialReactTable,
   type MRT_ColumnDef,
@@ -68,6 +68,9 @@ export const DriverDatatable: React.FC<{
     else {
       setIsRefetching(true);
     }
+
+    if (clickedOnSearch)
+      deletePersonIdFromColumnFilters();
 
     const startOffset = pagination.pageIndex * pagination.pageSize;
     let dtParams: IDtParams = {
@@ -147,6 +150,25 @@ export const DriverDatatable: React.FC<{
     []
   );
 
+  const deletePersonIdFromColumnFilters = () => {
+    let updatedFilters = columnFilters.filter(filter => filter.id !== 'personId');
+    setColumnFilters(updatedFilters);
+  }
+
+  const [clickedOnSearch, setClickedOnSearch] = useState<boolean>(false);
+
+  const onSearchClick = () => {
+    setClickedOnSearch(true);
+  }
+
+  useEffect(() => {
+    if (clickedOnSearch) {
+      setClickedOnSearch(false);
+      fetchDataRef.current?.();
+    }
+  }, [clickedOnSearch, columnFilters]);
+
+
   const renderSearchButton = () => {
     const actionTableHeader = document.querySelector('th:last-child') as HTMLElement;
     const existingButton = actionTableHeader.querySelector('button');
@@ -155,7 +177,7 @@ export const DriverDatatable: React.FC<{
       const buttonContainer = document.createElement('div');
       actionTableHeader.appendChild(buttonContainer);
       const root = createRoot(buttonContainer);
-      root.render(<DtSearchButton fetchDataRef={fetchDataRef} />);
+      root.render(<DtSearchButton onSearchClick={onSearchClick} />);
     }
     const tableBody = document.querySelector('tbody') as HTMLElement;
     tableBody.style.display = 'none';
@@ -178,18 +200,20 @@ export const DriverDatatable: React.FC<{
 
       let drivingLicense = data.find((d) => d.personId === parseInt(selectedOwnerId))?.driversLicenseNumber ?? null;
       let birthNumber = data.find((d) => d.personId === parseInt(selectedOwnerId))?.birthNumber ?? null;
-      let columnFilters = [];
+      let newColumnFilters = columnFilters.filter(filter =>
+        filter.id !== 'driversLicenseNumber'
+        && filter.id !== 'birthNumber'
+        && filter.id !== 'personId');
       if (drivingLicense !== null)
-        columnFilters.push({ id: 'driversLicenseNumber', value: drivingLicense });
+        newColumnFilters.push({ id: 'driversLicenseNumber', value: drivingLicense });
       if (birthNumber !== null)
-        columnFilters.push({ id: 'birthNumber', value: birthNumber });
+        newColumnFilters.push({ id: 'birthNumber', value: birthNumber });
       if (selectedOwnerId)
-        columnFilters.push({ id: 'personId', value: selectedOwnerId });
-      setColumnFilters(columnFilters);
+        newColumnFilters.push({ id: 'personId', value: selectedOwnerId });
+      setColumnFilters(newColumnFilters);
 
       const timer = setTimeout(() => {
         fetchDataRef.current?.();
-        console.log(rowSelection);
       }, 200);
       return () => clearTimeout(timer);
     }
@@ -198,7 +222,7 @@ export const DriverDatatable: React.FC<{
   useEffect(() => {
     if (ownerId) {
       setRowSelection({ [ownerId]: true });
-     }
+    }
   }, []);
 
   const table = useMaterialReactTable({

@@ -1,13 +1,12 @@
 ﻿import { Button } from "reactstrap";
-import IDtFetchData from "./interfaces/datatables/IDtFetchData";
 
 const DtSearchButton: React.FC<{
-  fetchDataRef: React.MutableRefObject<IDtFetchData | null>,
-}> = ({ fetchDataRef }) => {
+  onSearchClick: () => void,
+}> = ({ onSearchClick }) => {
   return (
     <Button
       color="primary"
-      onClick={() => { fetchDataRef.current?.() }}>
+      onClick={onSearchClick}>
       Vyhledat
     </Button>
   );

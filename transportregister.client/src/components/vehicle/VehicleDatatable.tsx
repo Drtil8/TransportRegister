@@ -174,6 +174,10 @@ export const VehicleDatatable: React.FC<{
     []
   );
 
+  const onSearchClick = () => {
+    fetchDataRef.current?.();
+  }
+
   const renderSearchButton = () => {
     const actionTableHeader = document.querySelector('th:last-child') as HTMLElement;
     const existingButton = actionTableHeader.querySelector('button');
@@ -182,7 +186,7 @@ export const VehicleDatatable: React.FC<{
       const buttonContainer = document.createElement('div');
       actionTableHeader.appendChild(buttonContainer);
       const root = createRoot(buttonContainer);
-      root.render(<DtSearchButton fetchDataRef={fetchDataRef} />);
+      root.render(<DtSearchButton onSearchClick={onSearchClick} />);
     }
     const tableBody = document.querySelector('tbody') as HTMLElement;
     tableBody.style.display = 'none';
