@@ -2,15 +2,15 @@
 import { Button, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap';
 import { ICar, IVehicleDetail } from '../interfaces/IVehicleDetail';
 import { useNavigate } from 'react-router-dom';
-//import DriverDatatable from '../DriverDatatable';
-//import IDtFetchData from '../interfaces/datatables/IDtFetchData';
+import DriverDatatable from '../DriverDatatable';
+import IDtFetchData from '../interfaces/datatables/IDtFetchData';
 
 export const VehicleForm: React.FC<{ fetchedVehicle: IVehicleDetail | null }> = ({ fetchedVehicle }) => {
   const [selectedVehicleType, setSelectedVehicleType] = useState<string>(
     fetchedVehicle?.vehicleType ?? 'Car');
   const [image, setImage] = useState<string | null>(null);
   const navigate = useNavigate();
-  //const fetchDataRef: React.MutableRefObject<IDtFetchData | null> = { current: null };
+  const fetchDataRef: React.MutableRefObject<IDtFetchData | null> = { current: null };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -38,7 +38,7 @@ export const VehicleForm: React.FC<{ fetchedVehicle: IVehicleDetail | null }> = 
     }
 
     let params = {
-      ownerId: 1,
+      ownerId: formData.get('ownerId') || 0,
       vehicleId: fetchedVehicle?.vehicleId || 0,
       vehicleType: vehicleType,
       VIN: formData.get('VIN'),
@@ -262,13 +262,13 @@ export const VehicleForm: React.FC<{ fetchedVehicle: IVehicleDetail | null }> = 
         </FormGroup>
       </Row>
 
-      {/* todo */}
-      {/*<Row>*/}
-      {/*  <Label>*/}
-      {/*    <b>Výběr vlastníka vozidla</b>*/}
-      {/*  </Label>*/}
-      {/*  <DriverDatatable fetchDataRef={fetchDataRef} autoFetch={false} />*/}
-      {/*</Row>*/}
+      <Row>
+        <Label>
+          <b>Výběr vlastníka vozidla</b>
+        </Label>
+        <Input type="number" name="ownerId" hidden />
+        <DriverDatatable fetchDataRef={fetchDataRef} autoFetch={false} selectable={true} ownerId={fetchedVehicle?.ownerId} />
+      </Row>
 
       <Row className="my-3">
         <Col className="d-flex justify-content-center">

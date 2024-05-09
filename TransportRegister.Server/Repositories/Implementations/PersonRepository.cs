@@ -234,7 +234,7 @@ namespace TransportRegister.Server.Repositories.Implementations
                 query = filter.PropertyName switch
                 {
                     nameof(DriverSimpleListDto.PersonId) =>
-                        query.Where(v => v.PersonId.ToString().StartsWith(filter.Value)),
+                        query.Where(v => v.PersonId == int.Parse(filter.Value)),
                     nameof(DriverSimpleListDto.DriversLicenseNumber) =>
                         query.Where(v => v.DriversLicenseNumber.StartsWith(filter.Value)),
                     nameof(DriverSimpleListDto.FirstName) =>

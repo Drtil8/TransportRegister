@@ -7,6 +7,7 @@ function MUITableCommonOptions<T extends MRT_RowData>(): MRT_TableOptions<T> {
     data: [],     // required option, but will be overwritten
     enableFilters: true,
     enableTopToolbar: true,
+    //enableColumnResizing: true,
     enableRowSelection: false,
     enableColumnFilterModes: false,
     enableGlobalFilter: false,
@@ -22,7 +23,6 @@ function MUITableCommonOptions<T extends MRT_RowData>(): MRT_TableOptions<T> {
       },
       density: 'compact',
     },
-    getRowId: (row) => String(row.id),
     localization: MRT_Localization_CS,
     paginationDisplayMode: 'pages',
     positionToolbarAlertBanner: 'bottom',

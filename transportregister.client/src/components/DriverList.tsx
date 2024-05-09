@@ -18,7 +18,7 @@ export class DriverList extends Component<object> {
           </Col>
         </Row>
         <Row>
-          <DriverDatatable fetchDataRef={this.fetchDataRef} autoFetch={true} />
+          <DriverDatatable fetchDataRef={this.fetchDataRef} autoFetch={true} selectable={false} />
         </Row>
       </div>
     );

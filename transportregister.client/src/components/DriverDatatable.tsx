@@ -2,6 +2,7 @@
 import { useNavigate } from 'react-router-dom';
 import { createRoot } from 'react-dom/client';
 import {
+    MRT_RowSelectionState,
   MaterialReactTable,
   useMaterialReactTable,
   type MRT_ColumnDef,
@@ -21,13 +22,14 @@ import DtSearchButton from './DtSearchButton';
 interface IAdvancedFeatures {
   enableSorting: boolean;
   enablePagination: boolean;
-  enableTopToolbar: boolean;
 }
 
 export const DriverDatatable: React.FC<{
   fetchDataRef: React.MutableRefObject<IDtFetchData | null>,
   autoFetch: boolean,
-}> = ({ fetchDataRef, autoFetch }) => {
+  selectable: boolean,
+  ownerId?: number | null,
+}> = ({ fetchDataRef, autoFetch, selectable, ownerId }) => {
   const navigate = useNavigate();
 
   // Data and fetching state
@@ -49,15 +51,15 @@ export const DriverDatatable: React.FC<{
   const disableFeaturesObj: IAdvancedFeatures = {
     enableSorting: false,
     enablePagination: false,
-    enableTopToolbar: false,
   };
   const enableFeaturesObj: IAdvancedFeatures = {
     enableSorting: true,
     enablePagination: true,
-    enableTopToolbar: true,
   };
   const [enableAdvancedFeatures, setEnableAdvancedFeatures] = useState<IAdvancedFeatures>(
-    autoFetch ? enableFeaturesObj : disableFeaturesObj);
+    autoFetch || ownerId ? enableFeaturesObj : disableFeaturesObj);
+
+  const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
 
   const fetchData = async () => {
     if (!data.length) {
@@ -84,10 +86,9 @@ export const DriverDatatable: React.FC<{
       });
       if (response.ok) {
         const json: IDtResult<IDriverSimpleList> = await response.json();
-        if (json.data.length === 1)
-          navigate(`/driver/${json.data[0].personId}`);
+        if (json.data.length === 1 && !selectable)
+          navigate(`/driver/${json.data[0].personId}`);   // todo only after onclick search
         setEnableAdvancedFeatures(enableFeaturesObj);
-
         setData(json.data);
         setRowCount(json.totalRowCount);
       }
@@ -119,15 +120,9 @@ export const DriverDatatable: React.FC<{
   const columns = useMemo<MRT_ColumnDef<IDriverSimpleList>[]>(
     () => [
       {
-        id: 'firstName',
-        accessorKey: 'firstName',
-        header: 'Jméno',
-        filterFn: 'startsWith',
-      },
-      {
-        id: 'lastName',
-        accessorKey: 'lastName',
-        header: 'Příjmení',
+        id: 'driversLicenseNumber',
+        accessorKey: 'driversLicenseNumber',
+        header: 'Řidický průkaz',
         filterFn: 'startsWith',
       },
       {
@@ -137,9 +132,15 @@ export const DriverDatatable: React.FC<{
         filterFn: 'startsWith',
       },
       {
-        id: 'driversLicenseNumber',
-        accessorKey: 'driversLicenseNumber',
-        header: 'Řidický průkaz',
+        id: 'firstName',
+        accessorKey: 'firstName',
+        header: 'Jméno',
+        filterFn: 'startsWith',
+      },
+      {
+        id: 'lastName',
+        accessorKey: 'lastName',
+        header: 'Příjmení',
         filterFn: 'startsWith',
       },
     ],
@@ -164,10 +165,47 @@ export const DriverDatatable: React.FC<{
     renderSearchButton();
   }, []);
 
+  useEffect(() => {
+    const clearButton = document.querySelector('.MuiAlert-message') as HTMLElement;
+    if (clearButton)
+      clearButton.style.display = 'none';
+
+    let selectedRows = Object.keys(rowSelection);
+    if (selectedRows.length === 1) {
+      let selectedOwnerId = selectedRows[0];
+      let inputOwnerId = (document.querySelector('input[name="ownerId"]') as HTMLInputElement);
+      inputOwnerId.value = selectedOwnerId;
+
+      let drivingLicense = data.find((d) => d.personId === parseInt(selectedOwnerId))?.driversLicenseNumber ?? null;
+      let birthNumber = data.find((d) => d.personId === parseInt(selectedOwnerId))?.birthNumber ?? null;
+      let columnFilters = [];
+      if (drivingLicense !== null)
+        columnFilters.push({ id: 'driversLicenseNumber', value: drivingLicense });
+      if (birthNumber !== null)
+        columnFilters.push({ id: 'birthNumber', value: birthNumber });
+      if (selectedOwnerId)
+        columnFilters.push({ id: 'personId', value: selectedOwnerId });
+      setColumnFilters(columnFilters);
+
+      const timer = setTimeout(() => {
+        fetchDataRef.current?.();
+        console.log(rowSelection);
+      }, 200);
+      return () => clearTimeout(timer);
+    }
+  }, [rowSelection]);
+
+  useEffect(() => {
+    if (ownerId) {
+      setRowSelection({ [ownerId]: true });
+     }
+  }, []);
+
   const table = useMaterialReactTable({
     ...MUITableCommonOptions<IDriverSimpleList>(), // Add common and basic options
     columns,
     data,
+    getRowId: (row) => String(row.personId),
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
     onPaginationChange: setPagination,
@@ -181,22 +219,30 @@ export const DriverDatatable: React.FC<{
       showAlertBanner: isError,
       showProgressBars: isRefetching,
       sorting,
+      rowSelection,
     },
     ...enableAdvancedFeatures,
-    enableRowActions: true,       // Display row actions
+    enableTopToolbar: false,
+    enableRowSelection: selectable, // Enable row selection
+    onRowSelectionChange: setRowSelection,
+    enableSelectAll: false,
+    enableMultiRowSelection: false,
+    enableRowActions: true,  // Display row actions
     renderRowActions: ({ row }) => (
       <Box sx={{ display: 'flex', gap: '1rem' }}>
-        <Tooltip title="Zobrazit detail">
-          <IconButton onClick={() => navigate(`/driver/${row.original.personId}`)}>
-            <DetailIcon />
-          </IconButton>
-        </Tooltip>
+        {!selectable && (
+          <Tooltip title="Zobrazit detail">
+            <IconButton onClick={() => navigate(`/driver/${row.original.personId}`)}>
+              <DetailIcon />
+            </IconButton>
+          </Tooltip>
+        )}
       </Box>
     ),
   });
 
   return (
-      <MaterialReactTable table={table} />
+    <MaterialReactTable table={table} />
   );
 };
 export default DriverDatatable;
