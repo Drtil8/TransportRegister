@@ -111,7 +111,7 @@ const Login = () => {
                       className="form-check-input"
                       checked={rememberMe}
                       onChange={e => setRememberMe(e.target.checked)} />
-                    <label htmlFor="rememberMe" className="form-check-label">Zapamatovat heslo</label>
+                    <label htmlFor="rememberMe" className="form-check-label" id="loginLable">Zapamatovat heslo</label>
                   </div>
                   <div className="form-group d-flex align-items-center justify-content-center mt-4">
                     <button type="submit" className="btn btn-primary btn-lg">Přihlásit se</button>
