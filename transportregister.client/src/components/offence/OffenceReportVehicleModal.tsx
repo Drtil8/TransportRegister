@@ -17,7 +17,7 @@ const OffenceReportVehicleModal: React.FC<OffenceReportVehicleModalProps> = ({ v
   const initialFormData = {
     reportVehicleType: 1,
     reportVehicleDescription: "",
-    reportVehicleId: 1,
+    reportVehicleId: vehicleDetail?.vehicleId,
     reportVehicleVIN: vehicleDetail?.vin,
     reportVehicleSPZ: vehicleDetail?.currentLicensePlate,
     reportVehicleBrand: vehicleDetail?.manufacturer,
@@ -25,7 +25,7 @@ const OffenceReportVehicleModal: React.FC<OffenceReportVehicleModalProps> = ({ v
     reportVehicleFineAmount: 0,
     reportVehiclePenaltyPoints: 0,
     reportVehiclePaid: false,
-    reportVehicleOwnerId: 1,
+    reportVehicleOwnerId: vehicleDetail?.ownerId,
     reportVehicleOwnerFirstName: vehicleDetail?.ownerFullName.split(" ")[0],
     reportVehicleOwnerLastName: vehicleDetail?.ownerFullName.split(" ")[1],
     reportVehiclePhotos: [] as string[],

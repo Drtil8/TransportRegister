@@ -78,19 +78,21 @@ namespace TransportRegister.Server.Controllers
         /// <returns>An ActionResult indicating success or failure.</returns>
         [HttpPost("{personId}/SetToDriver")]
         [Authorize(Roles = "Official")]
-        public async Task<IActionResult> SetPersonToDriver(int personId, string license, List<string> licenseTypes)
+        //public async Task<IActionResult> SetPersonToDriver(int personId, string license, List<string> licenseTypes)
+        public async Task<IActionResult> SetPersonToDriver(int personId, PersonSetDriverDto personDto)
         {
             var person = await _context.Persons.FindAsync(personId);
             if (person == null)
             {
                 return NotFound();
             }
+
             person.OfficialId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            await _personRepository.AddDriverAsync(person.PersonId, license);
+            await _personRepository.AddDriverAsync(person.PersonId, personDto.DriversLicenseNumber);
 
-            var driver = _personRepository.GetDriverAsync(license).Result;
+            var driver = _personRepository.GetDriverAsync(personDto.DriversLicenseNumber).Result;
 
-            return await PostDriversLicense(driver.PersonId, licenseTypes);
+            return await PostDriversLicense(driver.PersonId, personDto.Licenses);
 
  
         }
@@ -244,7 +246,7 @@ namespace TransportRegister.Server.Controllers
         /// <returns>An ActionResult indicating success or failure.</returns>
         [HttpPost("{driverId}/AddDriversLicense")]
         [Authorize(Roles = "Official")]
-        public async Task<IActionResult> PostDriversLicense(int driverId, List<string> new_licenses)
+        public async Task<IActionResult> PostDriversLicense(int driverId, IEnumerable<string> new_licenses)
         {
             if (!ModelState.IsValid)    /// what about bad vehicle type?
             {
