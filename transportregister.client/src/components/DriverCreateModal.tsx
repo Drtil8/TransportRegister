@@ -1,7 +1,7 @@
 ﻿import React, { FormEvent, useState } from "react";
 import { Button, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row } from "reactstrap";
 import { IPerson } from "./interfaces/IPersonDetail";
-import { useNavigate } from "react-router-dom";
+//import { useNavigate } from "react-router-dom";
 
 interface DriverCreateModalProps {
   person: IPerson;
@@ -10,7 +10,7 @@ interface DriverCreateModalProps {
 
 const DriverCreateModal: React.FC<DriverCreateModalProps> = ({ person }) => {
   const [modal, setModal] = useState(false);
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
   
   const [formData, setFormData] = useState<{ licensesStrings: string[], driversLicenseNumber: string }>({ 
     licensesStrings: [], 
