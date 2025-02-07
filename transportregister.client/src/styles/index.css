@@ -248,3 +248,7 @@ ul li.nav-item {
         margin-bottom: 2rem;
     }
 }
+
+label[for="mrt-rows-per-page"] {
+    margin-top: 0;
+}

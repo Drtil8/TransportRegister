@@ -10,7 +10,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F26CAAC8-4857-49C1-844E-65965CDA365F}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
-		doc.html = doc.html
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{B2C02FA7-68D7-4EB8-8001-0FA2CA3055F4}"
+	ProjectSection(SolutionItems) = preProject
+		docs\final_report.html = docs\final_report.html
+		docs\main_doc.pdf = docs\main_doc.pdf
+		docs\SqlServerSetup.pdf = docs\SqlServerSetup.pdf
 	EndProjectSection
 EndProject
 Global
@@ -32,6 +39,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B2C02FA7-68D7-4EB8-8001-0FA2CA3055F4} = {F26CAAC8-4857-49C1-844E-65965CDA365F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4DF109D6-CFC6-456E-AEB8-FD4D8BFE92D7}
